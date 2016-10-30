@@ -271,8 +271,8 @@ char *read_edit_control(HWND hwnd, char *msgstr)
 //    TEXT ("Text Files (*.TXT)\0*.txt\0")  
 //    TEXT ("All Files (*.*)\0*.*\0\0") ;
 static char const szPalFilter[] = 
-   "Text Files (*.TXT)\0*.txt\0"  \
-   "All Files (*.*)\0*.*\0\0" ;
+   "Text Files (*.TXT)\0*.txt\0"  \ //lint !e840  Use of nul character in a string literal
+   "All Files (*.*)\0*.*\0\0" ;     //lint !e840  Use of nul character in a string literal
 
 //******************************************************************
 //lint -esym(714, select_text_file)
