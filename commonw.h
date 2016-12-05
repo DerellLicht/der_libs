@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2014  Daniel D Miller
+//  Copyright (c) 2008-2017  Daniel D Miller
 //  common_funcs.cpp - common functions for Windows and other programs.
 //  commonw.h - Contains Windows-specific and System-specific definitions
 //  This module, which has been entirely compiled from public-domain sources, 
@@ -63,6 +63,8 @@ bool select_text_file(HWND hDlgWnd, char *command_filename);
 bool select_file(HWND hDlgWnd, char *command_filename, char *ext);
 void copy_buffer_to_clipboard(char *cbbfr, unsigned blen);
 int GetScreenDPI(void);
+BOOL CenterWindow (HWND hwnd);
+void resize_window(HWND hwnd, int dx, int dy);
 
 //  font-management functions
 HFONT build_font(TCHAR *fname, unsigned fheight, unsigned flags);

@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2015  Daniel D Miller
+//  Copyright (c) 2008-2017  Daniel D Miller
 //  common_funcs.cpp - common functions for Windows and other programs.
 //  common.h - Contains Windows-specific and System-specific definitions
 //  This module, which has been entirely compiled from public-domain sources, 
@@ -142,8 +142,6 @@ bool file_exists(char *fefile);
 bool dir_exists(char *fefile);
 bool drive_exists(char *fefile);
 uint swap_rgb(uint invalue);
-BOOL CenterWindow (HWND hwnd);
-void resize_window(HWND hwnd, int dx, int dy);
 void srand2(unsigned long seed);
 u16  rand2(void);
 unsigned random_int(unsigned n);

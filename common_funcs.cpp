@@ -1,6 +1,6 @@
 //****************************************************************************
-//  Copyright (c) 2008-2015  Daniel D Miller
-//  common_funcs.cpp - common functions for Windows and other programs.
+//  Copyright (c) 2008-2017  Daniel D Miller
+//  common_funcs.cpp - common functions for console applications.
 //  This module, which has been entirely compiled from public-domain sources, 
 //  is itself declared in the public domain.
 //  
@@ -1097,59 +1097,4 @@ char *convert_to_commas(ULONGLONG uli, char *outstr)
    return outstr ;
 }
 
-//********************************************************************************************
-//lint -esym(714, CenterWindow)
-//lint -esym(759, CenterWindow)
-//lint -esym(765, CenterWindow)
-BOOL CenterWindow (HWND hwnd)
-{
-   HWND hwndParent;
-   RECT rect, rectP;
-   int width, height;
-   int screenwidth, screenheight;
-   int x, y;
-
-   //make the window relative to its desktop
-   hwndParent = GetDesktopWindow ();
-
-   GetWindowRect (hwnd, &rect);
-   GetWindowRect (hwndParent, &rectP);
-
-   width = rect.right - rect.left;
-   height = rect.bottom - rect.top;
-
-   x = ((rectP.right - rectP.left) - width) / 2 + rectP.left;
-   y = ((rectP.bottom - rectP.top) - height) / 2 + rectP.top;
-
-   screenwidth = GetSystemMetrics (SM_CXSCREEN);
-   screenheight = GetSystemMetrics (SM_CYSCREEN);
-
-   //make sure that the dialog box never moves outside of
-   //the screen
-   if (x < 0)
-      x = 0;
-   if (y < 0)
-      y = 0;
-   if (x + width > screenwidth)
-      x = screenwidth - width;
-   if (y + height > screenheight)
-      y = screenheight - height;
-
-   MoveWindow (hwnd, x, y, width, height, FALSE);
-   SetActiveWindow (hwnd);
-
-   return TRUE;
-}
-
-//******************************************************************
-//lint -esym(714, resize_window)
-//lint -esym(759, resize_window)
-//lint -esym(765, resize_window)
-void resize_window(HWND hwnd, int dx, int dy)
-{
-   ShowWindow(hwnd, SW_HIDE) ;
-   // SetWindowPos(hwnd, NULL, 0, 0, dx, dy, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
-   SetWindowPos(hwnd, NULL, 0, 0, dx, dy, SWP_NOMOVE);
-   ShowWindow(hwnd, SW_SHOW) ;
-}
 
