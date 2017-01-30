@@ -84,6 +84,8 @@ unsigned CStatusBar::MoveToBottom(unsigned cxClient, unsigned cyClient)
    unsigned cyStatus = (unsigned) (statusRect.bottom - statusRect.top) ;
    // syslog("cyStatus=%u\n", cyStatus) ; //  cyStatus=22
    unsigned stTop = cyClient - cyStatus ;
+   // stTop=752, cyStatus=22
+   // syslog("stTop=%u, cyStatus=%u\n", stTop, cyStatus);
    // syslog("cxClient=%u, cyClient=%u, stTop=%u, cyStatus=%u\n", 
    //    cxClient, cyClient, stTop, cyStatus) ;
    MoveStatusBar(hwndStatusBar, 0, stTop, cxClient, cyStatus);
