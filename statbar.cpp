@@ -153,7 +153,7 @@ bool CStatusBar::SetParts(int nParts, int *sbparts)
 {
    return SendMessageA(hwndStatusBar, SB_SETPARTS, 
       (WPARAM) nParts, (LPARAM) (LPINT) sbparts) ;  //lint !e1786
-}
+}  //lint !e818
 
 //-------------------------------------------------------------------
 bool CStatusBar::RebuildStatusBar (WORD wFlag)

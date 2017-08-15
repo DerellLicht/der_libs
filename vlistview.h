@@ -59,7 +59,7 @@
 #define  HDF_SORTDOWN   0x200
 #define  HDF_SORTUP     0x400
 
-//lint -esym(769, SHOW_NO_ARROW)
+//lint -esym(769, SHOW_ARROW::SHOW_NO_ARROW)
 typedef enum 
 {
    SHOW_NO_ARROW,
@@ -70,6 +70,7 @@ typedef enum
 //****************************************************************************
 //  listview column-header definition struct
 //****************************************************************************
+//lint -esym(768, lv_cols_s::menu_id, lv_cols_s::touched, lv_cols_s::renderFunc)
 typedef struct lv_cols_s {
    TCHAR *txt ;
    uint cx ;
