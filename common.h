@@ -63,15 +63,6 @@ extern const TCHAR  TTAB ;
 #define  WIN_BWHITE     (0x00FFFFFFU)
 
 //*****************************************************************
-//  lookup-table struct, used for Windows Message handlers
-//*****************************************************************
-//lint -esym(768, winproc_table_s::win_code, winproc_table_s::winproc_func)
-typedef struct winproc_table_s {
-   uint win_code ;
-   bool (*winproc_func)(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, LPVOID private_data) ;
-} winproc_table_t ;
-
-//*****************************************************************
 //  struct for building list of strings
 //*****************************************************************
 //lint -esym(756, string_list_p, string_list_t)

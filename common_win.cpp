@@ -11,7 +11,8 @@
 //****************************************************************************
 
 //lint -esym(18, _NOTIFYICONDATAA::szTip, _NOTIFYICONDATAW::szTip)
-#define  _WIN32_IE   0x0501
+#define  _WIN32_IE      0x0501
+#define  _WIN32_WINDOWS 0x0410
 #include <windows.h>
 #include <time.h>
 #include <stdio.h>   //  vsprintf
@@ -199,7 +200,7 @@ void copy_buffer_to_clipboard(char *cbbfr, unsigned blen)
       // applications can examine or modify its contents.
       CloseClipboard ();
    }
-}  //lint !e429
+}  //lint !e429 !e818
 
 //****************************************************************************
 //  find screen coords of upper-left corner of CommPort dialog.
@@ -424,7 +425,7 @@ HFONT build_font(TCHAR *fname, unsigned fheight, unsigned flags)
          DEFAULT_CHARSET, 0, 0, 0, DEFAULT_PITCH, //  other stuff
          fname);
    return hfont;
-}
+}  //lint !e818
 
 //*************************************************************************
 //lint -esym(714, EzCreateFont)
@@ -493,7 +494,7 @@ HFONT EzCreateFont(HDC hdc, char * szFaceName, int iDeciPtHeight,
    }
    RestoreDC (hdc, -1) ;
    return hFont ;
-}
+}  //lint !e818
 
 //****************************************************************************
 //  returns 96 for normal fonts, 120 for Large Fonts, 
@@ -626,4 +627,111 @@ char *unicode2ascii(WCHAR *UnicodeStr)
 }
 #endif
 
+//****************************************************************************
+//  12/16/16 - import commonly-used functions from system.cpp
+//****************************************************************************
+static const uint STD_DPI = 96 ;
+
+// static int  curr_dpi = STD_DPI ;
+static uint screen_width  = 0 ;
+static uint screen_height = 0 ;
+
+//lint -esym(714, get_monitor_dimens)
+//lint -esym(752, get_monitor_dimens)
+//lint -esym(759, get_monitor_dimens)
+//lint -esym(765, get_monitor_dimens)
+void get_monitor_dimens(HWND hwnd)
+{
+   HMONITOR currentMonitor;      // Handle to monitor where fullscreen should go
+   MONITORINFO mi;               // Info of that monitor
+   currentMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+   mi.cbSize = sizeof(MONITORINFO);
+   if (GetMonitorInfo(currentMonitor, &mi) != FALSE) {
+      screen_width  = mi.rcMonitor.right  - mi.rcMonitor.left ;
+      screen_height = mi.rcMonitor.bottom - mi.rcMonitor.top ;
+   }
+   // curr_dpi = GetScreenDPI() ;
+}
+
+//lint -esym(714, get_screen_width)
+//lint -esym(752, get_screen_width)
+//lint -esym(759, get_screen_width)
+//lint -esym(765, get_screen_width)
+uint get_screen_width(void)
+{
+   return screen_width ;
+}
+
+//lint -esym(714, get_screen_height)
+//lint -esym(752, get_screen_height)
+//lint -esym(759, get_screen_height)
+//lint -esym(765, get_screen_height)
+uint get_screen_height(void)
+{
+   return screen_height ;
+}
+
+//********************************************************************************
+//lint -esym(714, center_dialog_on_screen)
+//lint -esym(752, center_dialog_on_screen)
+//lint -esym(759, center_dialog_on_screen)
+//lint -esym(765, center_dialog_on_screen)
+void center_dialog_on_screen(HWND hDlg)
+{
+   if (screen_width == 0  ||  screen_height == 0) {
+      return ;
+   }
+   RECT rectAbout ;
+   GetWindowRect(hDlg, &rectAbout);
+   uint dxAbout = rectAbout.right  - rectAbout.left ;
+   uint dyAbout = rectAbout.bottom - rectAbout.top ;
+   uint xi = (screen_width  - dxAbout) / 2 ;
+   uint yi = (screen_height - dyAbout) / 2 ; 
+   SetWindowPos(hDlg, HWND_TOP, xi, yi, 0, 0, SWP_NOSIZE);   
+}
+
+//****************************************************************************
+//lint -esym(714, are_normal_fonts_active)
+//lint -esym(752, are_normal_fonts_active)
+//lint -esym(759, are_normal_fonts_active)
+//lint -esym(765, are_normal_fonts_active)
+bool are_normal_fonts_active(void)
+{
+   uint curr_dpi = GetScreenDPI() ; //lint !e732 Loss of sign
+   if (curr_dpi == 96)
+      return true;
+   return false;
+}
+
+//****************************************************************************
+//  return true if recalculation was required, false otherwise
+//****************************************************************************
+//lint -esym(714, cp_recalc_dlu_width)
+//lint -esym(752, cp_recalc_dlu_width)
+//lint -esym(759, cp_recalc_dlu_width)
+//lint -esym(765, cp_recalc_dlu_width)
+bool cp_recalc_dlu_width(uint *psheet_dx)
+{
+   uint curr_dpi = GetScreenDPI() ; //lint !e732 Loss of sign
+   if (curr_dpi == STD_DPI) 
+      return false ;
+   *psheet_dx = (*psheet_dx * curr_dpi) / STD_DPI ;
+   return true ;
+}
+
+//****************************************************************************
+//  return true if recalculation was required, false otherwise
+//****************************************************************************
+//lint -esym(714, cp_recalc_dlu_height)
+//lint -esym(752, cp_recalc_dlu_height)
+//lint -esym(759, cp_recalc_dlu_height)
+//lint -esym(765, cp_recalc_dlu_height)
+bool cp_recalc_dlu_height(uint *psheet_dy)
+{
+   uint curr_dpi = GetScreenDPI() ; //lint !e732 Loss of sign
+   if (curr_dpi == STD_DPI) 
+      return false ;
+   *psheet_dy = (*psheet_dy * curr_dpi) / STD_DPI ;
+   return true ;
+}
 

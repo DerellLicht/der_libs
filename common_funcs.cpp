@@ -433,7 +433,7 @@ LRESULT derive_file_path(char *drvbfr, char *filename)
    sptr++ ; //  point past the backslash
    strcpy(sptr, filename) ;
    return 0;
-}
+}  //lint !e818
 
 //*************************************************************
 //  returns <exec_path>\\Svr10.<new_ext>

@@ -6,9 +6,14 @@
 //  is itself declared in the public domain.
 //*****************************************************************************
 
+//lint -esym(1704, CProgBar::CProgBar)
+
 class CProgBar {
 private:   
    HWND hwndProgBar ;
+
+   //  disable default constructor
+   CProgBar();
 
    //  disable assignment and copy operators
    CProgBar &operator=(const CProgBar &src) ;
