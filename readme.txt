@@ -19,3 +19,7 @@ various operations that I regularly use in WinAPI applications.
 Most of theses modules include a text file which discusses the
 purpose and use of the class.
 
+Obtain the current version of this package:
+git clone https://github.com/DerellLicht/der_libs.git
+
+

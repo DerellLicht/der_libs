@@ -11,7 +11,7 @@
 
 //lint -esym(1714, CStrList::add, CStrList::remove, CStrList::str_exists)
 //lint -esym(1714, CStrList::get_next, CStrList::write_to_file, CStrList::get_element_count)
-//lint -esym(1714, CStrList::get_top)
+//lint -esym(1714, CStrList::extract_top_element)
 
 #include "common.h"
 #include "str_list.h"
@@ -83,7 +83,7 @@ void CStrList::add(u8 *bfr, uint bfrlen)
 }
 
 //*****************************************************************************
-cstr_list_p CStrList::get_top(void)
+cstr_list_p CStrList::extract_top_element(void)
 {
    cstr_list_p cptr = top ;
    if (top != NULL)

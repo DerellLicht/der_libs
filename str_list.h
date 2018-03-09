@@ -28,7 +28,7 @@ public:
    ~CStrList();
    void add(char *str);
    void add(u8 *bfr, uint bfrlen);
-   cstr_list_p get_top(void);
+   cstr_list_p extract_top_element(void);
    bool remove(char *del_str);
    void delete_list(void);
    bool str_exists(char *cbentry);
