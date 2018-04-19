@@ -11,7 +11,9 @@
 
 //lint -esym(1714, CStrList::add, CStrList::remove, CStrList::str_exists)
 //lint -esym(1714, CStrList::get_next, CStrList::write_to_file, CStrList::get_element_count)
-//lint -esym(1714, CStrList::extract_top_element)
+//lint -esym(1714, CStrList::get_top)
+
+//lint -esym(1704, CStrList::CStrList)
 
 #include "common.h"
 #include "str_list.h"
@@ -83,7 +85,9 @@ void CStrList::add(u8 *bfr, uint bfrlen)
 }
 
 //*****************************************************************************
-cstr_list_p CStrList::extract_top_element(void)
+//  get_top() *removes* the top item from list !!!
+//*****************************************************************************
+cstr_list_p CStrList::get_top(void)
 {
    cstr_list_p cptr = top ;
    if (top != NULL)
@@ -150,13 +154,48 @@ uint CStrList::write_to_file(FILE *fd)
 }
 
 //****************************************************************************
+//  increment reference counter in string struct
+//****************************************************************************
 bool CStrList::str_exists(char *cbentry)
 {
    cstr_list_p cptr  ;
    for (cptr=top; cptr != 0; cptr = cptr->next) {
       if (strcmp(cbentry, cptr->sptr) == 0)
+      {
+         cptr->ref_count++ ;
          return true;
+      }
    }
    return false;
+}
+
+//****************************************************************************
+//  This function is similar to str_exists(), except that it compares only
+//  against length of reference string; this allows compares against input
+//  strings which have not been terminated yet.
+//  increment reference counter in string struct
+//****************************************************************************
+bool CStrList::strn_exists(char *cbentry)
+{
+   cstr_list_p cptr  ;
+   for (cptr=top; cptr != 0; cptr = cptr->next) {
+      if (strncmp(cbentry, cptr->sptr, strlen(cptr->sptr)) == 0)
+      {
+         cptr->ref_count++ ;
+         return true;
+      }
+   }
+   return false;
+}
+
+//****************************************************************************
+//  this function will clear the counters in the data structs
+//****************************************************************************
+void CStrList::clear_counters(void)
+{
+    cstr_list_p cptr  ;
+    for (cptr=top; cptr != 0; cptr = cptr->next) {
+        cptr->ref_count = 0 ;
+    }
 }
 
