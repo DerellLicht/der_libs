@@ -2,7 +2,7 @@
 //  Copyright (c) 2008-2017  Daniel D Miller
 //  common_win.cpp - common functions for Windows and other programs.
 //  These functions will comprise all the functions which require linking
-//  comctl32, gdi32, and other non-standard gcc/g++ libraries.
+//  comctl32, comdlg32, gdi32, and other non-standard gcc/g++ libraries.
 //  
 //  This module, which has been entirely compiled from public-domain sources, 
 //  is itself declared in the public domain.
@@ -24,6 +24,7 @@
 #include <tchar.h>
 #include <commctrl.h>
 #endif
+#include <commdlg.h> //  GetOpenFileName()
 #include <shlobj.h>  //  ShellGetPath()
 
 #include "common.h"
