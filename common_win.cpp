@@ -23,8 +23,8 @@
 #else
 #include <tchar.h>
 #include <commctrl.h>
-#endif
 #include <commdlg.h> //  GetOpenFileName()
+#endif
 #include <shlobj.h>  //  ShellGetPath()
 
 #include "common.h"
