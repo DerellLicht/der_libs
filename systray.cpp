@@ -9,6 +9,7 @@
 
 #ifndef  USE_64BIT
 #ifdef   SET_POPUP_MENU_BGND
+//lint -esym(750, MIM_MAXHEIGHT, MIM_HELPID, MIM_MENUDATA, MIM_STYLE)
 //  from winuser.h, requires WINVER   0x0500
 #define MIM_MAXHEIGHT   1
 #define MIM_BACKGROUND  2
