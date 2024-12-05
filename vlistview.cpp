@@ -134,7 +134,7 @@ CVListView::~CVListView()
 void CVListView::insert_column_header(lv_cols_p lvptr, uint idx)
 {
    LVCOLUMN LvCol;                 // Make Column struct for ListView
-   memset (&LvCol, 0, sizeof (LvCol)); // Reset Column
+   ZeroMemory(&LvCol, sizeof (LvCol)); // Reset Column
    LvCol.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;   // Type of mask
    LvCol.fmt = LVCFMT_CENTER ;   //  only centers text
    LvCol.pszText = lvptr->txt ;
@@ -172,7 +172,7 @@ void CVListView::lview_assign_column_headers(void)
    //  we *still* need to insert the column.
    //  Mind you, this should *only* be done ONCE...
    LVCOLUMN LvColumn;                 // Make Column struct for ListView
-   memset (&LvColumn, 0, sizeof (LvColumn)); // Reset Column
+   ZeroMemory(&LvColumn, sizeof (LvColumn)); // Reset Column
    
    LvColumn.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
    LvColumn.fmt = LVCFMT_LEFT;
@@ -243,7 +243,7 @@ void CVListView::lview_assign_column_headers(lv_cols_p lv_cols, LPARAM image_lis
 
    columns_created = true ;
    LVCOLUMN LvCol;                 // Make Column struct for ListView
-   memset (&LvCol, 0, sizeof (LvCol)); // Reset Column
+   ZeroMemory(&LvCol, sizeof (LvCol)); // Reset Column
    // LvCol.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;   // Type of mask
    //  I will try to center elements within the columns, hoping that my
    //  LEDs will be centered.  Of course, it didn't work that way...
@@ -326,7 +326,7 @@ void CVListView::lview_assign_column_headers(lv_cols_p lv_cols[], LPARAM image_l
 
    columns_created = true ;
    LVCOLUMN LvCol;                 // Make Column struct for ListView
-   memset (&LvCol, 0, sizeof (LvCol)); // Reset Column
+   ZeroMemory(&LvCol, sizeof (LvCol)); // Reset Column
    // LvCol.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;   // Type of mask
    //  I will try to center elements within the columns, hoping that my
    //  LEDs will be centered.  Of course, it didn't work that way...
