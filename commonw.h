@@ -65,14 +65,14 @@ HWND MyCreateUpDownControl(
       uint MaxValue, uint MinValue, uint InitValue) ;
 HWND CBGetItemHandle(HWND hwndCBox);
 BOOL ShellGetPath (HANDLE hDlg, char lpszPath[]);
-int WriteFileF(HANDLE hdl, const char *fmt, ...);
+int  WriteFileF(HANDLE hdl, const char *fmt, ...);
 uint get_bottom_line(HWND hwnd, uint ctrl_id);
 void Line(HDC hdc, uint x1, uint y1, uint x2, uint y2);
 char *read_edit_control(HWND hwnd, char *msgstr);
 bool select_text_file(HWND hDlgWnd, char *command_filename);
 bool select_file(HWND hDlgWnd, char *command_filename, char *ext);
 void copy_buffer_to_clipboard(char *cbbfr, unsigned blen);
-int GetScreenDPI(void);
+int  GetScreenDPI(void);
 BOOL CenterWindow (HWND hwnd);
 void resize_window(HWND hwnd, int dx, int dy);
 
