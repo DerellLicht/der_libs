@@ -36,13 +36,6 @@ enum file_type_e {
    FTYP_HTML
 } ;
 
-//*****************************************************************
-//lint -esym(756, attrib_table_t)
-typedef struct attrib_table_s {
-   COLORREF fgnd ;
-   COLORREF bgnd ;
-} attrib_table_t ;
-
 //********************************************************************
 //  list struct for terminal data list (virtual listview)
 //********************************************************************
