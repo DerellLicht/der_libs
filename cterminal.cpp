@@ -185,6 +185,7 @@ void CTerminal::scroll_terminal(bool scroll_down)
 }
 
 //*************************************************************************
+//lint -esym(1714, CTerminal::clear_message_area)
 void CTerminal::clear_message_area(void)
 {
    curr_row = 0 ;
