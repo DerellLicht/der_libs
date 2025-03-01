@@ -214,11 +214,15 @@ uint get_bottom_line(HWND hwnd, uint ctrl_id)
 {
    POINT pt = { 0, 0 } ;
    ClientToScreen(hwnd, &pt) ;
-   // putf("upper-left corner is at %ld,%ld", pt.x, pt.y) ;
+   // syslog("upper-left corner is at %ld,%ld", pt.x, pt.y) ;
+   //  this gives an X measure which is on outside of window frame,
+   //  but Y measure is bottom of menu bar
+   //  [20880] upper-left corner is at 1613,365
 
    RECT myRect ;
    GetWindowRect(GetDlgItem(hwnd, ctrl_id), &myRect) ;
-   // putf("bottom of DeviceDetection box: %u", (uint) myRect.bottom) ;
+   // syslog("bottom of DeviceDetection box: %u", (uint) myRect.bottom) ;
+   // [20880] bottom of DeviceDetection box: 6617752
    return (uint) ((uint) myRect.bottom - (uint) pt.y) ;
 }
 
