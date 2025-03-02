@@ -563,7 +563,10 @@ BOOL CenterWindow (HWND hwnd)
    return TRUE;
 }
 
-//******************************************************************
+//****************************************************************************
+//  unfortunately, this resize operation sets the *outside* window area,
+//  not the internal client area...
+//****************************************************************************
 //lint -esym(714, resize_window)
 //lint -esym(759, resize_window)
 //lint -esym(765, resize_window)
