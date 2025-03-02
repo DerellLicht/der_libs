@@ -11,10 +11,16 @@
 
 #include "common.h"
 #include "commonw.h"
-#include "statbar.h"
 #include "cterminal.h" 
 #include "terminal.h"
 #include "winmsgs.h"
+
+//lint -esym(714, term_append, term_copy_selected_rows, term_clear_message_area)
+//lint -esym(759, term_append, term_copy_selected_rows, term_clear_message_area)
+//lint -esym(765, term_append, term_copy_selected_rows, term_clear_message_area)
+//lint -esym(714, term_lview_subclass, term_set_debug, term_set_font)
+//lint -esym(759, term_lview_subclass, term_set_debug, term_set_font)
+//lint -esym(765, term_lview_subclass, term_set_debug, term_set_font)
 
 static CTerminal *myTerminal = NULL;
 
@@ -50,7 +56,6 @@ void term_append(char *term_str)
 //lint -esym(714, term_replace)
 //lint -esym(759, term_replace)
 //lint -esym(765, term_replace)
-
 void term_replace(char *term_str)
 {
    myTerminal->replace(term_str);
