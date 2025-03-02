@@ -1,0 +1,18 @@
+> Initial setup of terminal:
+
+   setup_terminal_window(hwnd, MainStatusBar->height(), IDC_MAP_AREA, IDC_TERMINAL);
+
+If status bar module is not in use, use 0 for height.
+
+> subclassing the terminal window
+  This is done, for example, to handle keyboard input while terminal is active.
+  See WinWiz program for example.
+
+   wpOrigTermProc = term_lview_subclass((LONG) TermSubclassProc); 
+
+> handling WM_NOTIFY messages
+  This is used primarily for updating the terminal listview during scrolling
+
+   case WM_NOTIFY:
+      return term_notify(hwnd, lParam) ;
+
