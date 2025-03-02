@@ -1,6 +1,6 @@
 void term_set_debug(bool enabled);
 bool term_notify(HWND hwnd, LPARAM lParam);
-void setup_terminal_window(HWND hwnd, uint StatusBarHeight, uint bottom_ref_control);
+void setup_terminal_window(HWND hwnd, uint StatusBarHeight, uint bottom_ref_control, uint terminal_control);
 WNDPROC term_lview_subclass(LONG TermSubclassProc);
 void term_set_font(char *font_name, uint fsize, uint attr);
 

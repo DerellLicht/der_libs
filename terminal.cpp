@@ -9,10 +9,8 @@
 #include <windows.h>
 #include <stdio.h>   //  vsprintf, sprintf, which supports %f
 
-#include "resource.h"
 #include "common.h"
 #include "commonw.h"
-#include "wizard.h"  //  dbg_flags and constants
 #include "statbar.h"
 #include "cterminal.h" 
 #include "terminal.h"
@@ -158,7 +156,7 @@ WNDPROC term_lview_subclass(LONG TermSubclassProc)
 }
 
 //******************************************************************
-void setup_terminal_window(HWND hwnd, uint StatusBarHeight, uint bottom_ref_control)
+void setup_terminal_window(HWND hwnd, uint StatusBarHeight, uint bottom_ref_control, uint terminal_control)
 {
    RECT myRect ;
    // GetWindowRect(hwnd, &myRect) ;
@@ -170,7 +168,7 @@ void setup_terminal_window(HWND hwnd, uint StatusBarHeight, uint bottom_ref_cont
    ctrl_bottom += 3 ;
    uint lvdy = dy - ctrl_bottom - StatusBarHeight ;
 
-   myTerminal = new CTerminal(hwnd, IDC_TERMINAL, (HINSTANCE) GetWindowLong(hwnd, GWL_HINSTANCE), 
+   myTerminal = new CTerminal(hwnd, terminal_control, (HINSTANCE) GetWindowLong(hwnd, GWL_HINSTANCE), 
       0, ctrl_bottom, dx-1, lvdy,
       LVL_STY_VIRTUAL | LVL_STY_NO_HEADER | LVL_STY_PAGE_TO_END | LVL_STY_EX_GRIDLINES) ;
    myTerminal->set_terminal_font("Courier New", 100, EZ_ATTR_BOLD) ;
