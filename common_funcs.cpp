@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2017  Daniel D Miller
+//  Copyright (c) 2008-2025  Daniel D Miller
 //  common_funcs.cpp - common functions for console applications.
 //  This module, which has been entirely compiled from public-domain sources, 
 //  is itself declared in the public domain.
@@ -8,19 +8,19 @@
 //****************************************************************************
 
 #include <windows.h>
-//#define __USE_MINGW_ANSI_STDIO
 #include <stdio.h>   //  vsprintf
 #include <tchar.h>
-#include <time.h>
-#include <math.h>    //  fabs()
 #include <limits.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
+#include <sys/stat.h>
 #ifdef _lint
-#include <stdlib.h>
+#include <errno.h>
 #endif
 
 #include "common.h"
+//lint -esym(18, strtoul)
+//lint -esym(1055, strtoul)
 
 //lint -esym(526, __builtin_va_start)
 //lint -esym(628, __builtin_va_start)
@@ -112,8 +112,6 @@ bool control_key_pressed(void)
 //  However, the ancient _stat() works even on Vista, so I'll use that...
 //  ... until it also fails, after the third or fourth call.  duh.
 //****************************************************************************
-#include <sys/stat.h>
-
 //lint -esym(714, file_exists)
 //lint -esym(759, file_exists)
 //lint -esym(765, file_exists)

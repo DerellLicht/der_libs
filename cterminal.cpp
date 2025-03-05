@@ -42,7 +42,6 @@
 #include <stdio.h>   //  vsprintf, sprintf, which supports %f
 #include <stdlib.h>  //  atoi()
 #include <tchar.h>
-#include <time.h>
 
 #include "common.h"
 #include "commonw.h"
@@ -65,6 +64,9 @@
 //lint -esym(1714, CTerminal::get_element_count, CTerminal::delete_list, CTerminal::reverse_list_entries)
 //lint -esym(1714, CTerminal::resize_terminal_rows, CTerminal::rows2pixels)
 //lint -esym(1714, CTerminal::resize_terminal_width)
+
+//lint -esym(18, _strdate, _strtime)
+//lint -esym(1055, _strdate, _strtime)
 
 // Info 1762: Member function 'CTerminal::termout(const char *, ...)' could be made const
 //lint -esym(1762, CTerminal::termout)
