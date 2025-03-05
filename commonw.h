@@ -64,21 +64,21 @@ HWND MyCreateUpDownControl(
       HWND hwndParent, uint ControlID, HINSTANCE ghinst, HWND hwndBuddy, 
       uint MaxValue, uint MinValue, uint InitValue) ;
 HWND CBGetItemHandle(HWND hwndCBox);
-BOOL ShellGetPath (HANDLE hDlg, char lpszPath[]);
-int  WriteFileF(HANDLE hdl, const char *fmt, ...);
+BOOL ShellGetPath (HANDLE hDlg, TCHAR lpszPath[]);
+int  WriteFileF(HANDLE hdl, const TCHAR *fmt, ...);
 uint get_bottom_line(HWND hwnd, uint ctrl_id);
 void Line(HDC hdc, uint x1, uint y1, uint x2, uint y2);
-char *read_edit_control(HWND hwnd, char *msgstr);
-bool select_text_file(HWND hDlgWnd, char *command_filename);
-bool select_file(HWND hDlgWnd, char *command_filename, char *ext);
-void copy_buffer_to_clipboard(char *cbbfr, unsigned blen);
+TCHAR *read_edit_control(HWND hwnd, TCHAR *msgstr);
+bool select_text_file(HWND hDlgWnd, TCHAR *command_filename);
+bool select_file(HWND hDlgWnd, TCHAR *command_filename, TCHAR *ext);
+void copy_buffer_to_clipboard(TCHAR *cbbfr, unsigned blen);
 int  GetScreenDPI(void);
 BOOL CenterWindow (HWND hwnd);
 void resize_window(HWND hwnd, int dx, int dy);
 
 //  font-management functions
 HFONT build_font(TCHAR *fname, unsigned fheight, unsigned flags);
-HFONT EzCreateFont(HDC hdc, char * szFaceName, int iDeciPtHeight,
+HFONT EzCreateFont(HDC hdc, TCHAR * szFaceName, int iDeciPtHeight,
       int iDeciPtWidth, unsigned iAttributes, int textangle, BOOL fLogRes);
 
 #ifdef UNICODE

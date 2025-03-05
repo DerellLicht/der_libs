@@ -165,7 +165,7 @@ void CTerminal::get_terminal_dimens(uint *array_of_four) const
 }
 
 //****************************************************************************
-void CTerminal::set_terminal_font(char * szFaceName, int iDeciPtHeight, unsigned iAttributes)
+void CTerminal::set_terminal_font(TCHAR * szFaceName, int iDeciPtHeight, unsigned iAttributes)
 {
    set_listview_font(szFaceName, iDeciPtHeight, iAttributes) ;
    set_terminal_dimens() ;  //  do this *after* resize(), or change font
@@ -215,18 +215,18 @@ void CTerminal::copy_elements_to_clipboard(void)
    term_lview_item_p lvptr ;
    for (lvptr = tlv_top; lvptr != NULL; lvptr = lvptr->next) {
       if (lvptr->marked)
-         blen += strlen(lvptr->msg) + 4 ;
+         blen += _tcslen(lvptr->msg) + 4 ;
    }
    if (blen == 0)
       return ;
-   char *bfr = new char[blen] ;
+   TCHAR *bfr = new TCHAR[blen] ;
    if (bfr == NULL)
       return ;
    //  loop back over the list and copy all elements into buffer
    int slen = 0 ;
    for (lvptr = tlv_top; lvptr != NULL; lvptr = lvptr->next) {
       if (lvptr->marked)
-         slen += wsprintfA(bfr+slen, "%s\r\n", lvptr->msg) ;
+         slen += _stprintf(bfr+slen, _T("%s\r\n"), lvptr->msg) ;
    }
 
    //  finally, copy the buffer to clipboard
@@ -244,18 +244,18 @@ void CTerminal::copy_list_to_clipboard(void)
    term_lview_item_p lvptr ;
    for (lvptr = tlv_top; lvptr != NULL; lvptr = lvptr->next) {
       // if (lvptr->marked)
-         blen += strlen(lvptr->msg) + 4 ;
+         blen += _tcslen(lvptr->msg) + 4 ;
    }
    if (blen == 0)
       return ;
-   char *bfr = new char[blen] ;
+   TCHAR *bfr = new TCHAR[blen] ;
    if (bfr == NULL)
       return ;
    //  loop back over the list and copy all elements into buffer
    int slen = 0 ;
    for (lvptr = tlv_top; lvptr != NULL; lvptr = lvptr->next) {
       // if (lvptr->marked)
-         slen += wsprintfA(bfr+slen, "%s\r\n", lvptr->msg) ;
+         slen += _stprintf(bfr+slen, _T("%s\r\n"), lvptr->msg) ;
    }
 
    //  finally, copy the buffer to clipboard
@@ -333,7 +333,7 @@ int CTerminal::copy_selected_rows(void)
    }
    if (elements_found == selcount) {
       copy_elements_to_clipboard() ;
-      termout("%u rows copied", selcount) ;  //  with TabControl, this does not work...
+      termout(_T("%u rows copied"), selcount) ;  //  with TabControl, this does not work...
       // syslog("%u rows copied", selcount) ;
       result = selcount ;
    } else {
@@ -346,39 +346,39 @@ int CTerminal::copy_selected_rows(void)
 }
 
 //****************************************************************************
-static void html_output(FILE *fd, COLORREF fgnd, COLORREF bgnd, char *str)
+static void html_output(FILE *fd, COLORREF fgnd, COLORREF bgnd, TCHAR *str)
 {
    //  12/04/13 DDM - Why did the <br> get added here?  the closing </span> tab already forces a newline
    // fprintf(fd, "<span style=\"color : #%06X; background-color : #%06X;\">%s</span><br>\n",
-   fprintf(fd, "<span style=\"color : #%06X; background-color : #%06X;\">%s</span>\n",
+   _ftprintf(fd, _T("<span style=\"color : #%06X; background-color : #%06X;\">%s</span>\n"),
                swap_rgb(fgnd), swap_rgb(bgnd), str) ;
 }
 
 //****************************************************************************
-int CTerminal::save_terminal_contents(char *outfile, file_type_e file_type)
+int CTerminal::save_terminal_contents(TCHAR *outfile, file_type_e file_type)
 {
    FILE *fd = NULL ;
    int lcount = 0 ;
    term_lview_item_p lvptr ;
-   char msgstr[260] ;
+   TCHAR msgstr[260] ;
 
-   char dbuffer [9];
-   char tbuffer [9];
-   _strdate( dbuffer );
-   _strtime( tbuffer );
+   TCHAR dbuffer [9];
+   TCHAR tbuffer [9];
+   _tstrdate( dbuffer );
+   _tstrtime( tbuffer );
 
    switch (file_type) {
    case FTYP_TEXT:
-      fd = fopen(outfile, "a+t") ;
+      fd = _tfopen(outfile, _T("a+t")) ;
       if (fd == NULL) {
          return -(int)GetLastError();
       }
       fseek(fd, 0, SEEK_END) ;
-      fprintf(fd, "***********************************************************************\n") ;
-      fprintf(fd, "Date/Time of report: %s, %s\n", dbuffer, tbuffer) ;
+      _ftprintf(fd, _T("***********************************************************************\n")) ;
+      _ftprintf(fd, _T("Date/Time of report: %s, %s\n"), dbuffer, tbuffer) ;
       for (lvptr = tlv_top; lvptr != NULL; lvptr = lvptr->next) {
          lcount++ ;
-         fprintf(fd, "%s\n", lvptr->msg) ;
+         _ftprintf(fd, _T("%s\n"), lvptr->msg) ;
       }
       break;
 
@@ -392,7 +392,7 @@ int CTerminal::save_terminal_contents(char *outfile, file_type_e file_type)
          //  write operation is carried out. 
          //  Thus, existing data cannot be overwritten.
          // syslog("appending to existing file\n") ;
-         fd = fopen(outfile, "r+t") ;
+         fd = _tfopen(outfile, _T("r+t")) ;
          if (fd == NULL) {
             return -(int)GetLastError();
          }
@@ -401,28 +401,28 @@ int CTerminal::save_terminal_contents(char *outfile, file_type_e file_type)
          fseek(fd, (long) -16, SEEK_CUR) ; 
       } else {
          // syslog("writing to html file\n") ;
-         fd = fopen(outfile, "wt") ;
+         fd = _tfopen(outfile, _T("wt")) ;
          if (fd == NULL) {
             return -(int)GetLastError();
          }
-         fprintf(fd, "<html><head><title>%s</title>"
+         _ftprintf(fd, _T("<html><head><title>%s</title>")
                      //  STYLE was not needed once I converted to using PRE tag.
                      // "<STYLE type='text/css'>\n"
                      // "* { font-family: Courier, monospace }\n"
                      // "</STYLE>\n"
-                     "</head><body>\n", outfile) ;
+                     _T("</head><body>\n"), outfile) ;
       }
-      fprintf(fd, "<pre>\n") ;
-      html_output(fd, WIN_BGREEN, WIN_GREY, "***********************************************************************") ;
-      sprintf(msgstr, "Date/Time of report: %s, %s", dbuffer, tbuffer) ;
+      _ftprintf(fd, _T("<pre>\n")) ;
+      html_output(fd, WIN_BGREEN, WIN_GREY, _T("***********************************************************************")) ;
+      _stprintf(msgstr, _T("Date/Time of report: %s, %s"), dbuffer, tbuffer) ;
       html_output(fd, WIN_BGREEN, WIN_GREY, msgstr) ;
       for (lvptr = tlv_top; lvptr != NULL; lvptr = lvptr->next) {
          lcount++ ;
          // fprintf(fd, "%s\n", lvptr->msg) ;
          html_output(fd, lvptr->fgnd, lvptr->bgnd, lvptr->msg) ;
       }
-      fprintf(fd, "</pre>\n") ;
-      fprintf(fd, "</body></html>\n") ;
+      _ftprintf(fd, _T("</pre>\n")) ;
+      _ftprintf(fd, _T("</body></html>\n")) ;
       break;
 
    // default:
@@ -436,7 +436,7 @@ int CTerminal::save_terminal_contents(char *outfile, file_type_e file_type)
       // clear_message_area();   //  leave this up to parent code
       return lcount ;
    } 
-   termout("invalid file_type [%u]", (uint) file_type) ;
+   termout(_T("invalid file_type [%u]"), (uint) file_type) ;
    return -(int) ERROR_INVALID_DATA;
 }
 
@@ -466,14 +466,14 @@ void CTerminal::get_term_attr(COLORREF *prev_fgnd, COLORREF *prev_bgnd)
 }
 
 //****************************************************************************
-term_lview_item_p CTerminal::get_lview_element(char *lpBuf, COLORREF fgnd, COLORREF bgnd)
+term_lview_item_p CTerminal::get_lview_element(TCHAR *lpBuf, COLORREF fgnd, COLORREF bgnd)
 {
-   // syslog("print %u byte string\n", strlen(lpBuf)) ;
+   // syslog("print %u byte string\n", _tcslen(lpBuf)) ;
    term_lview_item_p lvptr = new term_lview_item_t ;
-   ZeroMemory((char *) lvptr, sizeof(term_lview_item_t)) ;
+   ZeroMemory((TCHAR *) lvptr, sizeof(term_lview_item_t)) ;
    lvptr->idx = curr_row++ ;
-   lvptr->msg = new char[strlen(lpBuf)+1] ;
-   strcpy(lvptr->msg, lpBuf) ;
+   lvptr->msg = new TCHAR[_tcslen(lpBuf)+1] ;
+   _tcscpy(lvptr->msg, lpBuf) ;
    //  save these settings for screen redraw
    lvptr->fgnd = fgnd ;
    lvptr->bgnd = bgnd ;
@@ -515,7 +515,7 @@ LRESULT CTerminal::TerminalCustomDraw (LPARAM lParam)
       return CDRF_DODEFAULT ;
 
    default:
-      syslog("Terminal: Unknown CDDS code %d\n", lplvcd->nmcd.dwDrawStage) ;
+      syslog(_T("Terminal: Unknown CDDS code %d\n"), lplvcd->nmcd.dwDrawStage) ;
       break;
    }
    return CDRF_DODEFAULT;
@@ -536,24 +536,16 @@ void CTerminal::get_terminal_entry(LPARAM lParam)
          lpdi->item.pszText = szString ;
          set_term_attr(WIN_BCYAN, WIN_RED) ;
       } else {
-#ifdef UNICODE
-         str_ascii_to_unicode(lvptr->msg, szString, MAX_TERM_CHARS);
-         //  this crashes on input strings > 260 bytes
-         //  one can only copy *into* lpdi->item.pszText for strings < 260 chars.
-         // int result = str_ascii_to_unicode(lvptr->msg, lpdi->item.pszText, MAX_TERM_CHARS);
-         lpdi->item.pszText = szString ;
-#else
          lpdi->item.pszText = lvptr->msg ;
-#endif            
          set_term_attr(lvptr->fgnd, lvptr->bgnd) ; //  set up for TerminalCustomDraw()
       }
    }
 }
 
 //****************************************************************************
-char *CTerminal::get_last_term_entry(void)
+TCHAR *CTerminal::get_last_term_entry(void)
 {
-   static char empty_msg[] = "No terminal tail entry found" ;
+   static TCHAR empty_msg[] = _T("No terminal tail entry found") ;
    if (tlv_tail == NULL) 
       return empty_msg;
    term_lview_item_p lvptr = tlv_tail ;
@@ -561,7 +553,7 @@ char *CTerminal::get_last_term_entry(void)
 }
 
 //****************************************************************************
-void CTerminal::put(char *lpBuf)
+void CTerminal::put(TCHAR *lpBuf)
 {
    term_lview_item_p lvptr = get_lview_element(lpBuf, term_fgnd, term_bgnd) ;
 
@@ -573,7 +565,7 @@ void CTerminal::put(char *lpBuf)
    tlv_tail = lvptr ;
 
    if (lvptr->idx+1 != curr_row) {
-      syslog("math_error [L%u]: %d != %d\n", __LINE__, lvptr->idx+1, curr_row) ;
+      syslog(_T("math_error [L%u]: %d != %d\n"), __LINE__, lvptr->idx+1, curr_row) ;
    }
    if (end_of_page_active())
       listview_update(lvptr->idx) ;
@@ -590,7 +582,7 @@ void CTerminal::put(char *lpBuf)
 //  struct which contains the string for put().
 //  This avoids the dependence upon class-global data fields, and *should* provide more reliable rendering.
 //*************************************************************************************************
-void CTerminal::put(char *lpBuf, COLORREF fgnd, COLORREF bgnd)
+void CTerminal::put(TCHAR *lpBuf, COLORREF fgnd, COLORREF bgnd)
 {
    term_lview_item_p lvptr = get_lview_element(lpBuf, fgnd, bgnd) ;
 
@@ -602,7 +594,7 @@ void CTerminal::put(char *lpBuf, COLORREF fgnd, COLORREF bgnd)
    tlv_tail = lvptr ;
 
    if (lvptr->idx+1 != curr_row) {
-      syslog("math_error [L%u]: %d != %d\n", __LINE__, lvptr->idx+1, curr_row) ;
+      syslog(_T("math_error [L%u]: %d != %d\n"), __LINE__, lvptr->idx+1, curr_row) ;
    }
    if (end_of_page_active())
       listview_update(lvptr->idx) ;
@@ -611,18 +603,18 @@ void CTerminal::put(char *lpBuf, COLORREF fgnd, COLORREF bgnd)
 //****************************************************************************
 //  append the new string to the current line
 //****************************************************************************
-void CTerminal::append(char *lpBuf)
+void CTerminal::append(TCHAR *lpBuf)
 {
    if (tlv_tail == NULL) {
       put(lpBuf) ;   //  append
       return ;
    }
    term_lview_item_p lvptr = tlv_tail ;
-   char *lptr = lvptr->msg ;
-   uint llen = strlen(lptr) ;
-   uint nlen = strlen(lpBuf) ;
-   lvptr->msg = new char[llen+nlen+1] ;
-   sprintf(lvptr->msg, "%s%s", lptr, lpBuf) ;
+   TCHAR *lptr = lvptr->msg ;
+   uint llen = _tcslen(lptr) ;
+   uint nlen = _tcslen(lpBuf) ;
+   lvptr->msg = new TCHAR[llen+nlen+1] ;
+   _stprintf(lvptr->msg, _T("%s%s"), lptr, lpBuf) ;
    delete lptr ;
    //  save these settings for screen redraw
    lvptr->fgnd = term_fgnd ;
@@ -635,18 +627,18 @@ void CTerminal::append(char *lpBuf)
 //****************************************************************************
 //  replace current line with new string
 //****************************************************************************
-void CTerminal::replace(char *lpBuf)
+void CTerminal::replace(TCHAR *lpBuf)
 {
    if (tlv_tail == NULL) {
       put(lpBuf) ;   //  replace
       return ;
    }
    term_lview_item_p lvptr = tlv_tail ;
-   char *lptr = lvptr->msg ;
-   // uint llen = strlen(lptr) ;
-   uint nlen = strlen(lpBuf) ;
-   lvptr->msg = new char[nlen+1] ;
-   sprintf(lvptr->msg, "%s", lpBuf) ;
+   TCHAR *lptr = lvptr->msg ;
+   // uint llen = _tcslen(lptr) ;
+   uint nlen = _tcslen(lpBuf) ;
+   lvptr->msg = new TCHAR[nlen+1] ;
+   _stprintf(lvptr->msg, _T("%s"), lpBuf) ;
    delete lptr ;
    //  save these settings for screen redraw
    lvptr->fgnd = term_fgnd ;
@@ -657,39 +649,39 @@ void CTerminal::replace(char *lpBuf)
 }
 
 //********************************************************************
-int CTerminal::termout(const char *fmt, ...)
+int CTerminal::termout(const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    put(consoleBuffer);  //  termout
    va_end(al);
    return 1;
 }
 
 //********************************************************************
-int CTerminal::termadd(const char *fmt, ...)
+int CTerminal::termadd(const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    append(consoleBuffer);
    va_end(al);
    return 1;
 }
 
 //********************************************************************
-int CTerminal::termupdate(const char *fmt, ...)
+int CTerminal::termupdate(const TCHAR *fmt, ...)
 {
-   char consoleBuffer[MAX_TERM_CHARS + 1];
+   TCHAR consoleBuffer[MAX_TERM_CHARS + 1];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    replace(consoleBuffer);
    va_end(al);
    return 1;

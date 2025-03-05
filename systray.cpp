@@ -61,7 +61,7 @@ void load_tray_menu(WORD menuID)
 //***************************************************************
 //lint -esym(18, _NOTIFYICONDATAA::szTip) // c:\mingw\include\shellapi.h  166  Error 18: Symbol '_NOTIFYICONDATAA::szTip' redeclared (size) 
 //lint -esym(18, _NOTIFYICONDATAW::szTip) // c:\mingw\include\shellapi.h  166  Error 18: Symbol '_NOTIFYICONDATAA::szTip' redeclared (size) 
-void attach_tray_icon(HWND hwnd, char const * const szClassName, WORD iconID)
+void attach_tray_icon(HWND hwnd, TCHAR const * const szClassName, WORD iconID)
 {
    NotifyIconData.cbSize = sizeof (NOTIFYICONDATA);
    NotifyIconData.hWnd = hwnd;

@@ -8,6 +8,7 @@
 #define  _WIN32_WINNT   0x0501
 #include <windows.h>
 #include <stdio.h>   //  vsprintf, sprintf, which supports %f
+#include <tchar.h>
 
 #include "common.h"
 #include "commonw.h"
@@ -39,7 +40,7 @@ void term_set_attr(uint fgnd, uint bgnd)
 }
 
 //******************************************************************
-void term_put(char *term_str)
+void term_put(TCHAR *term_str)
 {
    myTerminal->put(term_str);
 }
@@ -48,7 +49,7 @@ void term_put(char *term_str)
 //lint -esym(759, term_append)
 //lint -esym(765, term_append)
 
-void term_append(char *term_str)
+void term_append(TCHAR *term_str)
 {
    myTerminal->append(term_str);
 }
@@ -56,7 +57,7 @@ void term_append(char *term_str)
 //lint -esym(714, term_replace)
 //lint -esym(759, term_replace)
 //lint -esym(765, term_replace)
-void term_replace(char *term_str)
+void term_replace(TCHAR *term_str)
 {
    myTerminal->replace(term_str);
 }
@@ -83,7 +84,7 @@ void term_copy_selected_rows(void)
 }
 
 //******************************************************************
-void term_set_font(char *font_name, uint fsize, uint attr)
+void term_set_font(TCHAR *font_name, uint fsize, uint attr)
 {
    myTerminal->set_terminal_font(font_name, fsize, attr) ;
 }
@@ -104,7 +105,7 @@ bool term_notify(HWND hwnd, LPARAM lParam)
       case LVN_KEYDOWN:       //lint !e650  Constant '4294967146' out of range for operator 'case'
          break;
       default:
-         syslog("TNOT [%s]\n", lookup_winmsg_name(msg_code)) ;
+         syslog(_T("TNOT [%s]\n"), lookup_winmsg_name(msg_code)) ;
          break;
       }
    }
@@ -176,7 +177,7 @@ void setup_terminal_window(HWND hwnd, uint StatusBarHeight, uint bottom_ref_cont
    myTerminal = new CTerminal(hwnd, terminal_control, (HINSTANCE) GetWindowLong(hwnd, GWL_HINSTANCE), 
       0, ctrl_bottom, dx-1, lvdy,
       LVL_STY_VIRTUAL | LVL_STY_NO_HEADER | LVL_STY_PAGE_TO_END | LVL_STY_EX_GRIDLINES) ;
-   myTerminal->set_terminal_font("Courier New", 100, EZ_ATTR_BOLD) ;
+   myTerminal->set_terminal_font(_T("Courier New"), 100, EZ_ATTR_BOLD) ;
    myTerminal->lview_assign_column_headers() ;
 }
 

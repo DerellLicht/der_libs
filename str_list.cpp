@@ -6,6 +6,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <tchar.h>
 
 //lint -sem(CStrList::delete_list,cleanup)
 
@@ -49,13 +50,13 @@ CStrList::~CStrList()
 }
 
 //*****************************************************************************
-void CStrList::add(char *str)
+void CStrList::add(TCHAR *str)
 {
    cstr_list_p cptr = new cstr_list_t ;
-   ZeroMemory((char *) cptr, sizeof(cstr_list_t)) ;
-   cptr->slen = strlen(str) ;
-   cptr->sptr = new char[cptr->slen+1] ;
-   strcpy(cptr->sptr, str) ;
+   ZeroMemory((TCHAR *) cptr, sizeof(cstr_list_t)) ;
+   cptr->slen = _tcslen(str) ;
+   cptr->sptr = new TCHAR[cptr->slen+1] ;
+   _tcscpy(cptr->sptr, str) ;
    element_count++ ;
 
    //  add new list entry to list
@@ -104,7 +105,7 @@ cstr_list_p CStrList::get_next(cstr_list_p curr_element)
 }
 
 //*****************************************************************************
-bool CStrList::remove(char *del_str)
+bool CStrList::remove(TCHAR *del_str)
 {
    if (top == NULL)
       return false;
@@ -146,7 +147,7 @@ uint CStrList::write_to_file(FILE *fd)
    uint ecount = 0 ;
    cstr_list_p cptr = top;
    while (cptr != NULL) {
-      fprintf(fd, "%s\n", cptr->sptr) ;
+      _ftprintf(fd, _T("%s\n"), cptr->sptr) ;
       ecount++ ;
       cptr = cptr->next ;
    }
@@ -156,11 +157,11 @@ uint CStrList::write_to_file(FILE *fd)
 //****************************************************************************
 //  increment reference counter in string struct
 //****************************************************************************
-bool CStrList::str_exists(char *cbentry)
+bool CStrList::str_exists(TCHAR *cbentry)
 {
    cstr_list_p cptr  ;
    for (cptr=top; cptr != 0; cptr = cptr->next) {
-      if (strcmp(cbentry, cptr->sptr) == 0)
+      if (_tcscmp(cbentry, cptr->sptr) == 0)
       {
          cptr->ref_count++ ;
          return true;
@@ -175,11 +176,11 @@ bool CStrList::str_exists(char *cbentry)
 //  strings which have not been terminated yet.
 //  increment reference counter in string struct
 //****************************************************************************
-bool CStrList::strn_exists(char *cbentry)
+bool CStrList::strn_exists(TCHAR *cbentry)
 {
    cstr_list_p cptr  ;
    for (cptr=top; cptr != 0; cptr = cptr->next) {
-      if (strncmp(cbentry, cptr->sptr, strlen(cptr->sptr)) == 0)
+      if (_tcsncmp(cbentry, cptr->sptr, _tcslen(cptr->sptr)) == 0)
       {
          cptr->ref_count++ ;
          return true;

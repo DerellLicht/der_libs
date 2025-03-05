@@ -11,13 +11,14 @@
 //****************************************************************************
 
 //lint -esym(18, _NOTIFYICONDATAA::szTip, _NOTIFYICONDATAW::szTip)
-#define  _WIN32_IE      0x0501
-#define  _WIN32_WINDOWS 0x0410
+// #define  _WIN32_IE      0x0501
+// #define  _WIN32_WINDOWS 0x0410
 #include <windows.h>
 #include <time.h>
 #include <stdio.h>   //  vsprintf
 #include <math.h>    //  fabs()
 #include <limits.h>
+#include <tchar.h>
 #ifdef _lint
 #include <stdlib.h>
 #else
@@ -92,13 +93,8 @@ HWND MyCreateUpDownControl(
    SendMessage(hwndControl, UDM_SETBUDDY, (WPARAM) hwndBuddy, 0);
    SendMessage(hwndControl, UDM_SETPOS, (WPARAM) 0, (LPARAM) InitValue);
 
-#ifdef UNICODE
    TCHAR msgstr[10] ;
-   wsprintf(msgstr, L"%u", InitValue) ;
-#else
-   char msgstr[10] ;
-   wsprintf(msgstr, "%u", InitValue) ;
-#endif
+   _stprintf(msgstr, _T("%u"), InitValue) ;
    SetWindowText(hwndBuddy, msgstr) ;
 
    return hwndControl ;
@@ -158,7 +154,7 @@ BOOL ShellGetPath(HANDLE hDlg, char lpszPath[])
 //lint -esym(714, copy_buffer_to_clipboard)
 //lint -esym(759, copy_buffer_to_clipboard)
 //lint -esym(765, copy_buffer_to_clipboard)
-void copy_buffer_to_clipboard(char *cbbfr, unsigned blen)
+void copy_buffer_to_clipboard(TCHAR *cbbfr, unsigned blen)
 {
    // test to see if we can open the clipboard first before
    // wasting any cycles with the memory allocation
@@ -180,12 +176,12 @@ void copy_buffer_to_clipboard(char *cbbfr, unsigned blen)
 
       // Calling GlobalLock returns to me a pointer to the data
       // associated with the handle returned from GlobalAlloc
-      char *pchData = (char *) GlobalLock (hClipboardData);
+      TCHAR *pchData = (TCHAR *) GlobalLock (hClipboardData);
 
       // At this point, all I need to do is use the standard 
       // C/C++ strcpy function to copy the data from the local 
       // variable to the global memory.
-      strcpy (pchData, cbbfr);
+      _tcscpy (pchData, cbbfr);
 
       // Once done, I unlock the memory - remember you 
       // don't call GlobalFree because Windows will free the 
@@ -230,16 +226,16 @@ uint get_bottom_line(HWND hwnd, uint ctrl_id)
 //lint -esym(714, WriteFileF)
 //lint -esym(759, WriteFileF)
 //lint -esym(765, WriteFileF)
-int WriteFileF(HANDLE hdl, const char *fmt, ...)
+int WriteFileF(HANDLE hdl, const TCHAR *fmt, ...)
 {
    DWORD bytesWritten ;
-   char consoleBuffer[260];
+   TCHAR consoleBuffer[260];
    va_list al; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
+   _vstprintf(consoleBuffer, fmt, al);   //lint !e64
 
-   WriteFile(hdl, consoleBuffer, strlen(consoleBuffer), &bytesWritten, NULL) ;
+   WriteFile(hdl, consoleBuffer, _tcslen(consoleBuffer), &bytesWritten, NULL) ;
 
    va_end(al);
    return 1;
@@ -264,10 +260,10 @@ void Line(HDC hdc, uint x1, uint yy1, uint x2, uint y2)
 //lint -esym(714, read_edit_control)
 //lint -esym(759, read_edit_control)
 //lint -esym(765, read_edit_control)
-char *read_edit_control(HWND hwnd, char *msgstr)
+TCHAR *read_edit_control(HWND hwnd, TCHAR *msgstr)
 {
-   uint tempEditLength = GetWindowTextLengthA (hwnd);
-   GetWindowTextA (hwnd, msgstr, tempEditLength + 1);
+   uint tempEditLength = GetWindowTextLength(hwnd);
+   GetWindowText(hwnd, msgstr, tempEditLength + 1);
    msgstr[tempEditLength] = 0;
    return strip_leading_spaces(msgstr) ;
 }
@@ -276,21 +272,21 @@ char *read_edit_control(HWND hwnd, char *msgstr)
 // static TCHAR szPalFilter[] = 
 //    TEXT ("Text Files (*.TXT)\0*.txt\0")  
 //    TEXT ("All Files (*.*)\0*.*\0\0") ;
-static char const szPalFilter[] = 
-   "Text Files (*.TXT)\0*.txt\0"  \
-   "All Files (*.*)\0*.*\0\0" ;
+static TCHAR const szPalFilter[] = 
+   _T("Text Files (*.TXT)\0*.txt\0")  \
+   _T("All Files (*.*)\0*.*\0\0") ;
 
 //******************************************************************
 //lint -esym(714, select_text_file)
 //lint -esym(759, select_text_file)
 //lint -esym(765, select_text_file)
-bool select_text_file(HWND hDlgWnd, char *command_filename)
+bool select_text_file(HWND hDlgWnd, TCHAR *command_filename)
 {
    // syslog("A handles=%d\n", get_handle_count());
-   OPENFILENAMEA ofn;       // common dialog box structure
-   char szFile[MAX_PATH+1];       // buffer for file name
-   char oldFile[MAX_PATH+1];       // buffer for file name
-   char dirFile[MAX_PATH+1];       // buffer for file name
+   OPENFILENAME ofn;       // common dialog box structure
+   TCHAR szFile[MAX_PATH+1];       // buffer for file name
+   TCHAR oldFile[MAX_PATH+1];       // buffer for file name
+   TCHAR dirFile[MAX_PATH+1];       // buffer for file name
 
    // Initialize OPENFILENAME
    ZeroMemory(&ofn, sizeof(ofn));
@@ -302,8 +298,8 @@ bool select_text_file(HWND hDlgWnd, char *command_filename)
    // use the contents of szFile to initialize itself.
    //
    ofn.lpstrFile[0] = '\0';
-   strcpy(dirFile, command_filename) ;
-   char *strptr = strrchr(dirFile, '\\') ;
+   _tcscpy(dirFile, command_filename) ;
+   TCHAR *strptr = _tcsrchr(dirFile, '\\') ;
    if (strptr != 0) {
       strptr++ ;  //  leave the backslash in place
       *strptr = 0 ;  //  strip off filename
@@ -313,20 +309,20 @@ bool select_text_file(HWND hDlgWnd, char *command_filename)
    ofn.nMaxFile = sizeof(szFile);
    ofn.lpstrFilter = szPalFilter ;
    ofn.nFilterIndex = 1;
-   ofn.lpstrTitle = "select desired file" ;
+   ofn.lpstrTitle = _T("select desired file") ;
    ofn.lpstrFileTitle = NULL ;
 //    ofn.lpstrDefExt = TEXT ("txt") ;
-   ofn.lpstrDefExt = "txt" ;
+   ofn.lpstrDefExt = _T("txt") ;
    // ofn.nMaxFileTitle = 0;
    // ofn.lpstrInitialDir = NULL;
    ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
    // Display the Open dialog box.
    // syslog("B handles=%d\n", get_handle_count());
-   if (GetOpenFileNameA(&ofn)) {
+   if (GetOpenFileName(&ofn)) {
    // syslog("C handles=%d\n", get_handle_count());
-      strncpy(oldFile, command_filename, sizeof(oldFile)) ;
-      strncpy(command_filename, ofn.lpstrFile, MAX_PATH) ;
+      _tcsncpy(oldFile, command_filename, sizeof(oldFile)) ;
+      _tcsncpy(command_filename, ofn.lpstrFile, MAX_PATH) ;
 
       SetFocus(hDlgWnd) ;
       return true;
@@ -346,26 +342,26 @@ bool select_text_file(HWND hDlgWnd, char *command_filename)
 //lint -esym(714, select_file)
 //lint -esym(759, select_file)
 //lint -esym(765, select_file)
-bool select_file(HWND hDlgWnd, char *command_filename, char *ext)
+bool select_file(HWND hDlgWnd, TCHAR *command_filename, TCHAR *ext)
 {
-   char szGenFilter[80] ;
-   char *gfptr = szGenFilter ;
+   TCHAR szGenFilter[80] ;
+   TCHAR *gfptr = szGenFilter ;
    uint slen = 0 ;
-   slen += (uint) sprintf(gfptr+slen, "%s Files (*.%s)", ext, ext) ;
+   slen += (uint) _stprintf(gfptr+slen, _T("%s Files (*.%s)"), ext, ext) ;
    slen++ ; //  leave current NULL-term in place
-   slen += (uint) sprintf(gfptr+slen, "*.%s", ext) ;
+   slen += (uint) _stprintf(gfptr+slen, _T("*.%s"), ext) ;
    slen++ ; //  leave current NULL-term in place
-   slen += (uint) sprintf(gfptr+slen, "All Files (*.*)") ;
+   slen += (uint) _stprintf(gfptr+slen, _T("All Files (*.*)")) ;
    slen++ ; //  leave current NULL-term in place
-   slen += (uint) sprintf(gfptr+slen, "*.*") ;
+   slen += (uint) _stprintf(gfptr+slen, _T("*.*")) ;
    slen++ ; //  leave current NULL-term in place
    *(gfptr+slen) = 0 ;  //  add a terminating NULL-term
 
    // syslog("A handles=%d\n", get_handle_count());
-   OPENFILENAMEA ofn;       // common dialog box structure
-   char szFile[PATH_MAX];       // buffer for file name
-   char oldFile[PATH_MAX];       // buffer for file name
-   char dirFile[PATH_MAX];       // buffer for file name
+   OPENFILENAME ofn;       // common dialog box structure
+   TCHAR szFile[PATH_MAX];       // buffer for file name
+   TCHAR oldFile[PATH_MAX];       // buffer for file name
+   TCHAR dirFile[PATH_MAX];       // buffer for file name
 
    // Initialize OPENFILENAME
    ZeroMemory(&ofn, sizeof(ofn));
@@ -377,8 +373,8 @@ bool select_file(HWND hDlgWnd, char *command_filename, char *ext)
    // use the contents of szFile to initialize itself.
    //
    ofn.lpstrFile[0] = '\0';
-   strcpy(dirFile, command_filename) ;
-   char *strptr = strrchr(dirFile, '\\') ;
+   _tcscpy(dirFile, command_filename) ;
+   TCHAR *strptr = _tcsrchr(dirFile, '\\') ;
    if (strptr != 0) {
       strptr++ ;  //  leave the backslash in place
       *strptr = 0 ;  //  strip off filename
@@ -388,7 +384,7 @@ bool select_file(HWND hDlgWnd, char *command_filename, char *ext)
    ofn.nMaxFile = sizeof(szFile);
    ofn.lpstrFilter = szGenFilter ;
    ofn.nFilterIndex = 1;
-   ofn.lpstrTitle = "select desired file" ;
+   ofn.lpstrTitle = _T("select desired file") ;
    ofn.lpstrFileTitle = NULL ;
 //    ofn.lpstrDefExt = TEXT ("txt") ;
    ofn.lpstrDefExt = ext ;
@@ -398,10 +394,10 @@ bool select_file(HWND hDlgWnd, char *command_filename, char *ext)
 
    // Display the Open dialog box.
    // syslog("B handles=%d\n", get_handle_count());
-   if (GetOpenFileNameA(&ofn)) {
+   if (GetOpenFileName(&ofn)) {
    // syslog("C handles=%d\n", get_handle_count());
-      strncpy(oldFile, command_filename, sizeof(oldFile)) ;
-      strncpy(command_filename, ofn.lpstrFile, PATH_MAX) ;
+      _tcsncpy(oldFile, command_filename, sizeof(oldFile)) ;
+      _tcsncpy(command_filename, ofn.lpstrFile, PATH_MAX) ;
 
       SetFocus(hDlgWnd) ;
       return true;
@@ -436,12 +432,12 @@ HFONT build_font(TCHAR *fname, unsigned fheight, unsigned flags)
 //lint -esym(714, EzCreateFont)
 //lint -esym(759, EzCreateFont)
 //lint -esym(765, EzCreateFont)
-HFONT EzCreateFont(HDC hdc, char * szFaceName, int iDeciPtHeight,
+HFONT EzCreateFont(HDC hdc, TCHAR * szFaceName, int iDeciPtHeight,
        int iDeciPtWidth, unsigned iAttributes, int textangle, BOOL fLogRes)
 {
    FLOAT      cxDpi, cyDpi ;
    HFONT      hFont ;
-   LOGFONTA    lf ;
+   LOGFONT    lf ;
    POINT      pt ;
    TEXTMETRIC txtm ;
 
@@ -482,8 +478,8 @@ HFONT EzCreateFont(HDC hdc, char * szFaceName, int iDeciPtHeight,
    lf.lfClipPrecision  = 0 ;
    lf.lfQuality        = 0 ;
    lf.lfPitchAndFamily = 0 ;
-   strcpy(lf.lfFaceName, szFaceName) ;
-   hFont = CreateFontIndirectA(&lf) ;
+   _tcscpy(lf.lfFaceName, szFaceName) ;
+   hFont = CreateFontIndirect(&lf) ;
 
    if (iDeciPtWidth != 0) {
       hFont = (HFONT) SelectObject (hdc, hFont) ;
@@ -495,7 +491,7 @@ HFONT EzCreateFont(HDC hdc, char * szFaceName, int iDeciPtHeight,
       lf.lfWidth = (int) (txtm.tmAveCharWidth *
                           fabs ((double) pt.x) / fabs ((double) pt.y) + 0.5) ;
 
-      hFont = CreateFontIndirectA(&lf) ;
+      hFont = CreateFontIndirect(&lf) ;
    }
    RestoreDC (hdc, -1) ;
    return hFont ;

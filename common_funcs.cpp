@@ -32,15 +32,15 @@ const TCHAR  TCR   =  13 ;
 const TCHAR  TLF   =  10 ;
 const TCHAR  TTAB  =   9 ;
 
-static char exec_fname[PATH_MAX+1] = "" ;
+static TCHAR exec_fname[PATH_MAX+1] = _T("") ;
 
 //******************************************************************
 //lint -esym(714, show_bool_str)
 //lint -esym(759, show_bool_str)
 //lint -esym(765, show_bool_str)
-char const * const show_bool_str(bool bool_flag)
+TCHAR const * const show_bool_str(bool bool_flag)
 {
-   return (bool_flag) ? "true" : "false" ;
+   return (bool_flag) ? _T("true") : _T("false") ;
 }
 
 //**************************************************************************
@@ -117,10 +117,10 @@ bool control_key_pressed(void)
 //lint -esym(714, file_exists)
 //lint -esym(759, file_exists)
 //lint -esym(765, file_exists)
-bool file_exists(char *fefile)
+bool file_exists(TCHAR *fefile)
 {
    struct _stat st ;
-   if (_stat(fefile, &st) == 0)
+   if (_tstat(fefile, &st) == 0)
       return true;
    return false;
 }
@@ -128,10 +128,10 @@ bool file_exists(char *fefile)
 //lint -esym(714, drive_exists)
 //lint -esym(759, drive_exists)
 //lint -esym(765, drive_exists)
-bool drive_exists(char *fefile)
+bool drive_exists(TCHAR *fefile)
 {
    DWORD gld_return = GetLogicalDrives() ;
-   char drive_letter = *fefile ;
+   TCHAR drive_letter = *fefile ;
    drive_letter |= 0x20 ;  //  convert to lower case
    uint drive_mask = 1U << (uint) (drive_letter - 'a') ; //lint !e571
    return (gld_return & drive_mask) ? true : false ;
@@ -140,13 +140,13 @@ bool drive_exists(char *fefile)
 //lint -esym(714, dir_exists)
 //lint -esym(759, dir_exists)
 //lint -esym(765, dir_exists)
-bool dir_exists(char *fefile)
+bool dir_exists(TCHAR *fefile)
 {
-   if (strlen(fefile) == 2) {
+   if (_tcslen(fefile) == 2) {
       return drive_exists(fefile) ;
    } else {
       struct _stat st ;
-      if (_stat(fefile, &st) == 0) {
+      if (_tstat(fefile, &st) == 0) {
          if (st.st_mode & _S_IFDIR)
             return true;
       }
@@ -398,10 +398,10 @@ bool get_file_datetime(char *file_name, SYSTEMTIME *sdt, file_time_select_t time
 DWORD load_exec_filename(void)
 {
    //  get fully-qualified name of executable program
-   DWORD result = GetModuleFileNameA(NULL, exec_fname, PATH_MAX) ;
+   DWORD result = GetModuleFileName(NULL, exec_fname, PATH_MAX) ;
    if (result == 0) {
       exec_fname[0] = 0 ;
-      syslog("GetModuleFileName: %s\n", get_system_message()) ;
+      syslog(_T("GetModuleFileName: %s\n"), get_system_message()) ;
    }
    // else {
    //    syslog("exe: %s\n", exec_fname) ;
@@ -416,22 +416,22 @@ DWORD load_exec_filename(void)
 //lint -esym(714, derive_file_path)
 //lint -esym(759, derive_file_path)
 //lint -esym(765, derive_file_path)
-LRESULT derive_file_path(char *drvbfr, char *filename)
+LRESULT derive_file_path(TCHAR *drvbfr, TCHAR *filename)
 {
    if (exec_fname[0] == 0) {
-      syslog("cannot find name of executable\n") ;
+      syslog(_T("cannot find name of executable\n")) ;
       return ERROR_FILE_NOT_FOUND ;
    }
-   strncpy(drvbfr, exec_fname, PATH_MAX) ;
+   _tcsncpy(drvbfr, exec_fname, PATH_MAX) ;
    //  this should never fail; failure would imply
    //  an executable with no .exe extension!
-   char *sptr = strrchr(drvbfr, '\\') ;
+   TCHAR *sptr = _tcsrchr(drvbfr, '\\') ;
    if (sptr == 0) {
-      syslog("%s: no valid separator\n", drvbfr) ;
+      syslog(_T("%s: no valid separator\n"), drvbfr) ;
       return ERROR_BAD_FORMAT;
    }
    sptr++ ; //  point past the backslash
-   strcpy(sptr, filename) ;
+   _tcscpy(sptr, filename) ;
    return 0;
 }  //lint !e818
 
@@ -441,25 +441,25 @@ LRESULT derive_file_path(char *drvbfr, char *filename)
 //lint -esym(714, derive_filename_from_exec)
 //lint -esym(759, derive_filename_from_exec)
 //lint -esym(765, derive_filename_from_exec)
-LRESULT derive_filename_from_exec(char *drvbfr, char *new_ext)
+LRESULT derive_filename_from_exec(TCHAR *drvbfr, TCHAR *new_ext)
 {
    if (exec_fname[0] == 0) {
-      syslog("cannot find name of executable\n") ;
+      syslog(_T("cannot find name of executable\n")) ;
       return ERROR_FILE_NOT_FOUND ;
    }
-   strncpy(drvbfr, exec_fname, PATH_MAX) ;
+   _tcsncpy(drvbfr, exec_fname, PATH_MAX) ;
    //  this should never fail; failure would imply
    //  an executable with no .exe extension!
-   char *sptr = strrchr(drvbfr, '.') ;
+   TCHAR *sptr = _tcsrchr(drvbfr, '.') ;
    if (sptr == 0) {
-      syslog("%s: no valid extension\n", drvbfr) ;
+      syslog(_T("%s: no valid extension\n"), drvbfr) ;
       return ERROR_BAD_FORMAT;
    }
    //  if no period in new_ext, skip the one in drvbfr
    if (*new_ext != '.')
       sptr++ ;
 
-   strcpy(sptr, new_ext) ;
+   _tcscpy(sptr, new_ext) ;
    // syslog("derived [%s]\n", drvbfr) ;
    return 0;
 }
@@ -470,18 +470,18 @@ LRESULT derive_filename_from_exec(char *drvbfr, char *new_ext)
 //lint -esym(714, get_base_filename)
 //lint -esym(759, get_base_filename)
 //lint -esym(765, get_base_filename)
-LRESULT get_base_filename(char *drvbfr)
+LRESULT get_base_filename(TCHAR *drvbfr)
 {
    if (exec_fname[0] == 0) {
-      syslog("cannot find name of executable\n") ;
+      syslog(_T("cannot find name of executable\n")) ;
       return ERROR_FILE_NOT_FOUND ;
    }
-   strncpy(drvbfr, exec_fname, PATH_MAX) ;
+   _tcsncpy(drvbfr, exec_fname, PATH_MAX) ;
    //  this should never fail; failure would imply
    //  an executable with no .exe extension!
-   char *sptr = strrchr(drvbfr, '.') ;
+   TCHAR *sptr = _tcsrchr(drvbfr, '.') ;
    if (sptr == 0) {
-      syslog("%s: no valid extension\n", drvbfr) ;
+      syslog(_T("%s: no valid extension\n"), drvbfr) ;
       return ERROR_BAD_FORMAT;
    }
    *sptr = 0 ; //  strip extension
@@ -494,18 +494,18 @@ LRESULT get_base_filename(char *drvbfr)
 //lint -esym(714, get_base_path)
 //lint -esym(759, get_base_path)
 //lint -esym(765, get_base_path)
-LRESULT get_base_path(char *drvbfr)
+LRESULT get_base_path(TCHAR *drvbfr)
 {
    if (exec_fname[0] == 0) {
-      syslog("cannot find name of executable\n") ;
+      syslog(_T("cannot find name of executable\n")) ;
       return ERROR_FILE_NOT_FOUND ;
    }
-   strncpy(drvbfr, exec_fname, PATH_MAX) ;
+   _tcsncpy(drvbfr, exec_fname, PATH_MAX) ;
    //  this should never fail; failure would imply
    //  an executable with no .exe extension!
-   char *sptr = strrchr(drvbfr, '\\') ;
+   TCHAR *sptr = _tcsrchr(drvbfr, '\\') ;
    if (sptr == 0) {
-      syslog("%s: no valid appname\n", drvbfr) ;
+      syslog(_T("%s: no valid appname\n"), drvbfr) ;
       return ERROR_BAD_FORMAT;
    }
    sptr++ ; //  retain backslash
@@ -523,11 +523,11 @@ LRESULT get_base_path_wide(TCHAR *drvbfr)
    DWORD result = GetModuleFileName(NULL, drvbfr, PATH_MAX) ;
    if (result == 0) {
       *drvbfr = 0 ;
-      syslog("GetModuleFileName: %s\n", get_system_message()) ;
+      syslog(_T("GetModuleFileName: %s\n"), get_system_message()) ;
    }
    TCHAR *sptr = _tcsrchr(drvbfr, '\\') ;
    if (sptr == 0) {
-      syslog("%s: unexpected file format\n", drvbfr) ;
+      syslog(_T("%s: unexpected file format\n"), drvbfr) ;
       return ERROR_BAD_FORMAT;
    }
    sptr++ ; //  preserve the backslash
@@ -555,30 +555,30 @@ LRESULT get_base_path_wide(TCHAR *drvbfr)
 #define IP_STATUS_BASE 11000
 #define MAX_ICMP_ERR_STRING  (IP_STATUS_BASE + 22)
 //lint -esym(843, aszSendEchoErr)
-static char *aszSendEchoErr[] = {   //lint !e843
-   "IP_STATUS_BASE (11000)",
-   "WSAHOST_NOT_FOUND (11001)",
-   "WSATRY_AGAIN (11002)",
-   "IP_DEST_HOST_UNREACHABLE (11003)",
-   "IP_DEST_PROT_UNREACHABLE (11004)",
-   "IP_DEST_PORT_UNREACHABLE (11005)",
-   "IP_NO_RESOURCES (11006)",
-   "IP_BAD_OPTION (11007)",
-   "IP_HW_ERROR (11008)",
-   "IP_PACKET_TOO_BIG (11009)",
-   "IP_REQ_TIMED_OUT (11010)",
-   "IP_BAD_REQ (11011)",
-   "IP_BAD_ROUTE (11012)",
-   "IP_TTL_EXPIRED_TRANSIT (11013)",
-   "IP_TTL_EXPIRED_REASSEM (11014)",
-   "IP_PARAM_PROBLEM (11015)",
-   "IP_SOURCE_QUENCH (11016)",
-   "IP_OPTION_TOO_BIG (11017)",
-   "IP_BAD_DESTINATION (11018)",
-   "IP_ADDR_DELETED (11019)",
-   "IP_SPEC_MTU_CHANGE (11020)",
-   "IP_MTU_CHANGE (11021)",
-   "IP_UNLOAD (11022)"
+static TCHAR *aszSendEchoErr[] = {   //lint !e843
+   _T("IP_STATUS_BASE (11000)"),
+   _T("WSAHOST_NOT_FOUND (11001)"),
+   _T("WSATRY_AGAIN (11002)"),
+   _T("IP_DEST_HOST_UNREACHABLE (11003)"),
+   _T("IP_DEST_PROT_UNREACHABLE (11004)"),
+   _T("IP_DEST_PORT_UNREACHABLE (11005)"),
+   _T("IP_NO_RESOURCES (11006)"),
+   _T("IP_BAD_OPTION (11007)"),
+   _T("IP_HW_ERROR (11008)"),
+   _T("IP_PACKET_TOO_BIG (11009)"),
+   _T("IP_REQ_TIMED_OUT (11010)"),
+   _T("IP_BAD_REQ (11011)"),
+   _T("IP_BAD_ROUTE (11012)"),
+   _T("IP_TTL_EXPIRED_TRANSIT (11013)"),
+   _T("IP_TTL_EXPIRED_REASSEM (11014)"),
+   _T("IP_PARAM_PROBLEM (11015)"),
+   _T("IP_SOURCE_QUENCH (11016)"),
+   _T("IP_OPTION_TOO_BIG (11017)"),
+   _T("IP_BAD_DESTINATION (11018)"),
+   _T("IP_ADDR_DELETED (11019)"),
+   _T("IP_SPEC_MTU_CHANGE (11020)"),
+   _T("IP_MTU_CHANGE (11021)"),
+   _T("IP_UNLOAD (11022)")
 };
 
 //*************************************************************
@@ -596,16 +596,16 @@ static char *aszSendEchoErr[] = {   //lint !e843
 
 #define  SNMP_ERROR_FIRST  40
 #define  SNMP_ERROR_LAST   48
-static char * const snmp_error_msgs[9] = {
-"SNMP No Response Received",
-"SNMP SELECT_FDERRORS",
-"SNMP TRAP_ERRORS",
-"SNMP TRAP_DUPINIT",
-"SNMP NOTRAPS",
-"SNMP AGAIN",
-"SNMP INVALID_CTL",
-"SNMP INVALID_SESSION",
-"SNMP INVALID_BUFFER"
+static TCHAR * const snmp_error_msgs[9] = {
+_T("SNMP No Response Received"),
+_T("SNMP SELECT_FDERRORS"),
+_T("SNMP TRAP_ERRORS"),
+_T("SNMP TRAP_DUPINIT"),
+_T("SNMP NOTRAPS"),
+_T("SNMP AGAIN"),
+_T("SNMP INVALID_CTL"),
+_T("SNMP INVALID_SESSION"),
+_T("SNMP INVALID_BUFFER")
 } ;
 
 //*************************************************************************************
@@ -628,10 +628,10 @@ static char * const snmp_error_msgs[9] = {
 //lint -esym(714, get_system_message)
 //lint -esym(759, get_system_message)
 //lint -esym(765, get_system_message)
-char *get_system_message(DWORD errcode)
+TCHAR *get_system_message(DWORD errcode)
 {
-   // static char msg[261] ;
-   static char msg[1024] ;
+   // static TCHAR msg[261] ;
+   static TCHAR msg[1024] ;
    // int slen ;
    int result = (int) errcode ;
    if (result < 0) {
@@ -663,17 +663,17 @@ char *get_system_message(DWORD errcode)
    if (dresult == 0) {
       DWORD glError = GetLastError() ;
       if (glError == 317) {   //  see comment at start of function
-         sprintf(msg, "FormatMessage(): no message for error code %d", result) ;
+         _stprintf(msg, _T("FormatMessage(): no message for error code %d"), result) ;
       } else {
-         sprintf(msg, "FormatMessage() failed: [%u], errcode %d", (uint) GetLastError(), result) ;
+         _stprintf(msg, _T("FormatMessage() failed: [%u], errcode %d"), (uint) GetLastError(), result) ;
       }
       
    } else
    if (lpMsgBuf == NULL) {
-      sprintf(msg, "NULL buffer in response from FormatMessage() [%u]", (uint) GetLastError()) ;
+      _stprintf(msg, _T("NULL buffer in response from FormatMessage() [%u]"), (uint) GetLastError()) ;
    } else 
    {
-      strncpy(msg, (char *) lpMsgBuf, sizeof(msg)) ;
+      _tcsncpy(msg, (TCHAR *) lpMsgBuf, sizeof(msg)) ;
       // Free the buffer.
       LocalFree( lpMsgBuf );
    }
@@ -688,7 +688,7 @@ char *get_system_message(DWORD errcode)
 //  each subsequent call to this function overwrites
 //  the previous report.
 //*************************************************************
-char *get_system_message(void)
+TCHAR *get_system_message(void)
 {
    return get_system_message(GetLastError());
 }
@@ -703,36 +703,12 @@ char *get_system_message(void)
 //lint -esym(714, syslog)
 //lint -esym(759, syslog)
 //lint -esym(765, syslog)
-int syslog(const char *fmt, ...)
-{
-   char consoleBuffer[3000] ;
-   va_list al; //lint !e522
-
-   va_start(al, fmt);   //lint !e1055 !e530
-   vsprintf(consoleBuffer, fmt, al);   //lint !e64
-   // if (common_logging_enabled)
-   //    fprintf(cmlogfd, "%s", consoleBuffer) ;
-   OutputDebugStringA(consoleBuffer) ;
-   va_end(al);
-   return 1;
-}
-
-//********************************************************************
-//  On Windows platform, try to redefine printf/fprintf
-//  so we can output code to a debug window.
-//  Also, shadow syslog() within OutputDebugStringA()
-//  Note: printf() remapping was unreliable,
-//  but syslog worked great.
-//********************************************************************
-//lint -esym(714, syslogW)
-//lint -esym(759, syslogW)
-//lint -esym(765, syslogW)
-int syslogW(const TCHAR *fmt, ...)
+int syslog(const TCHAR *fmt, ...)
 {
    TCHAR consoleBuffer[3000] ;
    va_list al; //lint !e522
 
-   va_start(al, fmt);   //lint !e1055 !e530 !e516
+   va_start(al, fmt);   //lint !e1055 !e530
    _vstprintf(consoleBuffer, fmt, al);   //lint !e64
    // if (common_logging_enabled)
    //    fprintf(cmlogfd, "%s", consoleBuffer) ;
@@ -745,9 +721,9 @@ int syslogW(const TCHAR *fmt, ...)
 //lint -esym(714, show_error)
 //lint -esym(759, show_error)
 //lint -esym(765, show_error)
-char *show_error(int error_code)
+TCHAR *show_error(int error_code)
 {
-   static char *message0 = "no response from ODU" ;
+   static TCHAR *message0 = _T("no response from ODU") ;
    uint ecode = (uint) (error_code < 0) ? -error_code : error_code ; //lint !e732
    if (ecode == 0)
       return message0 ;
@@ -771,7 +747,7 @@ bool IsCharNum(char inchr)
 //lint -esym(714, next_field)
 //lint -esym(759, next_field)
 //lint -esym(765, next_field)
-char *next_field(char *q)
+TCHAR *next_field(TCHAR *q)
 {
    while (*q != ' '  &&  *q != HTAB  &&  *q != 0)
       q++ ; //  walk past non-spaces
@@ -781,17 +757,17 @@ char *next_field(char *q)
 }
 
 //********************************************************************
-//  this function searches input string for CR/LF chars.
+//  this function searches input string for CR/LF TCHARs.
 //  If any are found, it will replace ALL CR/LF with 0,
-//  then return pointer to next non-CR/LF char.
+//  then return pointer to next non-CR/LF TCHAR.
 //  If NO CR/LF are found, it returns NULL
 //********************************************************************
 //lint -esym(714, find_newlines)
 //lint -esym(759, find_newlines)
 //lint -esym(765, find_newlines)
-char *find_newlines(char *hd)
+TCHAR *find_newlines(TCHAR *hd)
 {
-   char *tl = hd ;
+   TCHAR *tl = hd ;
    while (1) {
       if (*tl == 0)
          return 0;
@@ -808,9 +784,9 @@ char *find_newlines(char *hd)
 //lint -esym(714, strip_newlines)
 //lint -esym(759, strip_newlines)
 //lint -esym(765, strip_newlines)
-void strip_newlines(char *rstr)
+void strip_newlines(TCHAR *rstr)
 {
-   int slen = (int) strlen(rstr) ;
+   int slen = (int) _tcslen(rstr) ;
    while (1) {
       if (slen == 0)
          break;
@@ -827,11 +803,11 @@ void strip_newlines(char *rstr)
 //lint -esym(714, strip_leading_spaces)
 //lint -esym(759, strip_leading_spaces)
 //lint -esym(765, strip_leading_spaces)
-char *strip_leading_spaces(char *str)
+TCHAR *strip_leading_spaces(TCHAR *str)
 {
    if (str == 0)
       return 0;
-   char *tptr = str ;
+   TCHAR *tptr = str ;
    while (LOOP_FOREVER) {
       if (*tptr == 0)
          return tptr;
@@ -847,11 +823,11 @@ char *strip_leading_spaces(char *str)
 //lint -esym(765, strip_leading_zeros)
 //  00081
 //  00000
-void strip_leading_zeros(char *str)
+void strip_leading_zeros(TCHAR *str)
 {
    if (str == 0)
       return ;
-   char *tptr = str ;
+   TCHAR *tptr = str ;
    while (LOOP_FOREVER) {
       if (*tptr == 0)
          break;
@@ -860,20 +836,20 @@ void strip_leading_zeros(char *str)
       tptr++ ;
    }
    if (tptr != str)
-      strcpy(str, tptr) ;
+      _tcscpy(str, tptr) ;
 }
 
 //**********************************************************************
 //lint -esym(714, strip_trailing_spaces)
 //lint -esym(759, strip_trailing_spaces)
 //lint -esym(765, strip_trailing_spaces)
-void strip_trailing_spaces(char *rstr)
+void strip_trailing_spaces(TCHAR *rstr)
 {
-   unsigned slen = strlen(rstr) ;
+   unsigned slen = _tcslen(rstr) ;
    while (LOOP_FOREVER) {
       if (slen == 0)
          break;
-      slen-- ; //  point to last character
+      slen-- ; //  point to last TCHARacter
       if (*(rstr+slen) != ' ') 
          break;
       *(rstr+slen) = 0 ;
@@ -1011,7 +987,7 @@ int hex_dump(u8 *bfr, int bytes, unsigned addr)
       strcat(pstr, tail) ;
       strcat(pstr, " |") ;
       // printf("%s\n", pstr) ;
-      syslog("%s\n", pstr) ;
+      syslog(_T("%s\n"), pstr) ;
 
       idx += leftovers ;
       if (idx >= bytes)
@@ -1036,22 +1012,22 @@ int hex_dump(u8 *bfr, int bytes)
 //lint -esym(714, file_copy_by_line)
 //lint -esym(759, file_copy_by_line)
 //lint -esym(765, file_copy_by_line)
-int file_copy_by_line(char *source_file, char *dest_file)
+int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
 {
-   FILE *infile = fopen(source_file, "rt") ;
+   FILE *infile = _tfopen(source_file, _T("rt")) ;
    if (infile == NULL) {
-      syslog("%s: %s\n", source_file, strerror(errno)) ;
+      syslog(_T("%s: %s\n"), source_file, strerror(errno)) ;
       return -errno;
    }
-   FILE *outfile = fopen(dest_file, "wt") ;
+   FILE *outfile = _tfopen(dest_file, _T("wt")) ;
    if (outfile == NULL) {
-      syslog("%s: %s\n", dest_file, strerror(errno)) ;
+      syslog(_T("%s: %s\n"), dest_file, strerror(errno)) ;
       return -errno;
    }
-   char inpstr[260] ;
+   TCHAR inpstr[260] ;
    int line_count = 0 ;
-   while (fgets(inpstr, sizeof(inpstr), infile) != 0) {
-      fputs(inpstr, outfile) ;
+   while (_fgetts(inpstr, sizeof(inpstr), infile) != 0) {
+      _fputts(inpstr, outfile) ;
       line_count++ ;
    }
    fclose(infile) ;
@@ -1065,20 +1041,20 @@ int file_copy_by_line(char *source_file, char *dest_file)
 //lint -esym(714, convert_to_commas)
 //lint -esym(759, convert_to_commas)
 //lint -esym(765, convert_to_commas)
-char *convert_to_commas(ULONGLONG uli, char *outstr)
+TCHAR *convert_to_commas(ULONGLONG uli, TCHAR *outstr)
 {  //lint !e1066
    int slen, inIdx, j ;
-   char *strptr ;
-   char temp_ull_str[MAX_ULL_COMMA_LEN+1] ;
-   static char local_ull_str[MAX_ULL_COMMA_LEN+1] ;
+   TCHAR *strptr ;
+   TCHAR temp_ull_str[MAX_ULL_COMMA_LEN+1] ;
+   static TCHAR local_ull_str[MAX_ULL_COMMA_LEN+1] ;
    if (outstr == NULL)
        outstr = local_ull_str ;
 
    //sprintf(temp_ull_str, "%llu", uli);
-   sprintf(temp_ull_str, "%"PRIu64"", uli);
+   _stprintf(temp_ull_str, _T( "%"PRIu64""), uli);
    //sprintf(temp_ull_str, "%I64u", uli);
    // _ui64toa(uli, temp_ull_str, 10) ;
-   slen = strlen(temp_ull_str) ;
+   slen = _tcslen(temp_ull_str) ;
    inIdx = --slen ;//  convert byte-count to string index 
 
    //  put NULL at end of output string
@@ -1093,8 +1069,7 @@ char *convert_to_commas(ULONGLONG uli, char *outstr)
    *strptr = temp_ull_str[inIdx] ;
 
    //  copy string from tail-aligned to head-aligned
-   strcpy(outstr, strptr) ;
+   _tcscpy(outstr, strptr) ;
    return outstr ;
 }
-
 

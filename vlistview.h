@@ -24,7 +24,7 @@
 //  Otherwise, the destructor for the pointer type is called.
 //****************************************************************************
 
-#define  _WIN32_IE   0x0501
+// #define  _WIN32_IE   0x0501
 #include <commctrl.h>
 
 //lint -esym(756, lv_cols_t)
@@ -137,7 +137,7 @@ public:
    void set_header_text(uint idx, char *msg);
    void update_lview_text(uint column, LVCOLUMN *lc);
    void scroll_listview(int scroll_count);
-   void set_listview_font(char * szFaceName, int iDeciPtHeight, unsigned iAttributes);
+   void set_listview_font(TCHAR * szFaceName, int iDeciPtHeight, unsigned iAttributes);
    void update_column(LVITEM *lviptr);
    void insert_column(LVITEM *lviptr);
    void insert_column_header(lv_cols_p lvptr, uint idx);

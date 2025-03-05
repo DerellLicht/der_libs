@@ -406,7 +406,7 @@ bool CVListView::create_tooltips(uint max_width, uint popup_msec, uint stayup_ms
    //       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, //lint !e569
    //       hwndVListView, NULL, GetModuleHandle(NULL), NULL);
    if (hwndLViewToolTips == NULL) {
-      syslog("ToolTip CreateWindowEx: %s\n", get_system_message()) ;
+      syslog(_T("ToolTip CreateWindowEx: %s\n"), get_system_message()) ;
       return false;
    } 
    SendMessage(hwndLViewToolTips, TTM_SETMAXTIPWIDTH, 0, max_width) ;
@@ -420,7 +420,7 @@ bool CVListView::create_tooltips(uint max_width, uint popup_msec, uint stayup_ms
    //       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, //lint !e569
    //       hwndVListView, NULL, GetModuleHandle(NULL), NULL);
    if (hwndLVHdrToolTips == NULL) {
-      syslog("ToolTip CreateWindowEx: %s\n", get_system_message()) ;
+      syslog(_T("ToolTip CreateWindowEx: %s\n"), get_system_message()) ;
       return false;
    } 
    SendMessage(hwndLVHdrToolTips, TTM_SETMAXTIPWIDTH, 0, max_width) ;
@@ -458,7 +458,7 @@ void CVListView::check_header_hover(void)
       hdh.pt.y = pt.y ;
       int column = SendMessage(hwndLVHeader, HDM_HITTEST, 0, (LPARAM) &hdh) ;
       if (column >= 0  &&  column != old_hover_column) {
-         syslog("hover on header column %d\n", column) ;
+         syslog(_T("hover on header column %d\n"), column) ;
          old_hover_column = column ;
          //********************************************************************************
          //  DDM note: everything up to here works fine, and I detect the hover column.
@@ -757,12 +757,12 @@ void CVListView::set_header_text(uint idx, char *msg)
       item.cchTextMax = _tcslen(item.pszText) ;
 #else
       item.pszText = msg ;
-      item.cchTextMax = strlen(msg) ;
+      item.cchTextMax = _tcslen(msg) ;
 #endif
       item.fmt = HDF_STRING | HDF_CENTER ;
       Header_SetItem(hwndHeader, idx, &item);  //lint !e522
    } else { //lint !e550  Symbol 'item' (line 753) not accessed
-      syslog("ListView_GetHeader: %s\n", get_system_message()) ;
+      syslog(_T("ListView_GetHeader: %s\n"), get_system_message()) ;
    }
 }
 //*****************************************************************************
@@ -773,7 +773,7 @@ void CVListView::scroll_listview(int scroll_count)
 
 //*****************************************************************************
 // "Courier New", 100, 0, EZ_ATTR_BOLD, 0, true) ;
-void CVListView::set_listview_font(char * szFaceName, int iDeciPtHeight, unsigned iAttributes)
+void CVListView::set_listview_font(TCHAR * szFaceName, int iDeciPtHeight, unsigned iAttributes)
 {
    TEXTMETRICA  txtm ;
    hdcSelf = GetDC(hwndVListView) ;

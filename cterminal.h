@@ -41,7 +41,7 @@ enum file_type_e {
 //********************************************************************
 typedef struct term_lview_item_s {
    struct term_lview_item_s *next ;
-   char *msg ;
+   TCHAR *msg ;
    uint idx ;
    bool marked ;
    COLORREF fgnd ;
@@ -77,7 +77,7 @@ private:
 
    //  private functions
    void set_terminal_dimens(void);
-   term_lview_item_p get_lview_element(char *lpBuf, COLORREF fgnd, COLORREF bgnd);
+   term_lview_item_p get_lview_element(TCHAR *lpBuf, COLORREF fgnd, COLORREF bgnd);
 
 public:   
    CTerminal(HWND hwndParent, uint ControlID, HINSTANCE local_g_hinst, 
@@ -106,8 +106,8 @@ public:
    void clear_marked_elements(void);
    void delete_list(void);
    term_lview_item_p find_element(uint idx);
-   int  save_terminal_contents(char *outfile, file_type_e file_type);
-   void set_terminal_font(char * szFaceName, int iDeciPtHeight, unsigned iAttributes);
+   int  save_terminal_contents(TCHAR *outfile, file_type_e file_type);
+   void set_terminal_font(TCHAR * szFaceName, int iDeciPtHeight, unsigned iAttributes);
    void set_term_attr(COLORREF fgnd, COLORREF bgnd);
    void set_term_attr_default(void);
    void get_term_attr(COLORREF *prev_fgnd, COLORREF *prev_bgnd) ;
@@ -116,19 +116,19 @@ public:
    void copy_list_to_clipboard(void);
    LRESULT TerminalCustomDraw (LPARAM lParam) ;
    void get_terminal_entry(LPARAM lParam);
-   char *get_last_term_entry(void);
-   void put(char *lpBuf);
-   void put(char *lpBuf, COLORREF fgnd, COLORREF bgnd);
-   void append(char *lpBuf);
-   void replace(char *lpBuf);
+   TCHAR *get_last_term_entry(void);
+   void put(TCHAR *lpBuf);
+   void put(TCHAR *lpBuf, COLORREF fgnd, COLORREF bgnd);
+   void append(TCHAR *lpBuf);
+   void replace(TCHAR *lpBuf);
    //**************************************************************************
    //  we want to split each line into < this_port->cols lengths (or less).
    //  Later note: This function didn't work all that consistently, 
    //  and it isn't that critical in listview dialogs, so I've removed it.
    //**************************************************************************
-   int  termout(const char *fmt, ...);
-   int  termadd(const char *fmt, ...);
-   int  termupdate(const char *fmt, ...);
+   int  termout(const TCHAR *fmt, ...);
+   int  termadd(const TCHAR *fmt, ...);
+   int  termupdate(const TCHAR *fmt, ...);
 
    WNDPROC terminal_lview_subclass(LONG TermSubclassProc);
 } ;

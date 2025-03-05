@@ -10,10 +10,11 @@
 //****************************************************************************
 
 //lint -esym(767, _WIN32_WINNT)
-#define _WIN32_WINNT 0x0501
-#define _WIN32_IE 0x0501
+// #define _WIN32_WINNT 0x0501
+// #define _WIN32_IE 0x0501
 #include <windows.h>
 #include <commctrl.h>
+#include <tchar.h>
 
 #include "iface_32_64.h"
 #include "common.h"
@@ -26,7 +27,7 @@ static HWND create_tooltips(HWND hwnd, uint max_width, uint popup_msec, uint sta
          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, //lint !e569
          hwnd, NULL, GetModuleHandle(NULL), NULL);
    if (hToolTip == NULL) {
-      syslog("ToolTip CreateWindowEx: %s\n", get_system_message()) ;
+      syslog(_T("ToolTip CreateWindowEx: %s\n"), get_system_message()) ;
    } else {
       SendMessage(hToolTip, TTM_SETMAXTIPWIDTH, 0, max_width) ;
       SendMessage(hToolTip, TTM_SETDELAYTIME, TTDT_INITIAL, popup_msec) ;
@@ -47,7 +48,7 @@ static void add_tooltip_target(HWND parent, HWND target, HWND hToolTip, TCHAR *m
    ti.lpszText = msg ;
    LRESULT bresult = SendMessage(hToolTip, TTM_ADDTOOL, 0, (LPARAM)&ti);
    if (bresult == 0) {
-      syslog("TTM_ADDTOOL: %u: %s\n", target, get_system_message()) ;
+      syslog(_T("TTM_ADDTOOL: %u: %s\n"), target, get_system_message()) ;
    }
 }  //lint !e550  ti
 

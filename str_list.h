@@ -32,13 +32,13 @@ private:
 public:   
    CStrList();
    ~CStrList();
-   void add(char *str);
+   void add(TCHAR *str);
    void add(u8 *bfr, uint bfrlen);
    cstr_list_p get_top(void);
-   bool remove(char *del_str);
+   bool remove(TCHAR *del_str);
    void delete_list(void);
-   bool str_exists(char *cbentry);
-   bool strn_exists(char *cbentry);
+   bool str_exists(TCHAR *cbentry);
+   bool strn_exists(TCHAR *cbentry);
    void clear_counters(void);
    cstr_list_p get_next(cstr_list_p curr_element);
    uint write_to_file(FILE *fd);
