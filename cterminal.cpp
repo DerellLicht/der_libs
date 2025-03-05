@@ -41,6 +41,7 @@
 #include <windows.h>
 #include <stdio.h>   //  vsprintf, sprintf, which supports %f
 #include <stdlib.h>  //  atoi()
+#include <time.h>    //  _strdate, _strtime
 #include <tchar.h>
 
 #include "common.h"
