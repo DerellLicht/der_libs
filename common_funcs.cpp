@@ -1049,8 +1049,8 @@ TCHAR *convert_to_commas(ULONGLONG uli, TCHAR *outstr)
        outstr = local_ull_str ;
 
    //sprintf(temp_ull_str, "%llu", uli);
-   _stprintf(temp_ull_str, _T( "%"PRIu64""), uli);
-   //sprintf(temp_ull_str, "%I64u", uli);
+   //_stprintf(temp_ull_str, _T( "%"PRIu64""), uli);
+   _stprintf(temp_ull_str, "%I64u", uli);
    // _ui64toa(uli, temp_ull_str, 10) ;
    slen = _tcslen(temp_ull_str) ;
    inIdx = --slen ;//  convert byte-count to string index 
