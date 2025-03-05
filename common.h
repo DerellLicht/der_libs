@@ -43,9 +43,9 @@ extern const TCHAR  TTAB ;
 // #define  FIVE_SECONDS      (5 * ONE_SECOND_MSEC)
 
 //  from vfw.h
-#define min(a, b)  (((a) < (b)) ? (a) : (b)) 
-
-#define max(a, b)  (((a) > (b)) ? (a) : (b)) 
+// #define min(a, b)  (((a) < (b)) ? (a) : (b)) 
+// 
+// #define max(a, b)  (((a) > (b)) ? (a) : (b)) 
 
 //  used by get_dtimes_str()
 #define  GET_TIME_LEN   30
