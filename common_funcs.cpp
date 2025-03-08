@@ -858,7 +858,7 @@ void strip_trailing_spaces(TCHAR *rstr)
 //lint -esym(714, skip_spaces_and_commas)
 //lint -esym(759, skip_spaces_and_commas)
 //lint -esym(765, skip_spaces_and_commas)
-static TCHAR *skip_spaces_and_commas(TCHAR *hd)
+TCHAR *skip_spaces_and_commas(TCHAR *hd)
 {
    while (*hd == ' '  ||  *hd == ',') {
       hd++ ;
