@@ -646,14 +646,14 @@ TCHAR *get_system_message(DWORD errcode)
    }
 
    LPVOID lpMsgBuf;
-   DWORD dresult = FormatMessageA(
+   DWORD dresult = FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER |
       FORMAT_MESSAGE_FROM_SYSTEM |
       FORMAT_MESSAGE_IGNORE_INSERTS,
       NULL,
       errcode,
       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-      (LPSTR) &lpMsgBuf,
+      (TCHAR *) &lpMsgBuf,
       0, 0);
    // Process any inserts in lpMsgBuf.
    // ...
