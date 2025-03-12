@@ -43,11 +43,11 @@ typedef struct DLGTEMPLATEEX_s {
 } DLGTEMPLATEEX, *LPDLGTEMPLATEEX; 
 
 // #define PSN_FIRST                (0U-200U)
-#define  PSN_GETOBJECT               (-210)
-#define  PSN_TRANSLATEACCELERATOR    (-212)
-#define  PSN_QUERYINITIALFOCUS       (-213)
-
-#define  LVN_HOTTRACK                (-121)
+// #define  PSN_GETOBJECT               (-210)
+// #define  PSN_TRANSLATEACCELERATOR    (-212)
+// #define  PSN_QUERYINITIALFOCUS       (-213)
+// 
+// #define  LVN_HOTTRACK                (-121)
 
 //*****************************************************************
 //  lookup-table struct, used for Windows Message handlers
