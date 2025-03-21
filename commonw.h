@@ -8,15 +8,6 @@
 //  Collected and Organized by:  Dan Miller
 //****************************************************************************
 
-//****************************************************************************
-//  constants used by build_font() and EzCreateFont()
-//****************************************************************************
-#define EZ_ATTR_NORMAL        0
-#define EZ_ATTR_BOLD          1
-#define EZ_ATTR_ITALIC        2
-#define EZ_ATTR_UNDERLINE     4
-#define EZ_ATTR_STRIKEOUT     8
-
 //  windows defs which are not present in MinGW headers
 //  Used for PSCB_PRECREATE message
 //lint -esym(751, LPDLGTEMPLATEEX)
@@ -77,6 +68,15 @@ BOOL CenterWindow (HWND hwnd);
 void resize_window(HWND hwnd, int dx, int dy);
 
 //  font-management functions
+//****************************************************************************
+//  constants used by build_font() and EzCreateFont()
+//****************************************************************************
+#define EZ_ATTR_NORMAL        0
+#define EZ_ATTR_BOLD          1
+#define EZ_ATTR_ITALIC        2
+#define EZ_ATTR_UNDERLINE     4
+#define EZ_ATTR_STRIKEOUT     8
+
 HFONT build_font(TCHAR *fname, unsigned fheight, unsigned flags);
 HFONT EzCreateFont(HDC hdc, TCHAR * szFaceName, int iDeciPtHeight,
       int iDeciPtWidth, unsigned iAttributes, int textangle, BOOL fLogRes);
