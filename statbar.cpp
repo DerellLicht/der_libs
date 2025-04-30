@@ -116,7 +116,7 @@ void CStatusBar::set_bgnd_color(COLORREF bgnd)
 
 //*****************************************************************************
 // "Courier New", 100, 0, EZ_ATTR_BOLD, 0, true) ;
-void CStatusBar::set_statusbar_font(char * szFaceName, int iDeciPtHeight, unsigned iAttributes)
+void CStatusBar::set_statusbar_font(TCHAR * szFaceName, int iDeciPtHeight, unsigned iAttributes)
 {
    // TEXTMETRICA  txtm ;
    hdcSelf = GetDC(hwndStatusBar) ;
@@ -132,12 +132,12 @@ void CStatusBar::set_statusbar_font(char * szFaceName, int iDeciPtHeight, unsign
 //-------------------------------------------------------------------
 static void FlipStyleFlag (LPDWORD dwStyle, DWORD flag)
 {
-	if (*dwStyle & flag) {		  // Flag on -- turn off
-		*dwStyle &= (~flag);
-	}
-	else {							  // Flag off -- turn on
-		*dwStyle |= flag;
-	}
+   if (*dwStyle & flag) {       // Flag on -- turn off
+      *dwStyle &= (~flag);
+   }
+   else {                       // Flag off -- turn on
+      *dwStyle |= flag;
+   }
 }
 
 //-------------------------------------------------------------------
@@ -159,9 +159,9 @@ bool CStatusBar::SetParts(int nParts, int *sbparts)
 bool CStatusBar::RebuildStatusBar (WORD wFlag)
 {
    // HWND hwndSB;
-	RECT r;
+   RECT r;
 
-	switch (wFlag) {
+   switch (wFlag) {
    case IDM_STAT_SIZEGRIP:
       FlipStyleFlag (&dwStatusBarStyles, SBARS_SIZEGRIP);
       break;
@@ -204,9 +204,9 @@ bool CStatusBar::RebuildStatusBar (WORD wFlag)
         GetModuleHandle(NULL),   // handle to application instance
         NULL);                   // no window creation data
 
-	// Post parent a WM_SIZE message to resize children
-	GetClientRect (hwndParent, &r);
-	PostMessageA (hwndParent, WM_SIZE, 0, MAKELPARAM (r.right, r.bottom));
+   // Post parent a WM_SIZE message to resize children
+   GetClientRect (hwndParent, &r);
+   PostMessageA (hwndParent, WM_SIZE, 0, MAKELPARAM (r.right, r.bottom));
 
    return true ;
 }
@@ -214,7 +214,7 @@ bool CStatusBar::RebuildStatusBar (WORD wFlag)
 //-------------------------------------------------------------------
 void CStatusBar::StatusBarMessage(WORD wMsg)
 {
-	switch (wMsg) {
+   switch (wMsg) {
    case IDM_ST_GETBORDERS:
       {
       char ach[180];

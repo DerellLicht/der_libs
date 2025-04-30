@@ -70,7 +70,7 @@ public:
    bool SetParts(int nParts, int *sbparts);
    void show_message(TCHAR *msg);
    void show_message(unsigned idx, TCHAR *msg);
-   void set_statusbar_font(char * szFaceName, int iDeciPtHeight, unsigned iAttributes);
+   void set_statusbar_font(TCHAR * szFaceName, int iDeciPtHeight, unsigned iAttributes);
    void set_bgnd_color(COLORREF bgnd);
    bool RebuildStatusBar (WORD wFlag);
    void StatusBarMessage(WORD wMsg);
