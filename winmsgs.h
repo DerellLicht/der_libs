@@ -5,5 +5,5 @@
 #define WM_UAHINITMENU           147
 #define WM_UAHMEASUREMENUITEM    148
 
-char *lookup_winmsg_name(int msg_code);
+TCHAR *lookup_winmsg_name(int msg_code);
 
