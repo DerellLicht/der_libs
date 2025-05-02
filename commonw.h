@@ -19,6 +19,8 @@
 //lint -esym(768, DLGTEMPLATEEX_s::cDlgItems, DLGTEMPLATEEX_s::x, DLGTEMPLATEEX_s::y)
 //lint -esym(768, DLGTEMPLATEEX_s::cx, DLGTEMPLATEEX_s::cy)
 //lint -esym(768, DLGTEMPLATEEX_s::signature, DLGTEMPLATEEX_s::style)
+//lint -esym(757, ShellGetPath)
+
 typedef struct DLGTEMPLATEEX_s {
         WORD dlgVer;
         WORD signature;

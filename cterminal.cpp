@@ -67,12 +67,16 @@
 //lint -esym(1714, CTerminal::resize_terminal_width)
 
 //lint -esym(18, _strdate, _strtime)
-//lint -esym(1055, _strdate, _strtime)
+//lint -esym(1055, _strdate, _strtime, _wstrdate, _wstrtime)
+//lint -esym(746, _wstrdate, _wstrtime)
 
 // Info 1762: Member function 'CTerminal::termout(const char *, ...)' could be made const
 //lint -esym(1762, CTerminal::termout)
 
 //lint -esym(1579, CTerminal::tlv_top, CTerminal::tlv_tail)
+
+//lint -esym(526, _wfopen, _wstrdate, _wstrtime)
+//lint -esym(628, _wfopen, _wstrdate, _wstrtime)
 
 //****************************************************************************
 CTerminal::CTerminal(HWND hwndParent, uint ControlID, HINSTANCE local_g_hinst, 
@@ -354,7 +358,7 @@ static void html_output(FILE *fd, COLORREF fgnd, COLORREF bgnd, TCHAR *str)
    //  12/04/13 DDM - Why did the <br> get added here?  the closing </span> tab already forces a newline
    // fprintf(fd, "<span style=\"color : #%06X; background-color : #%06X;\">%s</span><br>\n",
    _ftprintf(fd, _T("<span style=\"color : #%06X; background-color : #%06X;\">%s</span>\n"),
-               swap_rgb(fgnd), swap_rgb(bgnd), str) ;
+               swap_rgb(fgnd), swap_rgb(bgnd), str) ; //lint !e559
 }
 
 //****************************************************************************
@@ -372,16 +376,16 @@ int CTerminal::save_terminal_contents(TCHAR *outfile, file_type_e file_type)
 
    switch (file_type) {
    case FTYP_TEXT:
-      fd = _tfopen(outfile, _T("a+t")) ;
+      fd = _tfopen(outfile, _T("a+t")) ; //lint !e64
       if (fd == NULL) {
          return -(int)GetLastError();
       }
       fseek(fd, 0, SEEK_END) ;
       _ftprintf(fd, _T("***********************************************************************\n")) ;
-      _ftprintf(fd, _T("Date/Time of report: %s, %s\n"), dbuffer, tbuffer) ;
+      _ftprintf(fd, _T("Date/Time of report: %s, %s\n"), dbuffer, tbuffer) ; //lint !e559
       for (lvptr = tlv_top; lvptr != NULL; lvptr = lvptr->next) {
          lcount++ ;
-         _ftprintf(fd, _T("%s\n"), lvptr->msg) ;
+         _ftprintf(fd, _T("%s\n"), lvptr->msg) ; //lint !e559
       }
       break;
 
@@ -395,7 +399,7 @@ int CTerminal::save_terminal_contents(TCHAR *outfile, file_type_e file_type)
          //  write operation is carried out. 
          //  Thus, existing data cannot be overwritten.
          // syslog("appending to existing file\n") ;
-         fd = _tfopen(outfile, _T("r+t")) ;
+         fd = _tfopen(outfile, _T("r+t")) ; //lint !e64
          if (fd == NULL) {
             return -(int)GetLastError();
          }
@@ -404,7 +408,7 @@ int CTerminal::save_terminal_contents(TCHAR *outfile, file_type_e file_type)
          fseek(fd, (long) -16, SEEK_CUR) ; 
       } else {
          // syslog("writing to html file\n") ;
-         fd = _tfopen(outfile, _T("wt")) ;
+         fd = _tfopen(outfile, _T("wt")) ; //lint !e64
          if (fd == NULL) {
             return -(int)GetLastError();
          }
@@ -413,7 +417,7 @@ int CTerminal::save_terminal_contents(TCHAR *outfile, file_type_e file_type)
                      // "<STYLE type='text/css'>\n"
                      // "* { font-family: Courier, monospace }\n"
                      // "</STYLE>\n"
-                     _T("</head><body>\n"), outfile) ;
+                     _T("</head><body>\n"), outfile) ; //lint !e559
       }
       _ftprintf(fd, _T("<pre>\n")) ;
       html_output(fd, WIN_BGREEN, WIN_GREY, _T("***********************************************************************")) ;
@@ -473,7 +477,7 @@ term_lview_item_p CTerminal::get_lview_element(TCHAR *lpBuf, COLORREF fgnd, COLO
 {
    // syslog("print %u byte string\n", _tcslen(lpBuf)) ;
    term_lview_item_p lvptr = new term_lview_item_t ;
-   ZeroMemory((TCHAR *) lvptr, sizeof(term_lview_item_t)) ;
+   ZeroMemory((TCHAR *) lvptr, sizeof(term_lview_item_t)) ; //lint !e740
    lvptr->idx = curr_row++ ;
    lvptr->msg = new TCHAR[_tcslen(lpBuf)+1] ;
    _tcscpy(lvptr->msg, lpBuf) ;

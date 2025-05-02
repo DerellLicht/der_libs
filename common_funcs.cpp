@@ -7,6 +7,14 @@
 //  Collected and Organized by:  Dan Miller
 //****************************************************************************
 
+//  These are spurious warnings from PcLint, but there is no way to 
+//  selectively disable them, so global disable is required.
+//  This is unfortunate, as I *really* would like to know about valid repeated includes
+// Warning 537: Repeated include file 'c:\tdm32\include\sys\stat.h'
+// Warning 451: Header file 'c:\tdm32\include\sys\stat.h' repeatedly included but does not have a standard include guard
+//lint -e451
+//lint -e537
+
 #include <windows.h>
 #include <stdio.h>   //  vsprintf
 #include <tchar.h>
@@ -20,10 +28,16 @@
 
 #include "common.h"
 //lint -esym(18, strtoul)
-//lint -esym(1055, strtoul)
+//lint -esym(1055, strtoul, _wstat, fgetws, fputws, _wfopen)
 
-//lint -esym(526, __builtin_va_start)
-//lint -esym(628, __builtin_va_start)
+//lint -esym(526, __builtin_va_start, _wstat, fgetws, fputws, strtoul)
+//lint -esym(628, __builtin_va_start, _wstat, fgetws, fputws, strtoul)
+
+// Info 740: Unusual pointer cast (incompatible indirect types)
+// Info 740: Unusual pointer cast (incompatible indirect types)
+// Error 64: Type mismatch (initialization) (struct _iobuf * = int)
+// Error 64: Type mismatch (initialization) (struct _iobuf * = int)
+//lint -esym(746, _wstat, strtoul, _wfopen, fgetws, fputws)
 
 //lint -esym(714, TCR, TLF, TTAB)
 //lint -esym(759, TCR, TLF, TTAB)
@@ -44,8 +58,8 @@ TCHAR const * const show_bool_str(bool bool_flag)
 }
 
 //**************************************************************************
-//  we *have* to user our own rand/srand functions, so we'll get
-//  the same result on every execution
+//  we *have* to user our own rand/srand functions, 
+//  so that we'll get the same result on every execution
 //**************************************************************************
 #define  RAND_MAX2   (0x7FFF)
 static unsigned long holdrand = 0 ;
@@ -653,7 +667,7 @@ TCHAR *get_system_message(DWORD errcode)
       NULL,
       errcode,
       MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-      (TCHAR *) &lpMsgBuf,
+      (TCHAR *) &lpMsgBuf, //lint !e740
       0, 0);
    // Process any inserts in lpMsgBuf.
    // ...
@@ -1024,12 +1038,12 @@ int hex_dump(u8 *bfr, int bytes)
 //lint -esym(765, file_copy_by_line)
 int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
 {
-   FILE *infile = _tfopen(source_file, _T("rt")) ;
+   FILE *infile = _tfopen(source_file, _T("rt")) ; //lint !e64
    if (infile == NULL) {
       syslog(_T("%s: %s\n"), source_file, strerror(errno)) ;
       return -errno;
    }
-   FILE *outfile = _tfopen(dest_file, _T("wt")) ;
+   FILE *outfile = _tfopen(dest_file, _T("wt")) ; //lint !e64
    if (outfile == NULL) {
       syslog(_T("%s: %s\n"), dest_file, strerror(errno)) ;
       return -errno;
