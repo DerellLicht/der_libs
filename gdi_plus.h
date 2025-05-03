@@ -62,6 +62,7 @@ public:
    ~gdi_plus();
    void render_bitmap(HDC hdc, uint xdest, uint ydest);
    void render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
+   void DrawBox(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor);
    uint img_width(void) const
       { return nWidth ; } ;
    uint img_height(void) const
