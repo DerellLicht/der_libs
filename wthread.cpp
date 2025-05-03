@@ -8,6 +8,8 @@
 
 #include <windows.h>
 
+//lint -esym(1704, CThread::CThread) Constructor has private access specification
+
 #include "wthread.h"
 
 //*****************************************************************************

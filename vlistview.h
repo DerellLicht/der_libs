@@ -35,6 +35,10 @@
 //lint -esym(1714, CVListView::insert_column, CVListView::find_selected_row, CVListView::resize_listview)
 //lint -esym(1714, CVListView::get_lview_dx, CVListView::get_lview_dy, CVListView::SetHeaderSortImage)
 
+//lint -esym(1714, CVListView::recalc_dx, CVListView::hide_horiz_scrollbar)
+//lint -esym(1714, CVListView::HitTest, CVListView::GetItemState)
+//lint -esym(1714, CVListView::insert_column_header, CVListView::delete_column)
+
 // vlistview.h  Info 1712: default constructor not defined for class 'CVListView'
 //lint -esym(1712, CVListView)
 

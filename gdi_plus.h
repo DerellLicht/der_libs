@@ -23,7 +23,7 @@
 
 //lint -esym(1714, gdi_plus::gdi_plus, gdi_plus::img_width, gdi_plus::img_height)
 //lint -esym(1714, gdi_plus::horiz_tiles, gdi_plus::vert_tiles, gdi_plus::render_bitmap)
-//lint -esym(1714, gdi_plus::get_sprite_dx, gdi_plus::get_sprite_dy)
+//lint -esym(1714, gdi_plus::get_sprite_dx, gdi_plus::get_sprite_dy, gdi_plus::DrawBox, gdi_plus::DrawBoxFilled)
 
 //lint -esym(1704, gdi_plus::gdi_plus, gdi_plus::gdi_plus)
 

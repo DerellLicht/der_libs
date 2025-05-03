@@ -65,6 +65,8 @@
 //lint -esym(1714, CTerminal::get_element_count, CTerminal::delete_list, CTerminal::reverse_list_entries)
 //lint -esym(1714, CTerminal::resize_terminal_rows, CTerminal::rows2pixels)
 //lint -esym(1714, CTerminal::resize_terminal_width)
+//lint -esym(1714, CTerminal::resize_terminal_pixels, CTerminal::get_terminal_dimens)
+//lint -esym(1714, CTerminal::copy_list_to_clipboard, CTerminal::put)
 
 //lint -esym(18, _strdate, _strtime)
 //lint -esym(1055, _strdate, _strtime, _wstrdate, _wstrtime)
