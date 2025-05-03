@@ -141,5 +141,5 @@ void gdi_plus::DrawBox(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor)
    // Pen pen(Color(uconv.uc[3], uconv.uc[0], uconv.uc[1], uconv.uc[2])); //lint !e747
    Pen pen(Color(uconv.uc[0], uconv.uc[1], uconv.uc[2])); //lint !e747
    graphics.DrawRectangle(&pen, x0, y0, dx, dy);
-}
+}  //lint !e1762
 
