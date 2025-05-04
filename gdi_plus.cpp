@@ -157,10 +157,6 @@ void gdi_plus::copy_imagelist_item(Graphics& graphics, int sprite_col, int sprit
 void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest)
 {
    Graphics graphics(hdc);
-   // sprite_dx = nWidth / tiles_x ;
-   // sprite_dy = nHeight / tiles_y ;
-   // uint srcx = sprite_col * sprite_dx ;
-   // uint srcy = sprite_row * sprite_dy ;
    copy_imagelist_item(graphics, 0, 0, xdest, ydest);
 }
 
@@ -168,9 +164,6 @@ void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest)
 void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row)
 {
    Graphics graphics(hdc);
-   // uint xsrc = sprite_col * sprite_dx ;
-   // uint ysrc = sprite_row * sprite_dy ;
-   // copy_imagelist_item(graphics, xsrc, ysrc, sprite_dx, sprite_dy, xdest, ydest);
    copy_imagelist_item(graphics, sprite_col, sprite_row, xdest, ydest);
 }
 
