@@ -10,6 +10,25 @@
 #include "gdi_plus.h"
 
 //********************************************************************
+void gdi_plus::alloc_clone_elements(void)
+{
+   uint row, col ;
+   for (row=0; row<tiles_y; row++) {
+      for (col=0; col<tiles_x; col++) {
+         uint toffset = (row * tiles_x) + col ;
+         INT xsrc = col * sprite_dx ;
+         INT ysrc = row * sprite_dy ;
+         // *(clone + toffset) is the same as clone[toffset]. 
+         // What you have now, *(clone[toffset]), is the same as **(clone + toffset). 
+         // – Ted Lyngmo, Commented 11 mins ago on stackoverflow.com
+         // Bitmap* tclone = gbitmap->Clone(xsrc, ysrc, sprite_dx, sprite_dy, PixelFormatDontCare);
+         // clone[toffset] = tclone ;
+         clone[toffset] = gbitmap->Clone(xsrc, ysrc, sprite_dx, sprite_dy, PixelFormatDontCare);
+      }
+   }
+}
+
+//********************************************************************
 gdi_plus::gdi_plus(TCHAR *new_img_name) :
    // bmp(NULL),
    // img(NULL),
@@ -17,6 +36,8 @@ gdi_plus::gdi_plus(TCHAR *new_img_name) :
    gbitmap(NULL),
    nWidth(0),
    nHeight(0),
+   clone(NULL),
+   use_cached_clone(CACHED_CLONES_DISABLED),
    sprite_dx(0),
    sprite_dy(0),
    tiles_x(1),
@@ -31,15 +52,16 @@ gdi_plus::gdi_plus(TCHAR *new_img_name) :
    nHeight   = gbitmap->GetHeight();
    sprite_dx = gbitmap->GetWidth();
    sprite_dy = gbitmap->GetHeight();
-
 }
 
 //********************************************************************
-gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows) :
+gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, bool cache_clones) :
    img_name(NULL),
    gbitmap(NULL),
    nWidth(0),
    nHeight(0),
+   clone(NULL),
+   use_cached_clone(cache_clones),
    sprite_dx(0),
    sprite_dy(0),
    tiles_x(icons_per_column),
@@ -53,16 +75,23 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows) :
    nHeight = gbitmap->GetHeight();
    sprite_dx = nWidth / tiles_x ;
    sprite_dy = nHeight / tiles_y ;
+   
+   if (cache_clones) {
+      clone = new Bitmap *[tiles_x * tiles_y] ;
+      alloc_clone_elements();
+   }
    // syslog(_T("open: %s, width: %u, height: %u, sprite size: %u x %u\n"), 
    //    new_img_name, nWidth, nHeight, sprite_dx, sprite_dy) ;
 }
 
 //********************************************************************
-gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height) :
+gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height, bool cache_clones) :
    img_name(NULL),
    gbitmap(NULL),
    nWidth(0),
    nHeight(0),
+   clone(NULL),
+   use_cached_clone(cache_clones),
    sprite_dx(sprite_width),
    sprite_dy(sprite_height),
    tiles_x(icons_per_column),
@@ -74,10 +103,10 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, u
    gbitmap = new Bitmap(new_img_name);
    nWidth  = gbitmap->GetWidth();
    nHeight = gbitmap->GetHeight();
-   // sprite_dx = nWidth / tiles_x ;
-   // sprite_dy = nHeight / tiles_y ;
-   // syslog(_T("open: %s, width: %u, height: %u, sprite size: %u x %u\n"), 
-   //    new_img_name, nWidth, nHeight, sprite_dx, sprite_dy) ;
+   if (cache_clones) {
+      clone = new Bitmap *[tiles_x * tiles_y] ;
+      alloc_clone_elements();
+   }
 }
 
 //********************************************************************
@@ -86,21 +115,35 @@ gdi_plus::~gdi_plus()
    if (img_name != NULL) {
       delete [] img_name ;
    }
+   if (clone != NULL) {
+      delete [] clone ;
+   }
    delete gbitmap ;  //lint !e1551
    gbitmap = NULL ;
 }
 
 //***********************************************************************************
-void gdi_plus::copy_imagelist_item(Graphics& graphics, int xsrc, int ysrc, int dx, int dy, int xdest, int ydest)
+void gdi_plus::copy_imagelist_item(Graphics& graphics, int sprite_col, int sprite_row, int dx, int dy, int xdest, int ydest)
 {
    // cii: src: 0x0, dxy: 359x362, dest: 0x0
    // actually drawn 116x116
    // syslog(_T("cii: src: %ux%u, dxy: %ux%u, dest: %ux%u\n"),
    //    xsrc, ysrc, dx, dy, xdest, ydest);
-   Bitmap* clone = gbitmap->Clone(xsrc, ysrc, dx, dy, PixelFormatDontCare);
-   //  use the five-arg form of DrawImage(), in order to disable auto-scaling
-   graphics.DrawImage(clone, xdest, ydest, dx, dy);
-   delete clone ;
+   if (use_cached_clone) {
+      uint toffset = (sprite_row * tiles_x) + sprite_col ;  //lint !e737
+      Bitmap* bclone = clone[toffset] ;   //lint !e613
+      if (bclone != NULL) {
+         graphics.DrawImage(bclone, xdest, ydest, dx, dy);
+      }
+   }
+   else {
+      uint xsrc = sprite_col * dx ;
+      uint ysrc = sprite_row * dy ;
+      Bitmap* bclone = gbitmap->Clone(xsrc, ysrc, dx, dy, PixelFormatDontCare);
+      //  use the five-arg form of DrawImage(), in order to disable auto-scaling
+      graphics.DrawImage(bclone, xdest, ydest, dx, dy);
+      delete bclone ;
+   }
 }  //lint !e818 !e1762
 
 //********************************************************************
@@ -118,11 +161,10 @@ void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest)
 void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row)
 {
    Graphics graphics(hdc);
-   // sprite_dx = nWidth / tiles_x ;
-   // sprite_dy = nHeight / tiles_y ;
-   uint srcx = sprite_col * sprite_dx ;
-   uint srcy = sprite_row * sprite_dy ;
-   copy_imagelist_item(graphics, srcx, srcy, sprite_dx, sprite_dy, xdest, ydest);
+   // uint xsrc = sprite_col * sprite_dx ;
+   // uint ysrc = sprite_row * sprite_dy ;
+   // copy_imagelist_item(graphics, xsrc, ysrc, sprite_dx, sprite_dy, xdest, ydest);
+   copy_imagelist_item(graphics, sprite_col, sprite_row, sprite_dx, sprite_dy, xdest, ydest);
 }
 
 /************************************************************************/

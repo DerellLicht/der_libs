@@ -31,6 +31,9 @@ using namespace Gdiplus;
 
 //lint -esym(761, uint)  Redundant typedef previously declared at ...
 
+#define  CACHED_CLONES_DISABLED  false
+#define  CACHED_CLONES_ENABLED   true
+
 typedef unsigned int  uint ;
 
 class gdi_plus {
@@ -40,6 +43,9 @@ private:
    uint nWidth ;
    uint nHeight ;
    
+   Bitmap** clone ;
+   bool use_cached_clone ;
+   
    uint sprite_dx ;
    uint sprite_dy ;
    uint tiles_x ;
@@ -47,6 +53,7 @@ private:
 
    //  private functions
    void copy_imagelist_item(Graphics& graphics, int xsrc, int ysrc, int dx, int dy, int xdest, int ydest);
+   void alloc_clone_elements(void);
 
    //  disable the assignment operator and copy constructor
    gdi_plus &operator=(const gdi_plus &src) ;
@@ -57,8 +64,8 @@ private:
 public:   
    // gdi_plus();
    gdi_plus(TCHAR *new_img_name) ;
-   gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows);
-   gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height);
+   gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, bool cache_clones);
+   gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height, bool cache_clones);
    ~gdi_plus();
    void render_bitmap(HDC hdc, uint xdest, uint ydest);
    void render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
