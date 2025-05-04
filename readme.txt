@@ -14,6 +14,10 @@ in day-to-day code.  The functions included here are intended
 for Windows-based applications; the common-controls and
 ShellAPI interfaces are represented, as well as Windows functions.
 
+3. gdi_plus.cpp (gdi_plus.h), gdiplus_setup.cpp (gdiplus_setup.h)
+This is a wrapper class around the GDI+ graphics library.
+It is intended to simplify access to common GDI+ operations.
+
 All the other included modules are C++ classes which encapsulate
 various operations that I regularly use in WinAPI applications.
 Most of theses modules include a text file which discusses the
