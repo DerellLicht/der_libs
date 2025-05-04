@@ -9,24 +9,27 @@
 #include "common.h"
 #include "gdi_plus.h"
 
-//********************************************************************
-void gdi_plus::alloc_clone_elements(void)
-{
-   uint row, col ;
-   for (row=0; row<tiles_y; row++) {
-      for (col=0; col<tiles_x; col++) {
-         uint toffset = (row * tiles_x) + col ;
-         INT xsrc = col * sprite_dx ;
-         INT ysrc = row * sprite_dy ;
-         // *(clone + toffset) is the same as clone[toffset]. 
-         // What you have now, *(clone[toffset]), is the same as **(clone + toffset). 
-         // – Ted Lyngmo, Commented 11 mins ago on stackoverflow.com
-         // Bitmap* tclone = gbitmap->Clone(xsrc, ysrc, sprite_dx, sprite_dy, PixelFormatDontCare);
-         // clone[toffset] = tclone ;
-         clone[toffset] = gbitmap->Clone(xsrc, ysrc, sprite_dx, sprite_dy, PixelFormatDontCare);
-      }
-   }
-}
+//******************************************************************************
+//  Instead of allocating all clone elements at once, which delays
+//  program startup for several seconds, we will allocate them on demand.
+//******************************************************************************
+// void gdi_plus::alloc_clone_elements(void)
+// {
+//    uint row, col ;
+//    for (row=0; row<tiles_y; row++) {
+//       for (col=0; col<tiles_x; col++) {
+//          uint toffset = (row * tiles_x) + col ;
+//          INT xsrc = col * sprite_dx ;
+//          INT ysrc = row * sprite_dy ;
+//          // *(clone + toffset) is the same as clone[toffset]. 
+//          // What you have now, *(clone[toffset]), is the same as **(clone + toffset). 
+//          // – Ted Lyngmo, Commented 11 mins ago on stackoverflow.com
+//          // Bitmap* tclone = gbitmap->Clone(xsrc, ysrc, sprite_dx, sprite_dy, PixelFormatDontCare);
+//          // clone[toffset] = tclone ;
+//          clone[toffset] = gbitmap->Clone(xsrc, ysrc, sprite_dx, sprite_dy, PixelFormatDontCare);
+//       }
+//    }
+// }
 
 //********************************************************************
 gdi_plus::gdi_plus(TCHAR *new_img_name) :
@@ -78,7 +81,8 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, b
    
    if (cache_clones) {
       clone = new Bitmap *[tiles_x * tiles_y] ;
-      alloc_clone_elements();
+      ZeroMemory((u8 *) clone, sizeof(clone));
+      // alloc_clone_elements();
    }
    // syslog(_T("open: %s, width: %u, height: %u, sprite size: %u x %u\n"), 
    //    new_img_name, nWidth, nHeight, sprite_dx, sprite_dy) ;
@@ -105,7 +109,8 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, u
    nHeight = gbitmap->GetHeight();
    if (cache_clones) {
       clone = new Bitmap *[tiles_x * tiles_y] ;
-      alloc_clone_elements();
+      ZeroMemory((u8 *) clone, sizeof(clone));
+      // alloc_clone_elements();
    }
 }
 
@@ -123,25 +128,27 @@ gdi_plus::~gdi_plus()
 }
 
 //***********************************************************************************
-void gdi_plus::copy_imagelist_item(Graphics& graphics, int sprite_col, int sprite_row, int dx, int dy, int xdest, int ydest)
+void gdi_plus::copy_imagelist_item(Graphics& graphics, int sprite_col, int sprite_row, int xdest, int ydest)
 {
    // cii: src: 0x0, dxy: 359x362, dest: 0x0
    // actually drawn 116x116
    // syslog(_T("cii: src: %ux%u, dxy: %ux%u, dest: %ux%u\n"),
    //    xsrc, ysrc, dx, dy, xdest, ydest);
+   uint xsrc = sprite_col * sprite_dx ;   //lint !e737
+   uint ysrc = sprite_row * sprite_dy ;   //lint !e737
    if (use_cached_clone) {
       uint toffset = (sprite_row * tiles_x) + sprite_col ;  //lint !e737
       Bitmap* bclone = clone[toffset] ;   //lint !e613
-      if (bclone != NULL) {
-         graphics.DrawImage(bclone, xdest, ydest, dx, dy);
+      if (bclone == NULL) {
+         clone[toffset] = gbitmap->Clone(xsrc, ysrc, (int) sprite_dx, (int)sprite_dy, PixelFormatDontCare);  //lint !e613
+         bclone = clone[toffset] ;   //lint !e613
       }
+      graphics.DrawImage(bclone, xdest, ydest, sprite_dx, sprite_dy);
    }
    else {
-      uint xsrc = sprite_col * dx ;
-      uint ysrc = sprite_row * dy ;
-      Bitmap* bclone = gbitmap->Clone(xsrc, ysrc, dx, dy, PixelFormatDontCare);
+      Bitmap* bclone = gbitmap->Clone(xsrc, ysrc, (int) sprite_dx, (int) sprite_dy, PixelFormatDontCare);
       //  use the five-arg form of DrawImage(), in order to disable auto-scaling
-      graphics.DrawImage(bclone, xdest, ydest, dx, dy);
+      graphics.DrawImage(bclone, xdest, ydest, sprite_dx, sprite_dy);
       delete bclone ;
    }
 }  //lint !e818 !e1762
@@ -154,7 +161,7 @@ void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest)
    // sprite_dy = nHeight / tiles_y ;
    // uint srcx = sprite_col * sprite_dx ;
    // uint srcy = sprite_row * sprite_dy ;
-   copy_imagelist_item(graphics, 0, 0, sprite_dx, sprite_dy, xdest, ydest);
+   copy_imagelist_item(graphics, 0, 0, xdest, ydest);
 }
 
 //********************************************************************
@@ -164,7 +171,7 @@ void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, u
    // uint xsrc = sprite_col * sprite_dx ;
    // uint ysrc = sprite_row * sprite_dy ;
    // copy_imagelist_item(graphics, xsrc, ysrc, sprite_dx, sprite_dy, xdest, ydest);
-   copy_imagelist_item(graphics, sprite_col, sprite_row, sprite_dx, sprite_dy, xdest, ydest);
+   copy_imagelist_item(graphics, sprite_col, sprite_row, xdest, ydest);
 }
 
 /************************************************************************/

@@ -52,8 +52,8 @@ private:
    uint tiles_y ;
 
    //  private functions
-   void copy_imagelist_item(Graphics& graphics, int xsrc, int ysrc, int dx, int dy, int xdest, int ydest);
-   void alloc_clone_elements(void);
+   void copy_imagelist_item(Graphics& graphics, int xsrc, int ysrc, int xdest, int ydest);
+   // void alloc_clone_elements(void);
 
    //  disable the assignment operator and copy constructor
    gdi_plus &operator=(const gdi_plus &src) ;
