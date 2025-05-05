@@ -9,6 +9,8 @@
 #include "common.h"
 #include "gdi_plus.h"
 
+//lint -esym(40, nullptr)
+
 //lint -e1066  Symbol declared as "C" conflicts with itself
 
 //******************************************************************************
@@ -39,10 +41,11 @@ gdi_plus::gdi_plus(TCHAR *new_img_name) :
    // img(NULL),
    img_name(NULL),
    gbitmap(NULL),
+   hBitmap(nullptr),
    nWidth(0),
    nHeight(0),
-   clone(NULL),
-   use_cached_clone(CACHED_CLONES_DISABLED),
+   // clone(NULL),
+   // use_cached_clone(CACHED_CLONES_DISABLED),
    sprite_dx(0),
    sprite_dy(0),
    tiles_x(1),
@@ -60,13 +63,14 @@ gdi_plus::gdi_plus(TCHAR *new_img_name) :
 }
 
 //********************************************************************
-gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, bool cache_clones) :
+gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows) :
    img_name(NULL),
    gbitmap(NULL),
+   hBitmap(nullptr),
    nWidth(0),
    nHeight(0),
-   clone(NULL),
-   use_cached_clone(cache_clones),
+   // clone(NULL),
+   // use_cached_clone(cache_clones),
    sprite_dx(0),
    sprite_dy(0),
    tiles_x(icons_per_column),
@@ -80,24 +84,30 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, b
    nHeight = gbitmap->GetHeight();
    sprite_dx = nWidth / tiles_x ;
    sprite_dy = nHeight / tiles_y ;
-   
-   if (cache_clones) {
-      clone = new Bitmap *[tiles_x * tiles_y] ;
-      ZeroMemory((u8 *) clone, sizeof(clone));
-      // alloc_clone_elements();
+   Gdiplus::Color backgroundColor(66, 107, 107, 255); // White background
+   Status status = gbitmap->GetHBITMAP(backgroundColor, &hBitmap);
+   if (status != Ok) {
+      syslog(_T("GetHBITMAP error: %u\n"), (uint) status);
    }
+   
+   // if (cache_clones) {
+   //    clone = new Bitmap *[tiles_x * tiles_y] ;
+   //    ZeroMemory((u8 *) clone, sizeof(clone));
+   //    // alloc_clone_elements();
+   // }
    // syslog(_T("open: %s, width: %u, height: %u, sprite size: %u x %u\n"), 
    //    new_img_name, nWidth, nHeight, sprite_dx, sprite_dy) ;
 }
 
 //********************************************************************
-gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height, bool cache_clones) :
+gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height) :
    img_name(NULL),
    gbitmap(NULL),
+   hBitmap(nullptr),
    nWidth(0),
    nHeight(0),
-   clone(NULL),
-   use_cached_clone(cache_clones),
+   // clone(NULL),
+   // use_cached_clone(cache_clones),
    sprite_dx(sprite_width),
    sprite_dy(sprite_height),
    tiles_x(icons_per_column),
@@ -109,11 +119,18 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, u
    gbitmap = new Bitmap(new_img_name);
    nWidth  = gbitmap->GetWidth();
    nHeight = gbitmap->GetHeight();
-   if (cache_clones) {
-      clone = new Bitmap *[tiles_x * tiles_y] ;
-      ZeroMemory((u8 *) clone, sizeof(clone));
-      // alloc_clone_elements();
+   // Convert Gdiplus::Bitmap to HBITMAP
+   // HBITMAP hBitmap = nullptr;
+   Gdiplus::Color backgroundColor(66, 107, 107, 255); // White background
+   Status status = gbitmap->GetHBITMAP(backgroundColor, &hBitmap);
+   if (status != Ok) {
+      syslog(_T("GetHBITMAP error: %u\n"), (uint) status);
    }
+   // if (cache_clones) {
+   //    clone = new Bitmap *[tiles_x * tiles_y] ;
+   //    ZeroMemory((u8 *) clone, sizeof(clone));
+   //    // alloc_clone_elements();
+   // }
 }
 
 //********************************************************************
@@ -122,51 +139,42 @@ gdi_plus::~gdi_plus()
    if (img_name != NULL) {
       delete [] img_name ;
    }
-   if (clone != NULL) {
-      delete [] clone ;
-   }
+   // if (clone != NULL) {
+   //    delete [] clone ;
+   // }
+   DeleteObject(hBitmap);
+   hBitmap = NULL ;
    delete gbitmap ;  //lint !e1551
    gbitmap = NULL ;
 }
 
 //***********************************************************************************
-void gdi_plus::copy_imagelist_item(Graphics& graphics, int sprite_col, int sprite_row, int xdest, int ydest)
+void gdi_plus::copy_imagelist_item(HDC hdc, int sprite_col, int sprite_row, int xdest, int ydest)
 {
-   // cii: src: 0x0, dxy: 359x362, dest: 0x0
-   // actually drawn 116x116
-   // syslog(_T("cii: src: %ux%u, dxy: %ux%u, dest: %ux%u\n"),
-   //    xsrc, ysrc, dx, dy, xdest, ydest);
+   //  originally, this function used gdiplus::clone() to access the sprites;
+   //  this turned out to be *horifically* slow; drawing the 1080 tiles in
+   //  tiles32.png took several seconds, while BitBlt() method is almost instantanious.
+   //  Thus, we still use gdiplus to open and access the files, but we use GDI::BitBlt()
+   //  to access sprite elements.
+   HDC hdcMem ;
    uint xsrc = sprite_col * sprite_dx ;   //lint !e737
    uint ysrc = sprite_row * sprite_dy ;   //lint !e737
-   if (use_cached_clone) {
-      uint toffset = (sprite_row * tiles_x) + sprite_col ;  //lint !e737
-      Bitmap* bclone = clone[toffset] ;   //lint !e613
-      if (bclone == NULL) {
-         clone[toffset] = gbitmap->Clone(xsrc, ysrc, (int) sprite_dx, (int)sprite_dy, PixelFormatDontCare);  //lint !e613
-         bclone = clone[toffset] ;   //lint !e613
-      }
-      graphics.DrawImage(bclone, xdest, ydest, sprite_dx, sprite_dy);
-   }
-   else {
-      Bitmap* bclone = gbitmap->Clone(xsrc, ysrc, (int) sprite_dx, (int) sprite_dy, PixelFormatDontCare);
-      //  use the five-arg form of DrawImage(), in order to disable auto-scaling
-      graphics.DrawImage(bclone, xdest, ydest, sprite_dx, sprite_dy);
-      delete bclone ;
-   }
+   hdcMem = CreateCompatibleDC (hdc);
+   SelectObject (hdcMem, hBitmap);
+   BitBlt (hdc, xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc, SRCCOPY);
+   DeleteDC (hdcMem);
 }  //lint !e818 !e1762
 
 //********************************************************************
 void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest)
 {
-   Graphics graphics(hdc);
-   copy_imagelist_item(graphics, 0, 0, xdest, ydest);
+   copy_imagelist_item(hdc, 0, 0, xdest, ydest);
 }
 
 //********************************************************************
 void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row)
 {
-   Graphics graphics(hdc);
-   copy_imagelist_item(graphics, sprite_col, sprite_row, xdest, ydest);
+   copy_imagelist_item(hdc, sprite_col, sprite_row, xdest, ydest);
 }
 
 /************************************************************************/
