@@ -9,6 +9,8 @@
 #include "common.h"
 #include "gdi_plus.h"
 
+//lint -e1066  Symbol declared as "C" conflicts with itself
+
 //******************************************************************************
 //  Instead of allocating all clone elements at once, which delays
 //  program startup for several seconds, we will allocate them on demand.

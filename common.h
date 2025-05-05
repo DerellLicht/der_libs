@@ -11,6 +11,8 @@
 //lint -esym(757, convert_to_commas, file_copy_by_line, get_dtimes_str)
 //lint -esym(757, get_hex8, get_hex16, get_hex32, IsCharNum, secs_to_date_time_str)
 
+//lint -e755  global macro not referenced
+
 typedef unsigned char         u8 ;
 typedef unsigned short        u16 ;
 typedef unsigned int          uint ;

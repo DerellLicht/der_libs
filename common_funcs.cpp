@@ -30,8 +30,11 @@
 //lint -esym(18, strtoul)
 //lint -esym(1055, strtoul, _wstat, fgetws, fputws, _wfopen)
 
-//lint -esym(526, __builtin_va_start, _wstat, fgetws, fputws, strtoul)
-//lint -esym(628, __builtin_va_start, _wstat, fgetws, fputws, strtoul)
+//lint -esym(526, __builtin_va_start, _wstat, fgetws, fputws, strtoul, _wfopen)
+//lint -esym(628, __builtin_va_start, _wstat, fgetws, fputws, strtoul, _wfopen)
+//lint -e818  Pointer parameter could be declared as pointing to const
+//lint -e592  Non-literal format specifier used without arguments
+//lint -e845  The right argument to operator '||' is certain to be 0
 
 // Info 740: Unusual pointer cast (incompatible indirect types)
 // Info 740: Unusual pointer cast (incompatible indirect types)

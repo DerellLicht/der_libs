@@ -31,6 +31,10 @@
 #include "common.h"
 #include "commonw.h"
 
+//lint -e840  Use of nul character in a string literal is perfectly normal
+//lint -e732  Loss of sign (arg. no. 6) (int to unsigned long)
+//lint -e592  Non-literal format specifier used without arguments
+
 //lint -e1065 Symbol declared as "C" conflicts with itself
 
 //********************************************************************************
