@@ -31,9 +31,6 @@ using namespace Gdiplus;
 
 //lint -esym(761, uint)  Redundant typedef previously declared at ...
 
-// #define  CACHED_CLONES_DISABLED  false
-// #define  CACHED_CLONES_ENABLED   true
-
 typedef unsigned int  uint ;
 
 class gdi_plus {
@@ -43,9 +40,6 @@ private:
    HBITMAP hBitmap ;
    uint nWidth ;
    uint nHeight ;
-   
-   // Bitmap** clone ;
-   // bool use_cached_clone ;
    
    uint sprite_dx ;
    uint sprite_dy ;

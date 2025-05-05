@@ -13,39 +13,13 @@
 
 //lint -e1066  Symbol declared as "C" conflicts with itself
 
-//******************************************************************************
-//  Instead of allocating all clone elements at once, which delays
-//  program startup for several seconds, we will allocate them on demand.
-//******************************************************************************
-// void gdi_plus::alloc_clone_elements(void)
-// {
-//    uint row, col ;
-//    for (row=0; row<tiles_y; row++) {
-//       for (col=0; col<tiles_x; col++) {
-//          uint toffset = (row * tiles_x) + col ;
-//          INT xsrc = col * sprite_dx ;
-//          INT ysrc = row * sprite_dy ;
-//          // *(clone + toffset) is the same as clone[toffset]. 
-//          // What you have now, *(clone[toffset]), is the same as **(clone + toffset). 
-//          // – Ted Lyngmo, Commented 11 mins ago on stackoverflow.com
-//          // Bitmap* tclone = gbitmap->Clone(xsrc, ysrc, sprite_dx, sprite_dy, PixelFormatDontCare);
-//          // clone[toffset] = tclone ;
-//          clone[toffset] = gbitmap->Clone(xsrc, ysrc, sprite_dx, sprite_dy, PixelFormatDontCare);
-//       }
-//    }
-// }
-
 //********************************************************************
 gdi_plus::gdi_plus(TCHAR *new_img_name) :
-   // bmp(NULL),
-   // img(NULL),
    img_name(NULL),
    gbitmap(NULL),
    hBitmap(nullptr),
    nWidth(0),
    nHeight(0),
-   // clone(NULL),
-   // use_cached_clone(CACHED_CLONES_DISABLED),
    sprite_dx(0),
    sprite_dy(0),
    tiles_x(1),
@@ -69,8 +43,6 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows) :
    hBitmap(nullptr),
    nWidth(0),
    nHeight(0),
-   // clone(NULL),
-   // use_cached_clone(cache_clones),
    sprite_dx(0),
    sprite_dy(0),
    tiles_x(icons_per_column),
@@ -90,11 +62,6 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows) :
       syslog(_T("GetHBITMAP error: %u\n"), (uint) status);
    }
    
-   // if (cache_clones) {
-   //    clone = new Bitmap *[tiles_x * tiles_y] ;
-   //    ZeroMemory((u8 *) clone, sizeof(clone));
-   //    // alloc_clone_elements();
-   // }
    // syslog(_T("open: %s, width: %u, height: %u, sprite size: %u x %u\n"), 
    //    new_img_name, nWidth, nHeight, sprite_dx, sprite_dy) ;
 }
@@ -106,8 +73,6 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, u
    hBitmap(nullptr),
    nWidth(0),
    nHeight(0),
-   // clone(NULL),
-   // use_cached_clone(cache_clones),
    sprite_dx(sprite_width),
    sprite_dy(sprite_height),
    tiles_x(icons_per_column),
@@ -120,17 +85,11 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, u
    nWidth  = gbitmap->GetWidth();
    nHeight = gbitmap->GetHeight();
    // Convert Gdiplus::Bitmap to HBITMAP
-   // HBITMAP hBitmap = nullptr;
    Gdiplus::Color backgroundColor(66, 107, 107, 255); // White background
    Status status = gbitmap->GetHBITMAP(backgroundColor, &hBitmap);
    if (status != Ok) {
       syslog(_T("GetHBITMAP error: %u\n"), (uint) status);
    }
-   // if (cache_clones) {
-   //    clone = new Bitmap *[tiles_x * tiles_y] ;
-   //    ZeroMemory((u8 *) clone, sizeof(clone));
-   //    // alloc_clone_elements();
-   // }
 }
 
 //********************************************************************
