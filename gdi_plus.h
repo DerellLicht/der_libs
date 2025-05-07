@@ -19,6 +19,11 @@
 //    pngTiles   = new gdi_plus(_T("images.png"), 3, 1) ;
 //********************************************************************
 
+//lint -e1057  Bad type
+//lint -e61  Bad type
+//lint -esym(628, std::__is_trivially_copyable, std::__is_base_of)
+
+#include <memory>
 #include <gdiplus.h>
 
 //lint -esym(1714, gdi_plus::gdi_plus, gdi_plus::img_width, gdi_plus::img_height)
@@ -26,6 +31,11 @@
 //lint -esym(1714, gdi_plus::get_sprite_dx, gdi_plus::get_sprite_dy, gdi_plus::DrawBox, gdi_plus::DrawBoxFilled)
 
 //lint -esym(1704, gdi_plus::gdi_plus, gdi_plus::gdi_plus)
+
+//      enum { __width = __value ? sizeof(_Tp) * __CHAR_BIT__ : 0 };
+// c:\tdm32\lib\gcc\mingw32\10.3.0\include\c++\ext\numeric_traits.h  57  Error 
+//lint -esym(1057, __gnu_cxx::__is_integer_nonstrict)
+//lint -e61  Bad type
 
 using namespace Gdiplus;
 
@@ -36,7 +46,11 @@ typedef unsigned int  uint ;
 class gdi_plus {
 private:   
    TCHAR *img_name ;
-   Bitmap *gbitmap ;
+#ifdef _lint   
+   Bitmap *pbitmap ;
+#else   
+   std::unique_ptr<Bitmap> pbitmap;
+#endif   
    HBITMAP hBitmap ;
    uint nWidth ;
    uint nHeight ;

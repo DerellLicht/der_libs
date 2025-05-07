@@ -16,7 +16,8 @@
 //********************************************************************
 gdi_plus::gdi_plus(TCHAR *new_img_name) :
    img_name(NULL),
-   gbitmap(NULL),
+   // gbitmap(NULL),
+   pbitmap(nullptr),
    hBitmap(nullptr),
    nWidth(0),
    nHeight(0),
@@ -28,18 +29,22 @@ gdi_plus::gdi_plus(TCHAR *new_img_name) :
    img_name = new TCHAR[_tcslen(new_img_name)+1] ;
    _tcscpy(img_name, new_img_name) ;
    
-   // hBitmap = load_png_to_bmp() ; //  this will init bmp, img
-   gbitmap   = new Bitmap(new_img_name);
-   nWidth    = gbitmap->GetWidth();
-   nHeight   = gbitmap->GetHeight();
-   sprite_dx = gbitmap->GetWidth();
-   sprite_dy = gbitmap->GetHeight();
+#ifdef _lint   
+   pbitmap   = new Bitmap(new_img_name);
+#else   
+   pbitmap   = std::make_unique<Bitmap>(new_img_name);
+#endif   
+   nWidth    = pbitmap->GetWidth();
+   nHeight   = pbitmap->GetHeight();
+   sprite_dx = pbitmap->GetWidth();
+   sprite_dy = pbitmap->GetHeight();
 }
 
 //********************************************************************
 gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows) :
    img_name(NULL),
-   gbitmap(NULL),
+   // gbitmap(NULL),
+   pbitmap(nullptr),
    hBitmap(nullptr),
    nWidth(0),
    nHeight(0),
@@ -51,13 +56,18 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows) :
    img_name = new TCHAR[_tcslen(new_img_name) +1] ;
    _tcscpy(img_name, new_img_name) ;
    
-   gbitmap = new Bitmap(new_img_name);
-   nWidth  = gbitmap->GetWidth();
-   nHeight = gbitmap->GetHeight();
+   // gbitmap = new Bitmap(new_img_name);
+#ifdef _lint   
+   pbitmap   = new Bitmap(new_img_name);
+#else   
+   pbitmap = std::make_unique<Bitmap>(new_img_name);
+#endif   
+   nWidth  = pbitmap->GetWidth();
+   nHeight = pbitmap->GetHeight();
    sprite_dx = nWidth / tiles_x ;
    sprite_dy = nHeight / tiles_y ;
    Gdiplus::Color backgroundColor(66, 107, 107, 255); // White background
-   Status status = gbitmap->GetHBITMAP(backgroundColor, &hBitmap);
+   Status status = pbitmap->GetHBITMAP(backgroundColor, &hBitmap);
    if (status != Ok) {
       syslog(_T("GetHBITMAP error: %u\n"), (uint) status);
    }
@@ -69,7 +79,8 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows) :
 //********************************************************************
 gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height) :
    img_name(NULL),
-   gbitmap(NULL),
+   // gbitmap(NULL),
+   pbitmap(nullptr),
    hBitmap(nullptr),
    nWidth(0),
    nHeight(0),
@@ -81,12 +92,17 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, u
    img_name = new TCHAR[_tcslen(new_img_name) +1] ;
    _tcscpy(img_name, new_img_name) ;
    
-   gbitmap = new Bitmap(new_img_name);
-   nWidth  = gbitmap->GetWidth();
-   nHeight = gbitmap->GetHeight();
+   // gbitmap = new Bitmap(new_img_name);
+#ifdef _lint   
+   pbitmap   = new Bitmap(new_img_name);
+#else   
+   pbitmap = std::make_unique<Bitmap>(new_img_name);
+#endif   
+   nWidth  = pbitmap->GetWidth();
+   nHeight = pbitmap->GetHeight();
    // Convert Gdiplus::Bitmap to HBITMAP
    Gdiplus::Color backgroundColor(66, 107, 107, 255); // White background
-   Status status = gbitmap->GetHBITMAP(backgroundColor, &hBitmap);
+   Status status = pbitmap->GetHBITMAP(backgroundColor, &hBitmap);
    if (status != Ok) {
       syslog(_T("GetHBITMAP error: %u\n"), (uint) status);
    }
@@ -100,8 +116,10 @@ gdi_plus::~gdi_plus()
    }
    DeleteObject(hBitmap);
    hBitmap = NULL ;
-   delete gbitmap ;  //lint !e1551
-   gbitmap = NULL ;
+#ifdef _lint   
+   delete pbitmap ;  //lint !e1551
+   pbitmap = NULL ;
+#endif   
 }
 
 //***********************************************************************************
