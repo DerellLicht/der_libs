@@ -98,9 +98,6 @@ gdi_plus::~gdi_plus()
    if (img_name != NULL) {
       delete [] img_name ;
    }
-   // if (clone != NULL) {
-   //    delete [] clone ;
-   // }
    DeleteObject(hBitmap);
    hBitmap = NULL ;
    delete gbitmap ;  //lint !e1551
@@ -113,8 +110,8 @@ void gdi_plus::copy_imagelist_item(HDC hdc, int sprite_col, int sprite_row, int 
    //  originally, this function used gdiplus::clone() to access the sprites;
    //  this turned out to be *horifically* slow; drawing the 1080 tiles in
    //  tiles32.png took several seconds, while BitBlt() method is almost instantanious.
-   //  Thus, we still use gdiplus to open and access the files, but we use GDI::BitBlt()
-   //  to access sprite elements.
+   //  Thus, we still use gdiplus to open and access the files, 
+   //  but we use GDI::BitBlt() to access sprite elements.
    HDC hdcMem ;
    uint xsrc = sprite_col * sprite_dx ;   //lint !e737
    uint ysrc = sprite_row * sprite_dy ;   //lint !e737
