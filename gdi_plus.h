@@ -21,6 +21,7 @@
 
 //lint -e1057  Bad type
 //lint -e61  Bad type
+//lint -e78  Symbol typedef'ed at location unknown used in expression
 //lint -esym(628, std::__is_trivially_copyable, std::__is_base_of)
 
 #include <memory>
