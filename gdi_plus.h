@@ -28,6 +28,9 @@
 #include <memory>
 #include <gdiplus.h>
 
+#define  USE_SMART_PTRS
+// #undef   USE_SMART_PTRS
+
 //lint -esym(1714, gdi_plus::gdi_plus, gdi_plus::img_width, gdi_plus::img_height)
 //lint -esym(1714, gdi_plus::horiz_tiles, gdi_plus::vert_tiles, gdi_plus::render_bitmap)
 //lint -esym(1714, gdi_plus::get_sprite_dx, gdi_plus::get_sprite_dy, gdi_plus::DrawBox, gdi_plus::DrawBoxFilled)
@@ -41,10 +44,14 @@ typedef unsigned int  uint ;
 class gdi_plus {
 private:   
    TCHAR *img_name ;
+#ifdef USE_SMART_PTRS
 #ifdef _lint   
    Bitmap *pbitmap ;
 #else   
    std::unique_ptr<Bitmap> pbitmap;
+#endif   
+#else   
+   Bitmap *pbitmap ;
 #endif   
    HBITMAP hBitmap ;
    uint nWidth ;

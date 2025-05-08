@@ -29,15 +29,24 @@ gdi_plus::gdi_plus(TCHAR *new_img_name) :
    img_name = new TCHAR[_tcslen(new_img_name)+1] ;
    _tcscpy(img_name, new_img_name) ;
    
+#ifdef USE_SMART_PTRS
 #ifdef _lint   
    pbitmap   = new Bitmap(new_img_name);
 #else   
    pbitmap   = std::make_unique<Bitmap>(new_img_name);
 #endif   
+#else   
+   pbitmap   = new Bitmap(new_img_name);
+#endif   
    nWidth    = pbitmap->GetWidth();
    nHeight   = pbitmap->GetHeight();
    sprite_dx = pbitmap->GetWidth();
    sprite_dy = pbitmap->GetHeight();
+   Gdiplus::Color backgroundColor(66, 107, 107, 255); // White background
+   Status status = pbitmap->GetHBITMAP(backgroundColor, &hBitmap);
+   if (status != Ok) {
+      syslog(_T("GetHBITMAP error: %u\n"), (uint) status);
+   }
 }
 
 //********************************************************************
@@ -56,11 +65,14 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows) :
    img_name = new TCHAR[_tcslen(new_img_name) +1] ;
    _tcscpy(img_name, new_img_name) ;
    
-   // gbitmap = new Bitmap(new_img_name);
+#ifdef USE_SMART_PTRS
 #ifdef _lint   
    pbitmap   = new Bitmap(new_img_name);
 #else   
-   pbitmap = std::make_unique<Bitmap>(new_img_name);
+   pbitmap   = std::make_unique<Bitmap>(new_img_name);
+#endif   
+#else   
+   pbitmap   = new Bitmap(new_img_name);
 #endif   
    nWidth  = pbitmap->GetWidth();
    nHeight = pbitmap->GetHeight();
@@ -92,11 +104,14 @@ gdi_plus::gdi_plus(TCHAR *new_img_name, uint icons_per_column, uint icon_rows, u
    img_name = new TCHAR[_tcslen(new_img_name) +1] ;
    _tcscpy(img_name, new_img_name) ;
    
-   // gbitmap = new Bitmap(new_img_name);
+#ifdef USE_SMART_PTRS
 #ifdef _lint   
    pbitmap   = new Bitmap(new_img_name);
 #else   
-   pbitmap = std::make_unique<Bitmap>(new_img_name);
+   pbitmap   = std::make_unique<Bitmap>(new_img_name);
+#endif   
+#else   
+   pbitmap   = new Bitmap(new_img_name);
 #endif   
    nWidth  = pbitmap->GetWidth();
    nHeight = pbitmap->GetHeight();
@@ -123,20 +138,36 @@ gdi_plus::~gdi_plus()
 }
 
 //***********************************************************************************
+//  originally, this function used gdiplus::clone() to access the sprites;
+//  this turned out to be *horifically* slow; drawing the 1080 tiles in
+//  tiles32.png took several seconds, while BitBlt() method is almost instantanious.
+//  Thus, we still use gdiplus to open and access the files, 
+//  but we use GDI::BitBlt() to access sprite elements.
+//***********************************************************************************
 void gdi_plus::copy_imagelist_item(HDC hdc, int sprite_col, int sprite_row, int xdest, int ydest)
 {
-   //  originally, this function used gdiplus::clone() to access the sprites;
-   //  this turned out to be *horifically* slow; drawing the 1080 tiles in
-   //  tiles32.png took several seconds, while BitBlt() method is almost instantanious.
-   //  Thus, we still use gdiplus to open and access the files, 
-   //  but we use GDI::BitBlt() to access sprite elements.
    HDC hdcMem ;
    uint xsrc = sprite_col * sprite_dx ;   //lint !e737
    uint ysrc = sprite_row * sprite_dy ;   //lint !e737
    hdcMem = CreateCompatibleDC (hdc);
-   SelectObject (hdcMem, hBitmap);
-   BitBlt (hdc, xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc, SRCCOPY);
-   DeleteDC (hdcMem);
+   if (hdcMem == NULL) {
+      syslog(_T("CreateCompatibleDC error: %u\n"), (uint) GetLastError());
+      return ;
+   }
+   HGDIOBJ gresult = SelectObject (hdcMem, hBitmap);
+   // [141784] SelectObject error: object is not a region [0]
+   if (gresult == NULL) {
+      syslog(_T("SelectObject error: object is not a region [%u]\n"), (uint) GetLastError());
+   }
+   else if (gresult == HGDI_ERROR) {
+      syslog(_T("SelectObject error: GDE [%u]\n"), (uint) GetLastError());
+   }
+   else {
+      syslog(_T("BitBlt: dest: %ux%u, size: %ux%u, src: %ux%u\n"), 
+         xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc);
+      BitBlt (hdc, xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc, SRCCOPY);
+      DeleteDC (hdcMem);
+   }
 }  //lint !e818 !e1762
 
 //********************************************************************
