@@ -138,7 +138,7 @@ public:
    int  HitTest(LVHITTESTINFO *lvhti, LPARAM lParam);
    uint GetItemState(int iItem);
    uint get_selected_count(void);
-   void set_header_text(uint idx, char *msg);
+   void set_header_text(uint idx, TCHAR *msg);
    void update_lview_text(uint column, LVCOLUMN *lc);
    void scroll_listview(int scroll_count);
    void set_listview_font(TCHAR * szFaceName, int iDeciPtHeight, unsigned iAttributes);

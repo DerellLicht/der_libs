@@ -1,24 +1,12 @@
 //**************************************************************************************
-//  Copyright (c) 2017-2023  Daniel D Miller
+//  Copyright (c) 2017-2025  Daniel D Miller
 //  Handlers for system-tray access
 //  
 //  Collected by:   Daniel D. Miller
 //**************************************************************************************
 #include <windows.h>
+#include <tchar.h>
 #define  SET_POPUP_MENU_BGND  1
-
-#ifndef  USE_64BIT
-#ifdef   SET_POPUP_MENU_BGND
-//lint -esym(750, MIM_MAXHEIGHT, MIM_HELPID, MIM_MENUDATA, MIM_STYLE)
-//  from winuser.h, requires WINVER   0x0500
-#define MIM_MAXHEIGHT   1
-#define MIM_BACKGROUND  2
-#define MIM_HELPID      4
-#define MIM_MENUDATA    8
-#define MIM_STYLE       16
-#define MIM_APPLYTOSUBMENUS 0x80000000L
-#endif
-#endif
 
 #include "common.h"  //  syslog(), get_system_message()
 #include "systray.h"
@@ -33,12 +21,12 @@ void load_tray_menu(WORD menuID)
 {
    HMENU hTopMenu = LoadMenu (g_hinst, MAKEINTRESOURCE(menuID)) ;
    if (hTopMenu == NULL) {
-      syslog("LoadMenu: %s\n", get_system_message()) ;
+      syslog(_T("LoadMenu: %s\n"), get_system_message()) ;
    } 
    
    hMenu = GetSubMenu(hTopMenu, 0) ;
    if (hMenu == NULL) {
-      syslog("GetSubMenu: %s\n", get_system_message()) ;
+      syslog(_T("GetSubMenu: %s\n"), get_system_message()) ;
    } 
    
 #ifdef   SET_POPUP_MENU_BGND
@@ -50,7 +38,7 @@ void load_tray_menu(WORD menuID)
    mnuInfo.hbrBack  = CreateSolidBrush(RGB(128,128,128));
    // if(SetMenuInfo(hTopMenu,&mnuInfo)==FALSE) {
    if(SetMenuInfo(hMenu,&mnuInfo)==FALSE) {
-      syslog("Popup Menu background not changed: %s\n", get_system_message());
+      syslog(_T("Popup Menu background not changed: %s\n"), get_system_message());
    }   
 #endif   
 }

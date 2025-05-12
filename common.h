@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2024  Daniel D Miller
+//  Copyright (c) 2008-2025  Daniel D Miller
 //  common_funcs.cpp - common functions for Windows and other programs.
 //  common.h - Contains Windows-specific and System-specific definitions
 //  This module, which has been entirely compiled from public-domain sources, 
@@ -81,7 +81,7 @@ extern const TCHAR  TTAB ;
 //lint -esym(768, string_list_s::idx, string_list_s::marked)
 typedef struct string_list_s {
    struct string_list_s *next ;
-   char *msg ;
+   TCHAR *msg ;
    uint idx ;     //  required for listview interfaces
    bool marked ;  //  required for listview interfaces
 } string_list_t, *string_list_p ;
@@ -129,7 +129,7 @@ uint uabs(uint uvalue1, uint uvalue2);
 double dabs(double dvalue1, double dvalue2);
 int hex_dump(u8 *bfr, int bytes, unsigned addr);
 int hex_dump(u8 *bfr, int bytes);
-int file_copy_by_line(char *source_file, char *dest_file);
+int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file);
 DWORD load_exec_filename(void);
 LRESULT derive_file_path(TCHAR *drvbfr, TCHAR *filename);
 LRESULT derive_filename_from_exec(TCHAR *drvbfr, TCHAR *new_ext);
@@ -154,11 +154,11 @@ FILE_DATETIME_CREATE=0,
 FILE_DATETIME_LASTACCESS,
 FILE_DATETIME_LASTWRITE
 } file_time_select_t ;
-bool get_file_datetime(char *file_name, SYSTEMTIME *sdt, file_time_select_t time_select);
+bool get_file_datetime(TCHAR *file_name, SYSTEMTIME *sdt, file_time_select_t time_select);
 
 // ULLONG_MAX = 18,446,744,073,709,551,615
 #define  MAX_ULL_COMMA_LEN  26
-char *convert_to_commas(ULONGLONG uli, char *outstr);
+TCHAR *convert_to_commas(ULONGLONG uli, TCHAR *outstr);
 
 //  window.mgr.cpp
 #ifdef USE_BUSY_CURSOR

@@ -746,7 +746,7 @@ void CVListView::set_selected_row(int row, bool reset_required)
 }  
 
 //*****************************************************************************
-void CVListView::set_header_text(uint idx, char *msg)
+void CVListView::set_header_text(uint idx, TCHAR *msg)
 {
    HWND hwndHeader = ListView_GetHeader(hwndVListView);
    if (hwndHeader) {
