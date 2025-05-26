@@ -1043,14 +1043,14 @@ int hex_dump(u8 *bfr, int bytes)
 //lint -esym(765, file_copy_by_line)
 int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
 {
-   FILE *infile = _tfopen(source_file, _T("rt")) ; //lint !e64
+   FILE *infile = _tfopen(source_file, _T("rt")) ; //lint !e64  NOLINT
    if (infile == NULL) {
       syslog(_T("%s: %s\n"), source_file, strerror(errno)) ;
       return -errno;
    }
-   FILE *outfile = _tfopen(dest_file, _T("wt")) ; //lint !e64
+   FILE *outfile = _tfopen(dest_file, _T("wt")) ; //lint !e64   NOLINT
    if (outfile == NULL) {
-      syslog(_T("%s: %s\n"), dest_file, strerror(errno)) ;
+      syslog(_T("%s: %s\n"), dest_file, strerror(errno)) ;  //  NOLINT
       return -errno;
    }
    TCHAR inpstr[260] ;
