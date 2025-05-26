@@ -1009,10 +1009,11 @@ int hex_dump(u8 *bfr, int bytes, unsigned addr)
          len += wsprintfA(tail+len, " ") ;
       }
 
-      // printf(" | %s |\n", tail) ;
-      strcat(pstr, " | ") ;
-      strcat(pstr, tail) ;
-      strcat(pstr, " |") ;
+      //  eliminate strcat
+      wsprintfA(&pstr[plen], " | %s |", tail) ;
+      // strcat(pstr, " | ") ;
+      // strcat(pstr, tail) ;
+      // strcat(pstr, " |") ;
       // printf("%s\n", pstr) ;
       syslog(_T("%s\n"), pstr) ;
 
