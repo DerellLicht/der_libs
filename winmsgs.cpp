@@ -837,7 +837,7 @@ TCHAR *lookup_winmsg_name(int msg_code)
    bool is_negative = false ;
    if (msg_code >= 0) {
       if (msg_code >= WM_APP) {
-         _stprintf(msgstr, _T("WM_APP + %u"), msg_code - WM_APP) ;
+         _stprintf(msgstr, _T("WM_APP + %u"), (unsigned) (msg_code - WM_APP)) ;
          return msgstr;
       }
       for (j=0; win_msgs[j].msg_num != WM_NOT_FOUND; j++) {
