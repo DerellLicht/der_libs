@@ -184,11 +184,12 @@ void CVListView::lview_assign_column_headers(void)
    iOffset += 6 ;
    LvColumn.cx = cxClient - iOffset ;
    // LvColumn.pszText = "comm-port terminal" ;
-#ifdef UNICODE            
-   LvColumn.pszText = ascii2unicode(".") ;
-#else
-   LvColumn.pszText = "." ;   //lint !e1778  asmt is not const safe
-#endif
+   LvColumn.pszText = _T(".") ;   //lint !e1778  asmt is not const safe
+// #ifdef UNICODE            
+//    LvColumn.pszText = ascii2unicode(".") ;
+// #else
+//    LvColumn.pszText = "." ;   //lint !e1778  asmt is not const safe
+// #endif
    SendMessage(hwndVListView, LVM_INSERTCOLUMN, 0, (LPARAM)(const LV_COLUMN*)(&LvColumn)) ;
 }
 
@@ -752,13 +753,13 @@ void CVListView::set_header_text(uint idx, TCHAR *msg)
    if (hwndHeader) {
       HDITEM item;
       item.mask = HDI_TEXT ;
-#ifdef UNICODE            
-      item.pszText = ascii2unicode(msg) ;
-      item.cchTextMax = _tcslen(item.pszText) ;
-#else
+// #ifdef UNICODE            
       item.pszText = msg ;
-      item.cchTextMax = _tcslen(msg) ;
-#endif
+      item.cchTextMax = _tcslen(item.pszText) ;
+// #else
+//       item.pszText = msg ;
+//       item.cchTextMax = _tcslen(msg) ;
+// #endif
       item.fmt = HDF_STRING | HDF_CENTER ;
       Header_SetItem(hwndHeader, idx, &item);  //lint !e522
    } else { //lint !e550  Symbol 'item' (line 753) not accessed

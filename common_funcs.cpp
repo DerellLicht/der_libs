@@ -381,6 +381,7 @@ exit_point:
 
 //****************************************************************************
 //lint -esym(714, get_file_datetime)
+//lint -esym(757, get_file_datetime)
 //lint -esym(759, get_file_datetime)
 //lint -esym(765, get_file_datetime)
 bool get_file_datetime(char *file_name, SYSTEMTIME *sdt, file_time_select_t time_select)
