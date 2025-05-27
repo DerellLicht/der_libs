@@ -438,7 +438,7 @@ LRESULT derive_file_path(TCHAR *drvbfr, TCHAR *filename)
       return ERROR_FILE_NOT_FOUND ;
    }
    
-   _tcsncpy(drvbfr, exec_fname, MAX_FILE_LEN+1) ;
+   _tcsncpy(drvbfr, exec_fname, MAX_FILE_LEN+1) ;  //lint !e419
    //  this should never fail; failure would imply
    //  an executable with no .exe extension!
    TCHAR *sptr = _tcsrchr(drvbfr, '\\') ;
@@ -463,7 +463,7 @@ LRESULT derive_filename_from_exec(TCHAR *drvbfr, TCHAR *new_ext)
       syslog(_T("cannot find name of executable\n")) ;
       return ERROR_FILE_NOT_FOUND ;
    }
-   _tcsncpy(drvbfr, exec_fname, MAX_FILE_LEN+1) ;
+   _tcsncpy(drvbfr, exec_fname, MAX_FILE_LEN+1) ;  //lint !e419
    //  this should never fail; failure would imply
    //  an executable with no .exe extension!
    TCHAR *sptr = _tcsrchr(drvbfr, '.') ;
