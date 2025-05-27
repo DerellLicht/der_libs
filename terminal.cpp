@@ -98,8 +98,8 @@ bool term_notify(HWND hwnd, LPARAM lParam)
       switch (msg_code) {
       //  list messages to be ignored
       case LVN_GETDISPINFO:   //lint !e650  Constant '4294967146' out of range for operator 'case'
-      case NM_CUSTOMDRAW:
-      case NM_KILLFOCUS:
+      case NM_CUSTOMDRAW:     //lint !e650  Constant '-12' out of range for operator 'case'
+      case NM_KILLFOCUS:      //lint !e650  Constant '-8' out of range for operator 'case'
       case TTN_SHOW:          //lint !e650  Constant '4294967146' out of range for operator 'case'
       case TTN_POP:           //lint !e650  Constant '4294967146' out of range for operator 'case'
       case LVN_ODCACHEHINT:   //lint !e650  Constant '4294967146' out of range for operator 'case'
@@ -121,7 +121,7 @@ bool term_notify(HWND hwnd, LPARAM lParam)
       myTerminal->get_terminal_entry(lParam) ;
       return true;
 
-   case NM_CUSTOMDRAW:
+   case NM_CUSTOMDRAW:  //lint !e650  Constant '-12' out of range for operator 'case'
       SetWindowLongA (hwnd, DWL_MSGRESULT, (LONG) myTerminal->TerminalCustomDraw(lParam));
       return true;
 
