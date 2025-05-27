@@ -422,7 +422,7 @@ int CTerminal::save_terminal_contents(TCHAR *outfile, file_type_e file_type)
                      _T("</head><body>\n"), outfile) ; //lint !e559
       }
       _ftprintf(fd, _T("<pre>\n")) ;
-      html_output(fd, WIN_BGREEN, WIN_GREY, _T("***********************************************************************")) ;
+      html_output(fd, WIN_BGREEN, WIN_GREY, _T("***********************************************************************")) ;   // NOLINT
       _stprintf(msgstr, _T("Date/Time of report: %s, %s"), dbuffer, tbuffer) ;
       html_output(fd, WIN_BGREEN, WIN_GREY, msgstr) ;
       for (lvptr = tlv_top; lvptr != NULL; lvptr = lvptr->next) {

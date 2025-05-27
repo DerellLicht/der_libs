@@ -40,6 +40,7 @@ extern const TCHAR  TTAB ;
 
 #define  LOOP_FOREVER   1
 
+#define  MAX_FILE_LEN      1024
 #define  MAX_UNICODE_LEN   1024
 
 #define  MAX_TOOLTIP_LEN   1024
