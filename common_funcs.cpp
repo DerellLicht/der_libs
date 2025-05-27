@@ -646,8 +646,9 @@ _T("SNMP INVALID_BUFFER")
 //lint -esym(765, get_system_message)
 TCHAR *get_system_message(DWORD errcode)
 {
+#define  GSM_LEN     1024
    // static TCHAR msg[261] ;
-   static TCHAR msg[1024] ;
+   static TCHAR msg[GSM_LEN+1] ;
    // int slen ;
    int result = (int) errcode ;
    if (result < 0) {
@@ -689,7 +690,7 @@ TCHAR *get_system_message(DWORD errcode)
       _stprintf(msg, _T("NULL buffer in response from FormatMessage() [%u]"), (uint) GetLastError()) ;
    } else 
    {
-      _tcsncpy(msg, (TCHAR *) lpMsgBuf, sizeof(msg)) ;
+      _tcsncpy(msg, (TCHAR *) lpMsgBuf, GSM_LEN) ;
       // Free the buffer.
       LocalFree( lpMsgBuf );
    }
