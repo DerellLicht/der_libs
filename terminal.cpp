@@ -90,9 +90,10 @@ void term_set_font(TCHAR *font_name, uint fsize, uint attr)
 }
 
 //******************************************************************
+//  NOLINTBEGIN(clang-diagnostic-c++11-narrowing)
 bool term_notify(HWND hwnd, LPARAM lParam)
 {
-   int msg_code = (int) ((NMHDR FAR *) lParam)->code ;
+   UINT msg_code = (int) ((NMHDR FAR *) lParam)->code ;
    if (debug_enabled) {
       switch (msg_code) {
       //  list messages to be ignored
@@ -130,6 +131,7 @@ bool term_notify(HWND hwnd, LPARAM lParam)
       return false;
    }
 }  //lint !e715
+//  NOLINTEND(clang-diagnostic-c++11-narrowing)
 
 //******************************************************************
 // Subclass procedure for the Terminal Virtual ListView control

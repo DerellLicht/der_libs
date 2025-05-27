@@ -570,7 +570,7 @@ void CTerminal::put(TCHAR *lpBuf)
    if (tlv_top == NULL)
       tlv_top = lvptr ;
    else
-      tlv_tail->next = lvptr ;
+      tlv_tail->next = lvptr ;   // NOLINT
    tlv_tail = lvptr ;
 
    if (lvptr->idx+1 != curr_row) {
