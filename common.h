@@ -13,11 +13,13 @@
 
 //lint -e755  global macro not referenced
 
-typedef unsigned char         u8 ;
-typedef unsigned short        u16 ;
-typedef unsigned int          uint ;
-typedef unsigned long         u32 ;
-typedef unsigned long long    u64 ;
+typedef  unsigned char        u8 ;
+typedef  unsigned char        uchar ;
+typedef  unsigned short       u16 ;
+typedef  unsigned long        ulong ;
+typedef  unsigned int         uint ;
+typedef  unsigned long        u32 ;
+typedef  unsigned long long   u64 ;
 
 #define  STX      2
 #define  ETX      3
@@ -29,6 +31,9 @@ typedef unsigned long long    u64 ;
 #define  ESC      27
 #define  SPC      32
 #define  ZERO     48
+
+//  this definition was excluded by WINNT.H
+#define FILE_ATTRIBUTE_VOLID  0x00000008
 
 //  define bounds of printable ASCII characters
 #define  FIRST_PCHAR  32
@@ -99,6 +104,11 @@ typedef union ul2uc_u {
    u16 us[2] ;
    u8  uc[4] ;
 } ul2uc_t ;
+
+union u64toul {
+   ULONGLONG i ;
+   ulong u[2] ;
+};
 
 //*************************************************************
 inline void delay_ms(uint msec)
