@@ -66,7 +66,6 @@ private:
    gdi_plus() ;
    
 public:   
-   // gdi_plus();
    gdi_plus(wchar_t const * const new_img_name) ;
    gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, uint icon_rows);
    gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height);
