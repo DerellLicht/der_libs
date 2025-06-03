@@ -639,7 +639,7 @@ _T("SNMP INVALID_BUFFER")
 // This means that a message description does not exist in the system for the previous error code. 
 // The MSDN documentation for FormatMessage with flag FORMAT_MESSAGE_FROM_SYSTEM states that:
 // 
-// Not all Windows Embedded CE–based devices will contain the system message-table resources. 
+// Not all Windows Embedded CEï¿½based devices will contain the system message-table resources. 
 // This is a selectable part of the Windows Embedded CE operating system and is often removed to conserve space.
 //*************************************************************************************
 
@@ -1076,7 +1076,7 @@ int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
 //lint -esym(765, convert_to_commas)
 TCHAR *convert_to_commas(ULONGLONG uli, TCHAR *outstr)
 {  //lint !e1066
-   int slen, inIdx, j ;
+   unsigned slen, j, inIdx ;
    TCHAR *strptr ;
    TCHAR temp_ull_str[MAX_ULL_COMMA_LEN+1] ;
    static TCHAR local_ull_str[MAX_ULL_COMMA_LEN+1] ;
