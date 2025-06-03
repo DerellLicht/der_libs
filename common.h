@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2025  Daniel D Miller
+//  Copyright (c) 2008-2025  Daniel D Miller 
 //  common_funcs.cpp - common functions for Windows and other programs.
 //  common.h - Contains Windows-specific and System-specific definitions
 //  This module, which has been entirely compiled from public-domain sources, 
