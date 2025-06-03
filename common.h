@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2025  Daniel D Miller 
+//  Copyright (c) 2008-2025  Daniel D Miller
 //  common_funcs.cpp - common functions for Windows and other programs.
 //  common.h - Contains Windows-specific and System-specific definitions
 //  This module, which has been entirely compiled from public-domain sources, 
@@ -8,11 +8,10 @@
 //  Collected and Organized by:  Dan Miller
 //****************************************************************************
 
-//lint -e755  global macro not referenced
-//lint -esym(756, uchar) global typedef not referenced
 //lint -esym(757, convert_to_commas, file_copy_by_line, get_dtimes_str)
 //lint -esym(757, get_hex8, get_hex16, get_hex32, IsCharNum, secs_to_date_time_str)
-//lint -esym(758, u64toul) global union not referenced
+
+//lint -e755  global macro not referenced
 
 typedef  unsigned char        u8 ;
 typedef  unsigned char        uchar ;
