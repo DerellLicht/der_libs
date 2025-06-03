@@ -184,12 +184,7 @@ void CVListView::lview_assign_column_headers(void)
    iOffset += 6 ;
    LvColumn.cx = cxClient - iOffset ;
    // LvColumn.pszText = "comm-port terminal" ;
-   LvColumn.pszText = _T(".") ;   //lint !e1778  asmt is not const safe
-// #ifdef UNICODE            
-//    LvColumn.pszText = ascii2unicode(".") ;
-// #else
-//    LvColumn.pszText = "." ;   //lint !e1778  asmt is not const safe
-// #endif
+   LvColumn.pszText = _T(".") ;   //  NOLINT
    SendMessage(hwndVListView, LVM_INSERTCOLUMN, 0, (LPARAM)(const LV_COLUMN*)(&LvColumn)) ;
 }
 

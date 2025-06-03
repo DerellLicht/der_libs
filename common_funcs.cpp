@@ -18,7 +18,6 @@
 #include <windows.h>
 #include <stdio.h>   //  vsprintf
 #include <tchar.h>
-#include <limits.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <sys/stat.h>
@@ -49,7 +48,7 @@ const TCHAR  TCR   =  13 ;
 const TCHAR  TLF   =  10 ;
 const TCHAR  TTAB  =   9 ;
 
-static TCHAR exec_fname[PATH_MAX+1] = _T("") ;
+static TCHAR exec_fname[MAX_FILE_LEN+1] = _T("") ;
 
 //******************************************************************
 //lint -esym(714, show_bool_str)
@@ -414,7 +413,7 @@ bool get_file_datetime(char *file_name, SYSTEMTIME *sdt, file_time_select_t time
 DWORD load_exec_filename(void)
 {
    //  get fully-qualified name of executable program
-   DWORD result = GetModuleFileName(NULL, exec_fname, PATH_MAX) ;
+   DWORD result = GetModuleFileName(NULL, exec_fname, MAX_FILE_LEN) ;
    if (result == 0) {
       exec_fname[0] = 0 ;
       syslog(_T("GetModuleFileName: %s\n"), get_system_message()) ;
@@ -438,7 +437,8 @@ LRESULT derive_file_path(TCHAR *drvbfr, TCHAR *filename)
       syslog(_T("cannot find name of executable\n")) ;
       return ERROR_FILE_NOT_FOUND ;
    }
-   _tcsncpy(drvbfr, exec_fname, PATH_MAX) ;
+   
+   _tcsncpy(drvbfr, exec_fname, MAX_FILE_LEN+1) ;  //lint !e419
    //  this should never fail; failure would imply
    //  an executable with no .exe extension!
    TCHAR *sptr = _tcsrchr(drvbfr, '\\') ;
@@ -463,7 +463,7 @@ LRESULT derive_filename_from_exec(TCHAR *drvbfr, TCHAR *new_ext)
       syslog(_T("cannot find name of executable\n")) ;
       return ERROR_FILE_NOT_FOUND ;
    }
-   _tcsncpy(drvbfr, exec_fname, PATH_MAX) ;
+   _tcsncpy(drvbfr, exec_fname, MAX_FILE_LEN+1) ;  //lint !e419
    //  this should never fail; failure would imply
    //  an executable with no .exe extension!
    TCHAR *sptr = _tcsrchr(drvbfr, '.') ;
@@ -492,7 +492,7 @@ LRESULT get_base_filename(TCHAR *drvbfr)
       syslog(_T("cannot find name of executable\n")) ;
       return ERROR_FILE_NOT_FOUND ;
    }
-   _tcsncpy(drvbfr, exec_fname, PATH_MAX) ;
+   _tcsncpy(drvbfr, exec_fname, MAX_FILE_LEN+1) ;
    //  this should never fail; failure would imply
    //  an executable with no .exe extension!
    TCHAR *sptr = _tcsrchr(drvbfr, '.') ;
@@ -516,7 +516,7 @@ LRESULT get_base_path(TCHAR *drvbfr)
       syslog(_T("cannot find name of executable\n")) ;
       return ERROR_FILE_NOT_FOUND ;
    }
-   _tcsncpy(drvbfr, exec_fname, PATH_MAX) ;
+   _tcsncpy(drvbfr, exec_fname, MAX_FILE_LEN+1) ;
    //  this should never fail; failure would imply
    //  an executable with no .exe extension!
    TCHAR *sptr = _tcsrchr(drvbfr, '\\') ;
@@ -536,7 +536,7 @@ LRESULT get_base_path(TCHAR *drvbfr)
 LRESULT get_base_path_wide(TCHAR *drvbfr)
 {
    //  get fully-qualified name of executable program
-   DWORD result = GetModuleFileName(NULL, drvbfr, PATH_MAX) ;
+   DWORD result = GetModuleFileName(NULL, drvbfr, MAX_FILE_LEN) ;
    if (result == 0) {
       *drvbfr = 0 ;
       syslog(_T("GetModuleFileName: %s\n"), get_system_message()) ;
@@ -550,6 +550,8 @@ LRESULT get_base_path_wide(TCHAR *drvbfr)
    *sptr = 0 ; //  strip extension
    return 0;
 }
+
+// NOLINTBEGIN(clang-diagnostic-writable-strings)
 
 /*---------------------------------------------------------
  * IcmpSendEcho() Error Strings
@@ -623,6 +625,7 @@ _T("SNMP INVALID_CTL"),
 _T("SNMP INVALID_SESSION"),
 _T("SNMP INVALID_BUFFER")
 } ;
+// NOLINTEND(clang-diagnostic-writable-strings)
 
 //*************************************************************************************
 //  each subsequent call to this function overwrites
@@ -636,7 +639,7 @@ _T("SNMP INVALID_BUFFER")
 // This means that a message description does not exist in the system for the previous error code. 
 // The MSDN documentation for FormatMessage with flag FORMAT_MESSAGE_FROM_SYSTEM states that:
 // 
-// Not all Windows Embedded CE–based devices will contain the system message-table resources. 
+// Not all Windows Embedded CEï¿½based devices will contain the system message-table resources. 
 // This is a selectable part of the Windows Embedded CE operating system and is often removed to conserve space.
 //*************************************************************************************
 
@@ -646,8 +649,9 @@ _T("SNMP INVALID_BUFFER")
 //lint -esym(765, get_system_message)
 TCHAR *get_system_message(DWORD errcode)
 {
+#define  GSM_LEN     1024
    // static TCHAR msg[261] ;
-   static TCHAR msg[1024] ;
+   static TCHAR msg[GSM_LEN+1] ;
    // int slen ;
    int result = (int) errcode ;
    if (result < 0) {
@@ -689,7 +693,7 @@ TCHAR *get_system_message(DWORD errcode)
       _stprintf(msg, _T("NULL buffer in response from FormatMessage() [%u]"), (uint) GetLastError()) ;
    } else 
    {
-      _tcsncpy(msg, (TCHAR *) lpMsgBuf, sizeof(msg)) ;
+      _tcsncpy(msg, (TCHAR *) lpMsgBuf, GSM_LEN) ;
       // Free the buffer.
       LocalFree( lpMsgBuf );
    }
@@ -739,7 +743,7 @@ int syslog(const TCHAR *fmt, ...)
 //lint -esym(765, show_error)
 TCHAR *show_error(int error_code)
 {
-   static TCHAR *message0 = _T("no response from ODU") ;
+   static TCHAR *message0 = _T("no response from ODU") ; // NOLINT
    uint ecode = (uint) (error_code < 0) ? -error_code : error_code ; //lint !e732
    if (ecode == 0)
       return message0 ;
@@ -1043,14 +1047,14 @@ int hex_dump(u8 *bfr, int bytes)
 //lint -esym(765, file_copy_by_line)
 int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
 {
-   FILE *infile = _tfopen(source_file, _T("rt")) ; //lint !e64
+   FILE *infile = _tfopen(source_file, _T("rt")) ; //lint !e64  NOLINT
    if (infile == NULL) {
       syslog(_T("%s: %s\n"), source_file, strerror(errno)) ;
       return -errno;
    }
-   FILE *outfile = _tfopen(dest_file, _T("wt")) ; //lint !e64
+   FILE *outfile = _tfopen(dest_file, _T("wt")) ; //lint !e64   NOLINT
    if (outfile == NULL) {
-      syslog(_T("%s: %s\n"), dest_file, strerror(errno)) ;
+      syslog(_T("%s: %s\n"), dest_file, strerror(errno)) ;  //  NOLINT
       return -errno;
    }
    TCHAR inpstr[260] ;
@@ -1072,7 +1076,7 @@ int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
 //lint -esym(765, convert_to_commas)
 TCHAR *convert_to_commas(ULONGLONG uli, TCHAR *outstr)
 {  //lint !e1066
-   int slen, inIdx, j ;
+   unsigned slen, j, inIdx ;
    TCHAR *strptr ;
    TCHAR temp_ull_str[MAX_ULL_COMMA_LEN+1] ;
    static TCHAR local_ull_str[MAX_ULL_COMMA_LEN+1] ;

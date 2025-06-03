@@ -90,15 +90,16 @@ void term_set_font(TCHAR *font_name, uint fsize, uint attr)
 }
 
 //******************************************************************
+//  NOLINTBEGIN(clang-diagnostic-c++11-narrowing)
 bool term_notify(HWND hwnd, LPARAM lParam)
 {
-   int msg_code = (int) ((NMHDR FAR *) lParam)->code ;
+   UINT msg_code = (int) ((NMHDR FAR *) lParam)->code ;
    if (debug_enabled) {
       switch (msg_code) {
       //  list messages to be ignored
       case LVN_GETDISPINFO:   //lint !e650  Constant '4294967146' out of range for operator 'case'
-      case NM_CUSTOMDRAW:
-      case NM_KILLFOCUS:
+      case NM_CUSTOMDRAW:     //lint !e650  Constant '-12' out of range for operator 'case'
+      case NM_KILLFOCUS:      //lint !e650  Constant '-8' out of range for operator 'case'
       case TTN_SHOW:          //lint !e650  Constant '4294967146' out of range for operator 'case'
       case TTN_POP:           //lint !e650  Constant '4294967146' out of range for operator 'case'
       case LVN_ODCACHEHINT:   //lint !e650  Constant '4294967146' out of range for operator 'case'
@@ -120,7 +121,7 @@ bool term_notify(HWND hwnd, LPARAM lParam)
       myTerminal->get_terminal_entry(lParam) ;
       return true;
 
-   case NM_CUSTOMDRAW:
+   case NM_CUSTOMDRAW:  //lint !e650  Constant '-12' out of range for operator 'case'
       SetWindowLongA (hwnd, DWL_MSGRESULT, (LONG) myTerminal->TerminalCustomDraw(lParam));
       return true;
 
@@ -130,6 +131,7 @@ bool term_notify(HWND hwnd, LPARAM lParam)
       return false;
    }
 }  //lint !e715
+//  NOLINTEND(clang-diagnostic-c++11-narrowing)
 
 //******************************************************************
 // Subclass procedure for the Terminal Virtual ListView control
@@ -177,7 +179,7 @@ void setup_terminal_window(HWND hwnd, uint StatusBarHeight, uint bottom_ref_cont
    myTerminal = new CTerminal(hwnd, terminal_control, (HINSTANCE) GetWindowLong(hwnd, GWL_HINSTANCE), 
       0, ctrl_bottom, dx-1, lvdy,
       LVL_STY_VIRTUAL | LVL_STY_NO_HEADER | LVL_STY_PAGE_TO_END | LVL_STY_EX_GRIDLINES) ;
-   myTerminal->set_terminal_font(_T("Courier New"), 100, EZ_ATTR_BOLD) ;
+   myTerminal->set_terminal_font(_T("Courier New"), 100, EZ_ATTR_BOLD) ;    // NOLINT
    myTerminal->lview_assign_column_headers() ;
 }
 

@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2025  Daniel D Miller
+//  Copyright (c) 2008-2025  Daniel D Miller 
 //  common_funcs.cpp - common functions for Windows and other programs.
 //  common.h - Contains Windows-specific and System-specific definitions
 //  This module, which has been entirely compiled from public-domain sources, 
@@ -8,16 +8,19 @@
 //  Collected and Organized by:  Dan Miller
 //****************************************************************************
 
+//lint -e755  global macro not referenced
+//lint -esym(756, uchar) global typedef not referenced
 //lint -esym(757, convert_to_commas, file_copy_by_line, get_dtimes_str)
 //lint -esym(757, get_hex8, get_hex16, get_hex32, IsCharNum, secs_to_date_time_str)
+//lint -esym(758, u64toul) global union not referenced
 
-//lint -e755  global macro not referenced
-
-typedef unsigned char         u8 ;
-typedef unsigned short        u16 ;
-typedef unsigned int          uint ;
-typedef unsigned long         u32 ;
-typedef unsigned long long    u64 ;
+typedef  unsigned char        u8 ;
+typedef  unsigned char        uchar ;
+typedef  unsigned short       u16 ;
+typedef  unsigned long        ulong ;
+typedef  unsigned int         uint ;
+typedef  unsigned long        u32 ;
+typedef  unsigned long long   u64 ;
 
 #define  STX      2
 #define  ETX      3
@@ -30,6 +33,9 @@ typedef unsigned long long    u64 ;
 #define  SPC      32
 #define  ZERO     48
 
+//  this definition was excluded by WINNT.H
+#define FILE_ATTRIBUTE_VOLID  0x00000008
+
 //  define bounds of printable ASCII characters
 #define  FIRST_PCHAR  32
 #define  LAST_PCHAR   126
@@ -38,8 +44,10 @@ extern const TCHAR  TCR  ;
 extern const TCHAR  TLF  ;
 extern const TCHAR  TTAB ;
 
-#define  LOOP_FOREVER   1
+#define  LOOP_FOREVER   true
 
+#define  MAX_FILE_LEN      1024
+#define  MAX_PATH_LEN      1024
 #define  MAX_UNICODE_LEN   1024
 
 #define  MAX_TOOLTIP_LEN   1024
@@ -98,6 +106,11 @@ typedef union ul2uc_u {
    u16 us[2] ;
    u8  uc[4] ;
 } ul2uc_t ;
+
+union u64toul {
+   ULONGLONG i ;
+   ulong u[2] ;
+};
 
 //*************************************************************
 inline void delay_ms(uint msec)
