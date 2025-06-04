@@ -48,8 +48,8 @@ extern const TCHAR  TTAB ;
 
 #define  MAX_FILE_LEN      1024
 #define  MAX_PATH_LEN      1024
+#define  MAX_LINE_LEN      1024
 #define  MAX_UNICODE_LEN   1024
-
 #define  MAX_TOOLTIP_LEN   1024
 
 #define  ONE_SECOND_MSEC        (1000)
