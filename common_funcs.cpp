@@ -50,15 +50,6 @@ const TCHAR  TTAB  =   9 ;
 
 static TCHAR exec_fname[MAX_FILE_LEN+1] = _T("") ;
 
-//  solve linker error during clang++ build
-//  This macro should be defined in target Makefile
-#ifdef  USING_CLANG
-void ___chkstk_ms(void)
-{
-   
-}
-#endif
-
 //******************************************************************
 //lint -esym(714, show_bool_str)
 //lint -esym(759, show_bool_str)
