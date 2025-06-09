@@ -58,7 +58,7 @@ static TCHAR exec_fname[MAX_FILE_LEN+1] = _T("") ;
 //lint -esym(765, get_build_size)
 unsigned get_build_size(void)
 {
-   return (sizeof(int*) == 8) ? 64 : 32 ;
+   return (sizeof(int*) == 8) ? 64 : 32 ; //lint !e506
 }
 
 //******************************************************************
