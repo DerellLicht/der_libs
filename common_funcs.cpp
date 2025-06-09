@@ -739,8 +739,6 @@ int syslog(const TCHAR *fmt, ...)
 
    va_start(al, fmt);   //lint !e1055 !e530
    _vstprintf(consoleBuffer, fmt, al);   //lint !e64
-   // if (common_logging_enabled)
-   //    fprintf(cmlogfd, "%s", consoleBuffer) ;
    OutputDebugString(consoleBuffer) ;
    va_end(al);
    return 1;
