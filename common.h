@@ -119,6 +119,7 @@ inline void delay_ms(uint msec)
 }
 
 //  common_funcs.cpp
+unsigned get_build_size(void);   //  returns whether exe is 32-bit or 64-bit
 u64 proc_time(void);
 u64 get_clocks_per_second(void);
 uint calc_elapsed_time(bool done);

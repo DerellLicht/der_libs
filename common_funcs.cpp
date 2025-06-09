@@ -50,6 +50,17 @@ const TCHAR  TTAB  =   9 ;
 
 static TCHAR exec_fname[MAX_FILE_LEN+1] = _T("") ;
 
+//**********************************************************************
+//  this reports whether executable is 32-bit or 64-bit build
+//**********************************************************************
+//lint -esym(714, get_build_size)
+//lint -esym(759, get_build_size)
+//lint -esym(765, get_build_size)
+unsigned get_build_size(void)
+{
+   return (sizeof(int*) == 8) ? 64 : 32 ;
+}
+
 //******************************************************************
 //lint -esym(714, show_bool_str)
 //lint -esym(759, show_bool_str)
