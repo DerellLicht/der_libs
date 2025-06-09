@@ -18,8 +18,6 @@
 #include <windows.h>
 #include <stdio.h>   //  vsprintf
 #include <tchar.h>
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
 #include <sys/stat.h>
 #ifdef _lint
 #include <errno.h>
