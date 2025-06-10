@@ -287,12 +287,12 @@ static TCHAR const szPalFilter[] =
 bool select_text_file(HWND hDlgWnd, TCHAR *command_filename)
 {
    // syslog("A handles=%d\n", get_handle_count());
-   OPENFILENAME ofn;       // common dialog box structure
    TCHAR szFile[MAX_PATH+1];       // buffer for file name
    TCHAR oldFile[MAX_PATH+1];       // buffer for file name
    TCHAR dirFile[MAX_PATH+1];       // buffer for file name
 
    // Initialize OPENFILENAME
+   OPENFILENAME ofn;       // common dialog box structure
    ZeroMemory(&ofn, sizeof(ofn));
    ofn.lStructSize = sizeof(ofn);
    ofn.hwndOwner = hDlgWnd;
@@ -362,12 +362,12 @@ bool select_file(HWND hDlgWnd, TCHAR *command_filename, TCHAR *ext)
    *(gfptr+slen) = 0 ;  //  add a terminating NULL-term
 
    // syslog("A handles=%d\n", get_handle_count());
-   OPENFILENAME ofn;       // common dialog box structure
    TCHAR szFile[PATH_MAX];       // buffer for file name
    TCHAR oldFile[PATH_MAX];       // buffer for file name
    TCHAR dirFile[PATH_MAX];       // buffer for file name
 
    // Initialize OPENFILENAME
+   OPENFILENAME ofn;       // common dialog box structure
    ZeroMemory(&ofn, sizeof(ofn));
    ofn.lStructSize = sizeof(ofn);
    ofn.hwndOwner = hDlgWnd;
