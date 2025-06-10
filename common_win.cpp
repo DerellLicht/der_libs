@@ -128,7 +128,7 @@ HWND MyCreateUpDownControl(
 BOOL ShellGetPath(HANDLE hDlg, char lpszPath[])
 {
    BOOL bRet;
-   char szPath[MAX_PATH];
+   char szPath[MAX_PATH_LEN];
    LPITEMIDLIST lpil;
    HGLOBAL hgMem;
    BROWSEINFOA bi;
@@ -287,9 +287,9 @@ static TCHAR const szPalFilter[] =
 bool select_text_file(HWND hDlgWnd, TCHAR *command_filename)
 {
    // syslog("A handles=%d\n", get_handle_count());
-   TCHAR szFile[MAX_PATH+1];       // buffer for file name
-   TCHAR oldFile[MAX_PATH+1];       // buffer for file name
-   TCHAR dirFile[MAX_PATH+1];       // buffer for file name
+   TCHAR szFile[MAX_PATH_LEN+1];       // buffer for file name
+   TCHAR oldFile[MAX_PATH_LEN+1];       // buffer for file name
+   TCHAR dirFile[MAX_PATH_LEN+1];       // buffer for file name
 
    // Initialize OPENFILENAME
    OPENFILENAME ofn;       // common dialog box structure
@@ -326,7 +326,7 @@ bool select_text_file(HWND hDlgWnd, TCHAR *command_filename)
    if (GetOpenFileName(&ofn)) {
    // syslog("C handles=%d\n", get_handle_count());
       _tcsncpy(oldFile, command_filename, sizeof(oldFile)) ;
-      _tcsncpy(command_filename, ofn.lpstrFile, MAX_PATH) ;
+      _tcsncpy(command_filename, ofn.lpstrFile, MAX_PATH_LEN) ;
 
       SetFocus(hDlgWnd) ;
       return true;
