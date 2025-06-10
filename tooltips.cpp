@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2023  Daniel D Miller
+//  Copyright (c) 2008-2025  Daniel D Miller
 //  tooltips.cpp - tooltip functions/data
 //
 //  Written by:  Daniel D Miller 
@@ -9,9 +9,6 @@
 //    add_tooltips(hwnd, hToolTip, name_of_tooltip_array) ;
 //****************************************************************************
 
-//lint -esym(767, _WIN32_WINNT)
-// #define _WIN32_WINNT 0x0501
-// #define _WIN32_IE 0x0501
 #include <windows.h>
 #include <commctrl.h>
 #include <tchar.h>

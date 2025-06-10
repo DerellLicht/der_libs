@@ -274,7 +274,6 @@ static win_msgs_t win_msgs[] = {
 // 
 // static win_msgs_t win_msgsx[] = {
 
-// #if (_WIN32_WINNT >= 0x0601)
 { 576, _T("WM_TOUCHMOVE") },
 { 577, _T("WM_TOUCHDOWN") },
 { 578, _T("WM_TOUCHUP") },
