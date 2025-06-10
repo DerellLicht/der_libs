@@ -4,8 +4,6 @@
 //
 //  Written by:  Dan Miller
 //****************************************************************************
-//lint -esym(767, _WIN32_WINNT)
-#define  _WIN32_WINNT   0x0501
 #include <windows.h>
 #include <stdio.h>   //  vsprintf, sprintf, which supports %f
 #include <tchar.h>
@@ -48,7 +46,6 @@ void term_put(TCHAR *term_str)
 //lint -esym(714, term_append)
 //lint -esym(759, term_append)
 //lint -esym(765, term_append)
-
 void term_append(TCHAR *term_str)
 {
    myTerminal->append(term_str);
