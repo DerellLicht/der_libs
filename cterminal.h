@@ -40,12 +40,12 @@ enum file_type_e {
 //  list struct for terminal data list (virtual listview)
 //********************************************************************
 typedef struct term_lview_item_s {
-   struct term_lview_item_s *next ;
-   TCHAR *msg ;
-   uint idx ;
-   bool marked ;
-   COLORREF fgnd ;
-   COLORREF bgnd ;
+   struct term_lview_item_s *next {nullptr};
+   TCHAR *msg {nullptr};
+   uint idx {};
+   bool marked {};
+   COLORREF fgnd {};
+   COLORREF bgnd {};
 } term_lview_item_t, *term_lview_item_p ;
 
 // cterminal.h  76  Info 1712: default constructor not defined for class 'CTerminal'
