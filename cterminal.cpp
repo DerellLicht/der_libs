@@ -80,6 +80,13 @@
 //lint -esym(526, _wfopen, _wstrdate, _wstrtime)
 //lint -esym(628, _wfopen, _wstrdate, _wstrtime)
 
+//  new problems with pclint and 
+//lint -e1043  Attempting to 'delete' a non-pointer
+//lint -e850   for loop index variable 'lvptr' whose type category is 'pointer' is modified in body of the for loop that began at 'line
+//lint -e560   argument no. 3 should be a pointer
+//lint -esym(550, lvptr)
+
+
 //****************************************************************************
 CTerminal::CTerminal(HWND hwndParent, uint ControlID, HINSTANCE local_g_hinst, 
       uint x0, uint y0, uint dx, uint dy, uint local_style_flags) :
