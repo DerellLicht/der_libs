@@ -82,19 +82,6 @@ extern const TCHAR  TTAB ;
 #define  WIN_BWHITE     (0x00FFFFFFU)
 
 //*****************************************************************
-//  struct for building list of strings
-//*****************************************************************
-//lint -esym(756, string_list_p, string_list_t)
-//lint -esym(768, string_list_s::next, string_list_s::msg)
-//lint -esym(768, string_list_s::idx, string_list_s::marked)
-typedef struct string_list_s {
-   struct string_list_s *next ;
-   TCHAR *msg ;
-   uint idx ;     //  required for listview interfaces
-   bool marked ;  //  required for listview interfaces
-} string_list_t, *string_list_p ;
-
-//*****************************************************************
 //  my standard construct for translating between
 //  bytes, words, and dwords
 //*****************************************************************

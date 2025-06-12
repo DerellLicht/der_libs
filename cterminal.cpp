@@ -485,7 +485,7 @@ void CTerminal::get_term_attr(COLORREF *prev_fgnd, COLORREF *prev_bgnd)
 term_lview_item_p CTerminal::get_lview_element(TCHAR *lpBuf, COLORREF fgnd, COLORREF bgnd)
 {
    // syslog("print %u byte string\n", _tcslen(lpBuf)) ;
-   term_lview_item_p lvptr = new term_lview_item_t ;
+   term_lview_item_p lvptr = new term_lview_item ;
    // ZeroMemory((TCHAR *) lvptr, sizeof(term_lview_item_t)) ; //lint !e740
    lvptr->idx = curr_row++ ;
    lvptr->msg = new TCHAR[_tcslen(lpBuf)+1] ;
