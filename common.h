@@ -94,6 +94,7 @@ typedef union ul2uc_u {
    u8  uc[4] ;
 } ul2uc_t ;
 
+//lint -esym(768, u64toul::i, u64toul::u)
 union u64toul {
    ULONGLONG i ;
    ulong u[2] ;
