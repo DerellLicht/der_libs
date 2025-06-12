@@ -22,17 +22,17 @@
 //lint -esym(757, ShellGetPath)
 
 typedef struct DLGTEMPLATEEX_s {
-        WORD dlgVer;
-        WORD signature;
-        DWORD helpID;
-        DWORD exStyle;
-        DWORD style;
-        WORD cDlgItems;
-        short x;
-        short y;
-        short cx;
-        short cy;
-        // etc..
+   WORD dlgVer;
+   WORD signature;
+   DWORD helpID;
+   DWORD exStyle;
+   DWORD style;
+   WORD cDlgItems;
+   short x;
+   short y;
+   short cx;
+   short cy;
+   // etc..
 } DLGTEMPLATEEX, *LPDLGTEMPLATEEX; 
 
 // #define PSN_FIRST                (0U-200U)
@@ -41,16 +41,6 @@ typedef struct DLGTEMPLATEEX_s {
 // #define  PSN_QUERYINITIALFOCUS       (-213)
 // 
 // #define  LVN_HOTTRACK                (-121)
-
-//*****************************************************************
-//  lookup-table struct, used for Windows Message handlers
-//*****************************************************************
-//lint -esym(768, winproc_table_s::win_code, winproc_table_s::winproc_func)
-//lint -esym(756, winproc_table_t)
-typedef struct winproc_table_s {
-   uint win_code ;
-   bool (*winproc_func)(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, LPVOID private_data) ;
-} winproc_table_t ;
 
 //****************************************************************************
 HWND MyCreateUpDownControl(

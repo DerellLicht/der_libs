@@ -11,14 +11,14 @@
 #include <tchar.h>
 
 //**************************************************************************
-typedef struct win_msgs_s {
+struct win_msgs_s {
    unsigned msg_num ;
    TCHAR msg_name[41] ;
-} win_msgs_t ;
+} ;
 
 #define  WM_NOT_FOUND   100000
 
-static win_msgs_t win_msgs[] = {
+static win_msgs_s win_msgs[] = {
 { 0, _T("WM_NULL") },
 { 1, _T("WM_CREATE") },
 { 2, _T("WM_DESTROY") },
@@ -654,7 +654,7 @@ static win_msgs_t win_msgs[] = {
 
 // #define TTN_FIRST ((UINT)-520)
 
-static win_msgs_t win_neg_msgs[] = {
+static win_msgs_s win_neg_msgs[] = {
 { 0, _T("WM_NULL") },
 
 { 1,  _T("NM_OUTOFMEMORY") },

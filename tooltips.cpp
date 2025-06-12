@@ -50,7 +50,7 @@ static void add_tooltip_target(HWND parent, HWND target, HWND hToolTip, TCHAR *m
 }  //lint !e550  ti
 
 //****************************************************************************
-static void add_tooltips(HWND hwnd, HWND hwndToolTip, tooltip_data_t const * const tooltip_array)
+static void add_tooltips(HWND hwnd, HWND hwndToolTip, tooltip_data const * const tooltip_array)
 {
    unsigned idx ;
    
@@ -62,7 +62,7 @@ static void add_tooltips(HWND hwnd, HWND hwndToolTip, tooltip_data_t const * con
 
 //****************************************************************************
 void create_and_add_tooltips(HWND hwnd, uint max_width, uint popup_msec, uint stayup_msec,
-                             tooltip_data_t const * const tooltip_array)
+                             tooltip_data const * const tooltip_array)
 {
    HWND hToolTip = create_tooltips(hwnd, max_width, popup_msec, stayup_msec);
    add_tooltips(hwnd, hToolTip, tooltip_array);

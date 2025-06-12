@@ -27,8 +27,6 @@
 // #define  _WIN32_IE   0x0501
 #include <commctrl.h>
 
-//lint -esym(756, lv_cols_t)
-
 //lint -esym(1714, CVListView::lview_subclass, CVListView::lview_assign_column_headers, CVListView::is_lview_hwnd)
 //lint -esym(1714, CVListView::get_next_listview_index, CVListView::get_selected_count, CVListView::set_header_text)
 //lint -esym(1714, CVListView::update_lview_text, CVListView::scroll_listview, CVListView::update_column)
@@ -75,14 +73,15 @@ typedef enum
 //  listview column-header definition struct
 //****************************************************************************
 //lint -esym(768, lv_cols_s::menu_id, lv_cols_s::touched, lv_cols_s::renderFunc)
-typedef struct lv_cols_s {
-   TCHAR *txt ;
-   uint cx ;
-   bool active ;
-   uint menu_id ;
-   bool touched ; //  this is used to mark updated elements
-   void (*renderFunc)(void *private_data, uint curr_rows, uint iSubItem) ;
-} lv_cols_t, *lv_cols_p ;
+struct lv_cols_s {
+   TCHAR *txt {nullptr};
+   uint cx {};
+   bool active {};
+   uint menu_id {};
+   bool touched {}; //  this is used to mark updated elements
+   void (*renderFunc)(void *private_data, uint curr_rows, uint iSubItem) {nullptr};
+} ;
+typedef lv_cols_s *lv_cols_p ;
 
 //****************************************************************************
 class CVListView {
