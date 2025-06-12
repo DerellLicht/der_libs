@@ -494,7 +494,7 @@ term_lview_item_p CTerminal::get_lview_element(TCHAR *lpBuf, COLORREF fgnd, COLO
    lvptr->fgnd = fgnd ;
    lvptr->bgnd = bgnd ;
    return lvptr;
-}
+}  //lint !e1762
 
 //****************************************************************
 // Info 1762: Member function 'CTerminal::TerminalCustomDraw(long)' could be made const
@@ -580,7 +580,7 @@ void CTerminal::put(TCHAR *lpBuf)
       tlv_tail->next = lvptr ;   // NOLINT
    tlv_tail = lvptr ;
 
-   if (lvptr->idx+1 != curr_row) {
+   if (lvptr->idx+1 != curr_row) {  //lint !e737
       syslog(_T("math_error [L%u]: %d != %d\n"), __LINE__, lvptr->idx+1, curr_row) ;
    }
    if (end_of_page_active())
@@ -609,7 +609,7 @@ void CTerminal::put(TCHAR *lpBuf, COLORREF fgnd, COLORREF bgnd)
       tlv_tail->next = lvptr ;
    tlv_tail = lvptr ;
 
-   if (lvptr->idx+1 != curr_row) {
+   if (lvptr->idx+1 != curr_row) {  //lint !e737
       syslog(_T("math_error [L%u]: %d != %d\n"), __LINE__, lvptr->idx+1, curr_row) ;
    }
    if (end_of_page_active())
