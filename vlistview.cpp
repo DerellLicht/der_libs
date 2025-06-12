@@ -11,7 +11,7 @@
 // ===========================================
 // Common Controls - Virtual ListView Control 
 // ===========================================
-// © 1999-2000 Microsoft Corporation 
+// ï¿½ 1999-2000 Microsoft Corporation 
 // Last Updated: Sept.19,1999
 // 
 // SUMMARY
@@ -34,6 +34,9 @@
 #include "vlistview.h"
 
 //lint -esym(550, _lvi)
+
+//lint -e1013  Symbol 'cx' not a member of class 'lv_cols_s'
+//lint -e40    Undeclared identifier 'cx'
 
 // Info 1714: Member function not referenced
 //lint -esym(1714, CVListView::listview_resize, CVListView::listview_assign_column_headers)
