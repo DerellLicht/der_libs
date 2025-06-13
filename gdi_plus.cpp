@@ -150,8 +150,8 @@ void gdi_plus::copy_imagelist_item(HDC hdc, int sprite_col, int sprite_row, int 
       syslog(L"SelectObject error: GDE [%u]\n", (uint) GetLastError());
    }
    else {
-      syslog(L"BitBlt: dest: %ux%u, size: %ux%u, src: %ux%u\n", 
-         xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc);
+      // syslog(L"BitBlt: dest: %ux%u, size: %ux%u, src: %ux%u\n", 
+      //    xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc);
       BitBlt (hdc, xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc, SRCCOPY);
       DeleteDC (hdcMem);
    }
