@@ -680,6 +680,8 @@ uint get_screen_height(void)
 }
 
 //********************************************************************************
+//  This requires get_monitor_dimens() to be called first
+//********************************************************************************
 //lint -esym(714, center_dialog_on_screen)
 //lint -esym(752, center_dialog_on_screen)
 //lint -esym(759, center_dialog_on_screen)
