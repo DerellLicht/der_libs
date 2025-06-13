@@ -8,6 +8,11 @@
 //    HWND hToolTip = create_tooltips(hwnd, 150, 100, 10000) ;
 //    add_tooltips(hwnd, hToolTip, name_of_tooltip_array) ;
 //****************************************************************************
+//  This is how to enter multi-line tooltip comments:
+// { IDS_CP_SERNUM,     _T("The SEND CMD button will send COMMAND to the device with")
+//                      _T("this Serial Number.  If Serial Number is 0, COMMAND is sent ")
+//                      _T("to the broadcast address on the current port.") },
+//****************************************************************************
 
 #include <windows.h>
 #include <commctrl.h>
