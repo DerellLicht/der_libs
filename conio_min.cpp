@@ -120,7 +120,7 @@ void conio_min::dgotoxy(int x, int y)
 conio_min::conio_min() :
 hStdOut (nullptr),
 hStdIn (nullptr),
-sinfo ({}),
+sinfo ({}), //lint !e1025
 redirected (false),
 original_attribs (3),
 init_success(false)
