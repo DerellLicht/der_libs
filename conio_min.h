@@ -54,7 +54,6 @@ public:
    void dreturn(void);
    void dputs(const TCHAR *outstr);
    int  dputsf(const TCHAR *fmt, ...);
-
 };
 
    
