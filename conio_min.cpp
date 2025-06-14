@@ -46,7 +46,10 @@
 //lint -esym(759, control_handler) 
 //lint -esym(765, control_handler)
 #ifdef  USE_CTRL_HANDLER
-BOOL WINAPI control_handler(DWORD dwCtrlType)
+BOOL WINAPI conio_min::control_handler(DWORD dwCtrlType)
+//  if control_handler() is not a member function of conio_min class,
+//  then it won't know hStdOut ...
+// BOOL WINAPI control_handler(DWORD dwCtrlType)
 {
    BOOL bSuccess;
    DWORD dwMode;
@@ -60,8 +63,6 @@ BOOL WINAPI control_handler(DWORD dwCtrlType)
    if (!bSuccess) {
       return FALSE;
    }
-
-   //  display message and do other work
    return TRUE ;
 }   //lint !e715  dwCtrlType not used
 #endif
@@ -206,8 +207,8 @@ init_success(false)
    //  this doesn't work either
    // system( "chcp 65001 >nul" );        // Set the console to expect codepage 65001 = UTF-8.
    
-   //  set up Ctrl-Break handler
 #ifdef  USE_CTRL_HANDLER
+   //  set up Ctrl-Break handler
    SetConsoleCtrlHandler((PHANDLER_ROUTINE) control_handler, TRUE) ;
 #endif   
    init_success = true ;

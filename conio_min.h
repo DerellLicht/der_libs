@@ -29,6 +29,7 @@ private:
    conio_min(const conio_min&);
    
    //  local functions in class
+   BOOL WINAPI control_handler(DWORD dwCtrlType);
    void dscroll(WORD tBG);
    void dgotoxy(int x, int y);
    
