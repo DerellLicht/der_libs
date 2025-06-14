@@ -23,9 +23,9 @@ private:
 
    CONSOLE_SCREEN_BUFFER_INFO sinfo ;
 
-   bool redirected = false ;
+   bool redirected ;
 
-   WORD original_attribs = 3 ;
+   WORD original_attribs ;
    bool init_success ;
 
    //  disable the assignment operator and copy constructor
