@@ -35,36 +35,8 @@
 #include "common.h"  //  syslog()
 #include "conio_min.h"
 
-//***************************************************************************
-//                GENERIC 32-BIT CONSOLE I/O FUNCTIONS
-//***************************************************************************
-
-// #define  USE_CTRL_HANDLER
-#undef   USE_CTRL_HANDLER
-
-//**********************************************************
-//lint -esym(759, control_handler) 
-//lint -esym(765, control_handler)
 #ifdef  USE_CTRL_HANDLER
-BOOL WINAPI conio_min::control_handler(DWORD dwCtrlType)
-//  if control_handler() is not a member function of conio_min class,
-//  then it won't know hStdOut ...
-// BOOL WINAPI control_handler(DWORD dwCtrlType)
-{
-   BOOL bSuccess;
-   DWORD dwMode;
-
-   //  restore the screen mode
-   bSuccess = GetConsoleMode(hStdOut, &dwMode);
-   if (!bSuccess) {
-      return FALSE;
-   }
-   bSuccess = SetConsoleMode(hStdOut, dwMode | ENABLE_PROCESSED_OUTPUT | ENABLE_WRAP_AT_EOL_OUTPUT ) ;
-   if (!bSuccess) {
-      return FALSE;
-   }
-   return TRUE ;
-}   //lint !e715  dwCtrlType not used
+HANDLE conio_min::hStdOutPublic = 0 ;
 #endif
 
 //**********************************************************
@@ -114,12 +86,37 @@ void conio_min::dgotoxy(int x, int y)
    SetConsoleCursorPosition(hStdOut, sinfo.dwCursorPosition) ;
 }
 
+//**********************************************************
+//lint -esym(759, control_handler) 
+//lint -esym(765, control_handler)
+#ifdef  USE_CTRL_HANDLER
+BOOL WINAPI conio_min::control_handler(DWORD dwCtrlType)
+//  if control_handler() is not a member function of conio_min class,
+//  then it won't know hStdOut ...
+// BOOL WINAPI control_handler(DWORD dwCtrlType)
+{
+   BOOL bSuccess;
+   DWORD dwMode;
+
+   //  restore the screen mode
+   bSuccess = GetConsoleMode(hStdOutPublic, &dwMode);
+   if (!bSuccess) {
+      return FALSE;
+   }
+   bSuccess = SetConsoleMode(hStdOutPublic, dwMode | ENABLE_PROCESSED_OUTPUT | ENABLE_WRAP_AT_EOL_OUTPUT ) ;
+   if (!bSuccess) {
+      return FALSE;
+   }
+   return TRUE ;
+}   //lint !e715  dwCtrlType not used
+#endif
+
 //***************************************************************************
 //  This stores CONSOLE_SCREEN_BUFFER_INFO in global var sinfo
 //***************************************************************************
 conio_min::conio_min() :
-hStdOut (nullptr),
-hStdIn (nullptr),
+hStdOut (),
+hStdIn (),
 sinfo ({}), //lint !e1025
 redirected (false),
 original_attribs (3),
@@ -153,6 +150,9 @@ init_success(false)
    //    bSuccess = SetConsoleTitle(title);
    //    PERR(bSuccess, "SetConsoleTitle");
    // }
+#ifdef  USE_CTRL_HANDLER
+   hStdOutPublic = hStdOut ;
+#endif   
 
    //  Unfortunately, this also fails on all Bash-window terminals
    bSuccess = GetConsoleScreenBufferInfo(hStdOut, &sinfo) ;

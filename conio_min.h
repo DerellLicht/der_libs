@@ -12,6 +12,10 @@
 //lint -esym(1762, conio_min::get_scode)  Member function could be made const
 //lint -e1714  Member function not referenced
 
+//**********************************************************
+#define  USE_CTRL_HANDLER
+// #undef   USE_CTRL_HANDLER
+
 class conio_min {
 private:
    HANDLE hStdOut ;
@@ -29,11 +33,14 @@ private:
    conio_min(const conio_min&);
    
    //  local functions in class
-   BOOL WINAPI control_handler(DWORD dwCtrlType);
+   static BOOL WINAPI control_handler(DWORD dwCtrlType);
    void dscroll(WORD tBG);
    void dgotoxy(int x, int y);
    
 public:
+#ifdef  USE_CTRL_HANDLER
+   static HANDLE hStdOutPublic ;
+#endif   
    conio_min();
    ~conio_min();
    bool is_redirected(void) const 
