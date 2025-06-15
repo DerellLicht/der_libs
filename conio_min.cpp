@@ -36,7 +36,7 @@
 #include "conio_min.h"
 
 #ifdef  USE_CTRL_HANDLER
-HANDLE conio_min::hStdOutPublic = 0 ;
+HANDLE conio_min::hStdOutPublic = nullptr ;
 #endif
 
 //**********************************************************
@@ -97,6 +97,9 @@ BOOL WINAPI conio_min::control_handler(DWORD dwCtrlType)
 {
    BOOL bSuccess;
    DWORD dwMode;
+   if (hStdOutPublic == nullptr) {
+      return FALSE ;
+   }
 
    //  restore the screen mode
    bSuccess = GetConsoleMode(hStdOutPublic, &dwMode);
