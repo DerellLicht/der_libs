@@ -81,8 +81,8 @@ void conio_min::dscroll(WORD tBG)
 //**********************************************************
 void conio_min::dgotoxy(int x, int y)
 {
-   sinfo.dwCursorPosition.X = x ;
-   sinfo.dwCursorPosition.Y = y ;
+   sinfo.dwCursorPosition.X = x ;   //lint !e734
+   sinfo.dwCursorPosition.Y = y ;   //lint !e734
    SetConsoleCursorPosition(hStdOut, sinfo.dwCursorPosition) ;
 }
 
@@ -279,15 +279,15 @@ CHAR conio_min::get_char(void)
 WORD conio_min::get_scode(void)
 {
    WORD inchr ;
-   inchr = _getch() ;
+   inchr = _getch() ;   //lint !e734
    if (inchr == 0)
       {
-      inchr = _getch() ;
+      inchr = _getch() ;   //lint !e734
       inchr <<= 8 ;
       }
    else if (inchr == 0xE0)
       {
-      inchr = _getch() ;
+      inchr = _getch() ;   //lint !e734
       inchr <<= 8 ;
       inchr |= 0xE0 ;
       }   
@@ -328,8 +328,8 @@ void conio_min::dclrscr(void)
 
    slen = sinfo.dwSize.X * sinfo.dwSize.Y ;
 
-   FillConsoleOutputCharacter(hStdOut, ' ', slen, coord, &wrlen) ;
-   FillConsoleOutputAttribute(hStdOut, original_attribs, slen, coord, &wrlen) ;
+   FillConsoleOutputCharacter(hStdOut, ' ', slen, coord, &wrlen) ;   //lint !e732
+   FillConsoleOutputAttribute(hStdOut, original_attribs, slen, coord, &wrlen) ;  //lint !e732
 
    dgotoxy(0,0) ; // home the cursor
 }   
@@ -349,9 +349,9 @@ void conio_min::dputs(const TCHAR *outstr)
       _tprintf(_T("%s"), outstr);
    }
    else {
-      WORD slen = _tcslen(outstr) ;
+      WORD slen = (WORD) _tcslen(outstr) ;
       WriteConsole(hStdOut, outstr, slen, &wrlen, 0) ;
-      sinfo.dwCursorPosition.X += slen ;
+      sinfo.dwCursorPosition.X += slen ;  //lint !e734
    }
 }
 
