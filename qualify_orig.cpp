@@ -15,34 +15,36 @@
 /*                                                                */
 /******************************************************************/
 
+//lint -esym(714, qualify)  Symbol 'qualify' is both a function and a variable
+//lint -esym(765, qualify)  Symbol 'qualify' is both a function and a variable
 //lint -esym(1051, qualify)  Symbol 'qualify' is both a function and a variable
 
 #include <windows.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <direct.h>             //  _getdrive()
-#include <sys/stat.h>
-//  lint says I don't need this header, and in fact for MSVC6.0
-//  I *don't* need it, but for gcc I do...
 #include <ctype.h>              //  tolower()
 #include <shlwapi.h>
-#include <limits.h>
 #include <tchar.h>
+#include <string>
+#include <memory> //  unique_ptr
 
+#include "common.h"
 #include "qualify.h"
+#ifndef _lint
+#include "conio_min.h"
+#endif
 
-#define  LOOP_FOREVER   true
+// #define  LOOP_FOREVER   true
 
-static TCHAR path[PATH_MAX];
+//lint -e129  declaration expected, identifier ignored
+static std::unique_ptr<conio_min> console ;
 
 /******************************************************************/
 unsigned qualify (TCHAR *argptr)
 {
+static TCHAR path[MAX_PATH_LEN];
    TCHAR *pathptr = &path[0];
    TCHAR *strptr, *srchptr ;
    DWORD plen;
-   int result ;
-   struct _stat my_stat ;
    unsigned len, qresult = 0;
 
    //******************************************************
@@ -50,30 +52,9 @@ unsigned qualify (TCHAR *argptr)
    //  in "A: = 1" format.                                 
    //******************************************************
    //  if arg len == 0 or arg is "."
-   if (_tcslen (argptr) == 0 || (_tcslen (argptr) == 1 && *argptr == '.')
-      ) {                       /*  no arguments given  */
-      // printf("args=none or dot\n") ;         
-      int drive = _getdrive ();     //  1 = A:
-      //  see if we have a UNC drive...
-      if (drive == 0) {
-         GetCurrentDirectory (250, pathptr); //lint !e534
-         _tcscat (pathptr, _T("\\*"));
-         goto exit_point;
-      }
+   if (_tcslen (argptr) == 0) {   /*  no arguments given  */
+      _tcscpy(argptr, _T(".")) ;
    }
-   //  05/26/25  These were shown unused, by clang-tidy
-   //   else if arg == "x:"
-//    else if (*(argptr + 1) == ':') { /*  a drive spec was provided  */
-//       // printf("args=colon\n") ;      
-//       TCHAR tempchar;
-//       tempchar = *argptr;
-//       drive = tolower (tempchar) - '`';   //  char - ('a' - 1)
-//    }
-//    //  else anything else
-//    else {                       /*  a path with no drive spec was provided  */
-//       // printf("args=no drive\n") ;      
-//       drive = _getdrive ();     //  1 = A:
-//    }
 
    //******************************************************
    //  strings in quotes will also foil the DOS routines;
@@ -87,14 +68,30 @@ unsigned qualify (TCHAR *argptr)
       _tcscpy (srchptr, srchptr + 1);
       strptr = ++srchptr;
    }
+   // console->dputsf(_T("after quotes removed: [%s]\n"), argptr);
 
-   //******************************************************
-   //  get expanded path (this doesn't support UNC)
-   //******************************************************
-   plen = GetFullPathName (argptr, PATH_MAX, (LPTSTR) pathptr, NULL);
-   if (plen == 0)
-      return QUAL_INV_DRIVE;
-
+   //  check for raw drive spec (q: , etc)
+   if (_tcslen(argptr) == 2  &&  *(argptr+1) == L':') {
+      uint drive = towlower(*argptr) ; //lint !e732
+      drive -= (97 - 1) ;  //  97 = 'a', +1 converts drive to start at 1 vs 0
+      // console->dputsf(L"drive spec [%d]: [%s]\n", drive, input_path.c_str());
+      wchar_t *p = _wgetdcwd(drive, pathptr, MAX_PATH_LEN);
+      if (p == NULL) {
+         return QUAL_INV_DRIVE;
+      }
+   }
+   else {
+      //******************************************************
+      //  get expanded path (this doesn't support UNC)
+      //******************************************************
+      plen = GetFullPathName (argptr, MAX_PATH_LEN, (LPTSTR) pathptr, NULL);
+      if (plen == 0) {
+         return QUAL_NO_PATH;
+      }
+      // console->dputsf(L"gfpn [%u]: [%s]\n", plen, pathptr);
+   }
+   // input_path = pathptr ;
+   
    len = _tcslen (pathptr);
    if (len == 3) {
       _tcscat (pathptr, _T("*"));
@@ -110,47 +107,30 @@ unsigned qualify (TCHAR *argptr)
             *(pathptr + len) = 0;
          }
 
-         //  see what kind of file was requested
-         //  FindFirstFile doesn't work with UNC paths,
-         //  stat() doesn't either
-         // handle = FindFirstFile (pathptr, &fffdata);
-         if (PathIsUNC(pathptr)) {
-            if (PathIsDirectory(pathptr)) {
-               _tcscpy (pathptr + len, _T("\\*"));   //lint !e669  possible overrun
-               qresult |= QUAL_WILDCARDS; //  wildcards are present.
-            } else if (PathFileExists(pathptr)) {
-               qresult |= QUAL_IS_FILE;   //  path exists as a normal file.
-            } else {
-               _tcscpy (pathptr + len, _T("\\*"));   //lint !e669  possible overrun
-               qresult |= QUAL_WILDCARDS; //  wildcards are present.
-            }
-         } 
+         //*********************************************************
+         //  what *should* I do with UNC paths ??
+         //*********************************************************
+         // if (PathIsUNC(pathptr)) {
+         //    if (PathIsDirectory(pathptr)) {
+         //       _tcscpy (pathptr + len, _T("\\*"));   //lint !e669  possible overrun
+         //       qresult |= QUAL_WILDCARDS; //  wildcards are present.
+         //    } else if (PathFileExists(pathptr)) {
+         //       qresult |= QUAL_IS_FILE;   //  path exists as a normal file.
+         //    } else {
+         //       _tcscpy (pathptr + len, _T("\\*"));   //lint !e669  possible overrun
+         //       qresult |= QUAL_WILDCARDS; //  wildcards are present.
+         //    }
+         // } 
          //  process drive-oriented (non-UNC) paths
-         else {
-            result = _tstat(pathptr, &my_stat) ;
-            if (result != 0) {
-               qresult |= QUAL_INV_DRIVE; //  path does not exist.
-            } else if (my_stat.st_mode & S_IFDIR) {
-               _tcscpy (pathptr + len, _T("\\*"));   //lint !e669  possible overrun
-               qresult |= QUAL_WILDCARDS; //  wildcards are present.
-            } else {
-               qresult |= QUAL_IS_FILE;   //  path exists as a normal file.
-            }
-         }
-
-         // handle = FindFirstFile (pathptr, &fffdata);
-         // if (handle == INVALID_HANDLE_VALUE)
-         //   qresult |= QUAL_INV_DRIVE; //  path does not exist.
          // else {
-         //   // if (fffdata.attrib & _A_SUBDIR)
-         //   if (fffdata.dwFileAttributes & _A_SUBDIR) {
-         //      _tcscpy (pathptr + len, "\\*");   //lint !e669  possible overrun
-         //      qresult |= QUAL_WILDCARDS; //  wildcards are present.
-         //   }
-         //   else
-         //      qresult |= QUAL_IS_FILE;   //  path exists as a normal file.
-         // 
-         //   FindClose (handle);
+         if (PathIsDirectory(pathptr)) {
+            _tcscpy (pathptr + len, _T("\\*"));   //lint !e669  possible overrun
+            qresult |= QUAL_WILDCARDS; //  wildcards are present.
+         } else if (PathFileExists(pathptr)) {
+            qresult |= QUAL_IS_FILE;   //  path exists as a normal file.
+         } else {
+            qresult = QUAL_NO_PATH ;
+         }
          // }
       }
    }
@@ -158,9 +138,95 @@ unsigned qualify (TCHAR *argptr)
    //**********************************************
    //  copy string back to input, then return
    //**********************************************
- exit_point:
+   // console->dputsf(_T("leaving qualify: [%s]\n"), pathptr);
    _tcscpy (argptr, pathptr);
-// printf("found: [%s]\n", pathptr) ;
-// getchar() ;
    return (qresult); //lint !e438  drive
 }
+
+#ifdef  STANDALONE
+//********************************************************************************
+//  this solution is from:
+//  https://github.com/coderforlife/mingw-unicode-main/
+//********************************************************************************
+#if defined(__GNUC__) && defined(_UNICODE)
+
+#ifndef __MSVCRT__
+#error Unicode main function requires linking to MSVCRT
+#endif
+
+#include <wchar.h>
+#include <stdlib.h>
+
+extern int _CRT_glob;
+extern 
+#ifdef __cplusplus
+"C" 
+#endif
+void __wgetmainargs(int*,wchar_t***,wchar_t***,int,int*);
+
+#ifdef MAIN_USE_ENVP
+int wmain(int argc, wchar_t *argv[], wchar_t *envp[]);
+#else
+int wmain(int argc, wchar_t *argv[]);
+#endif
+
+int main() 
+{
+   wchar_t **enpv, **argv;
+   int argc, si = 0;
+   __wgetmainargs(&argc, &argv, &enpv, _CRT_glob, &si); // this also creates the global variable __wargv
+#ifdef MAIN_USE_ENVP
+   return wmain(argc, argv, enpv);
+#else
+   return wmain(argc, argv);
+#endif
+}
+
+#endif //defined(__GNUC__) && defined(_UNICODE)
+
+//**********************************************************************************
+//lint -esym(765, test_vectors)  external could be made static
+static TCHAR *test_vectors[] = {
+   L"", 
+   L".", 
+   L"..",
+   L"string\"with\"quotes",
+   L"c:",   //  c: without backslash, should use relative path
+   L"q:",   //  invalid drive should be detected
+   L"d:\\",
+   L"d:\\*",
+   L"f:\\Games",
+   NULL };
+
+//**********************************************************************************
+//lint -esym(529, file)  Symbol not subsequently referenced
+
+int wmain(int argc, wchar_t *argv[])
+{
+   console = std::make_unique<conio_min>() ;
+   if (!console->init_okay()) {  //lint !e530
+      wprintf(L"console init failed\n");
+      return 1 ;
+   }
+   
+   TCHAR test_path[MAX_FILE_LEN+1];
+   for (int idx=0; test_vectors[idx] != NULL; idx++) {
+      wchar_t *testptr = test_vectors[idx] ;
+      wcscpy(test_path, testptr);
+      
+      console->dputsf(L"input file spec: %s\n", test_path);
+      unsigned qresult = qualify(test_path) ;
+      if (qresult == QUAL_INV_DRIVE) {
+         console->dputsf(L"error: invalid drive: %s\n", test_path);
+      }
+      else if (qresult == QUAL_NO_PATH) {
+         console->dputsf(L"error: path does not exist: %s\n", test_path);
+      }
+      else {
+         console->dputsf(L"qualified file spec: %s\n", test_path);
+      }
+      console->dputs(L"\n");
+   }
+   return 0;
+}  //lint !e715 !e818 !e533
+#endif
