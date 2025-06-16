@@ -99,6 +99,7 @@ unsigned qualify (std::wstring& input_path)
       if (plen == 0) {
          return QUAL_NO_PATH;
       }
+      // console->dputsf(L"gfpn [%u]: [%s]\n", plen, pathptr);
    }
    input_path = pathptr ;
    // console->dputsf(L"qualify temp: [%s]\n", pathptr);
@@ -118,7 +119,9 @@ unsigned qualify (std::wstring& input_path)
          input_path.erase(len, 1);
       }
 
+      //*********************************************************
       //  what *should* I do with UNC paths ??
+      //*********************************************************
       // if (PathIsUNC(pathptr)) {
       //    if (PathIsDirectory(pathptr)) {
       //       wcscpy (pathptr + len, L"\\*");   //lint !e669  possible overrun
@@ -139,9 +142,7 @@ unsigned qualify (std::wstring& input_path)
          } else if (PathFileExists(input_path.c_str())) {
             qresult |= QUAL_IS_FILE;   //  path exists as a normal file.
          } else {
-            // what, exactly, *is* this ??
-            input_path.append(L"\\*");
-            qresult |= QUAL_WILDCARDS; //  wildcards are present.
+            return QUAL_NO_PATH;
          }
       // }
    }
@@ -201,7 +202,7 @@ static std::vector<std::wstring> test_vectors {
    L"q:",   //  invalid drive should be detected
    L"d:\\",
    L"d:\\*",
-   L"f:\\Games\\",
+   L"f:\\Games",
 };
 
 //**********************************************************************************
@@ -221,8 +222,11 @@ int wmain(int argc, wchar_t *argv[])
       
       console->dputsf(L"input file spec: %s\n", test_path.c_str());
       unsigned qresult = qualify(test_path) ;
-      if (qresult == QUAL_INV_DRIVE  ||  qresult == QUAL_NO_PATH) {
-         console->dputsf(L"error: %s: 0x%X\n", test_path.c_str(), qresult);
+      if (qresult == QUAL_INV_DRIVE) {
+         console->dputsf(L"error: invalid drive: %s\n", test_path.c_str());
+      }
+      else if (qresult == QUAL_NO_PATH) {
+         console->dputsf(L"error: path does not exist: %s\n", test_path.c_str());
       }
       else {
          console->dputsf(L"qualified file spec: %s\n", test_path.c_str());
