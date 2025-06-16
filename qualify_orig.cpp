@@ -1,42 +1,41 @@
-//*****************************************************************
-//*  qualify() modifies a string as required to generate a         
-//*  "fully-qualified" filename, which is a filename that          
-//*  complete drive specifier and path name.                       
-//*                                                                
-//*  input:  argptr: the input filename.                           
-//*                                                                
-//*  output: qresult, a bit-mapped unsigned int with the           
-//*                   following definitions:                       
-//*                                                                
-//*          bit 0 == 1 if wildcards are present.                  
-//*          bit 1 == 1 if no wildcards and path does not exist.   
-//*          bit 2 == 1 if no wildcards and path exists as a file. 
-//*          bit 7 == 1 if specified drive is invalid.             
-//*                                                                
-//*****************************************************************
-//  try to modify this function to use string class, vs string.h
-//*****************************************************************
+/******************************************************************/
+/*  qualify() modifies a string as required to generate a         */
+/*  "fully-qualified" filename, which is a filename that          */
+/*  complete drive specifier and path name.                       */
+/*                                                                */
+/*  input:  argptr: the input filename.                           */
+/*                                                                */
+/*  output: qresult, a bit-mapped unsigned int with the           */
+/*                   following definitions:                       */
+/*                                                                */
+/*          bit 0 == 1 if wildcards are present.                  */
+/*          bit 1 == 1 if no wildcards and path does not exist.   */
+/*          bit 2 == 1 if no wildcards and path exists as a file. */
+/*          bit 7 == 1 if specified drive is invalid.             */
+/*                                                                */
+/******************************************************************/
 
-#define  STANDALONE
+// #ifdef _WIN32_IE >= 0x0600
+// c:\mingw\include\shlwapi.h  72  Error 87: expression too complicated for #ifdef or #ifndef
+//lint -e87   expression too complicated for #ifdef or #ifndef  (rejecting >= )
+
 #include <windows.h>
 #include <stdio.h>
-#include <direct.h>     //  _getdrive()
+#include <stdlib.h>
+#include <direct.h>             //  _getdrive()
 #include <sys/stat.h>
-// #include <ctype.h>      //  tolower()
-#include <shlwapi.h>    // PathIsUNC(), etc
+//  lint says I don't need this header, and in fact for MSVC6.0
+//  I *don't* need it, but for gcc I do...
+#include <ctype.h>              //  tolower()
+#include <shlwapi.h>
 #include <limits.h>
 #include <tchar.h>
 
-// #include "qualify.h"
-#define  QUAL_WILDCARDS    0x01
-#define  QUAL_NO_PATH      0x02
-#define  QUAL_IS_FILE      0x04
-#define  QUAL_INV_DRIVE    0x80
+#include "qualify.h"
 
-#define  LOOP_FOREVER      true
-#define  MAX_PATH_LEN      1024
+#define  LOOP_FOREVER   true
 
-static TCHAR path[MAX_PATH_LEN];
+static TCHAR path[PATH_MAX];
 
 /******************************************************************/
 unsigned qualify (TCHAR *argptr)
@@ -48,12 +47,13 @@ unsigned qualify (TCHAR *argptr)
    struct _stat my_stat ;
    unsigned len, qresult = 0;
 
-   if (_tcslen (argptr) == 0) {
-      wcscpy(argptr, L".");
-   }
-
+   //******************************************************
+   //  first, determine requested drive number,            
+   //  in "A: = 1" format.                                 
+   //******************************************************
    //  if arg len == 0 or arg is "."
-   if (_tcscmp(argptr, _T(".")) == 0) {
+   if (_tcslen (argptr) == 0 || (_tcslen (argptr) == 1 && *argptr == '.')
+      ) {                       /*  no arguments given  */
       // printf("args=none or dot\n") ;         
       int drive = _getdrive ();     //  1 = A:
       //  see if we have a UNC drive...
@@ -64,9 +64,6 @@ unsigned qualify (TCHAR *argptr)
       }
    }
    //  05/26/25  These were shown unused, by clang-tidy
-   //************************************************************
-   //  determine requested drive number, in "A: = 1" format.
-   //************************************************************
    //   else if arg == "x:"
 //    else if (*(argptr + 1) == ':') { /*  a drive spec was provided  */
 //       // printf("args=colon\n") ;      
@@ -169,66 +166,3 @@ unsigned qualify (TCHAR *argptr)
 // getchar() ;
    return (qresult); //lint !e438  drive
 }
-
-#ifdef  STANDALONE
-//********************************************************************************
-//  this solution is from:
-//  https://github.com/coderforlife/mingw-unicode-main/
-//********************************************************************************
-#if defined(__GNUC__) && defined(_UNICODE)
-
-#ifndef __MSVCRT__
-#error Unicode main function requires linking to MSVCRT
-#endif
-
-#include <wchar.h>
-#include <stdlib.h>
-
-extern int _CRT_glob;
-extern 
-#ifdef __cplusplus
-"C" 
-#endif
-void __wgetmainargs(int*,wchar_t***,wchar_t***,int,int*);
-
-#ifdef MAIN_USE_ENVP
-int wmain(int argc, wchar_t *argv[], wchar_t *envp[]);
-#else
-int wmain(int argc, wchar_t *argv[]);
-#endif
-
-int main() 
-{
-   wchar_t **enpv, **argv;
-   int argc, si = 0;
-   __wgetmainargs(&argc, &argv, &enpv, _CRT_glob, &si); // this also creates the global variable __wargv
-#ifdef MAIN_USE_ENVP
-   return wmain(argc, argv, enpv);
-#else
-   return wmain(argc, argv);
-#endif
-}
-
-#endif //defined(__GNUC__) && defined(_UNICODE)
-
-//**********************************************************************************
-int wmain(int argc, wchar_t *argv[])
-{
-   wchar_t file_spec[MAX_PATH_LEN+1] = L"" ;
-   
-   for (int idx=1; idx<argc; idx++) {
-      wchar_t *p = argv[idx] ;
-      wcsncpy(file_spec, p, MAX_PATH_LEN);
-      file_spec[MAX_PATH_LEN] = 0 ;
-   }
-
-   unsigned qresult = qualify(file_spec) ;
-   if (qresult == QUAL_INV_DRIVE) {
-      wprintf(L"%s: 0x%X\n", file_spec, qresult);
-      return 1 ;
-   }
-   wprintf(L"input file spec: %s\n", file_spec);
-
-   return 0;
-}
-#endif

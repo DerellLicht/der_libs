@@ -22,8 +22,8 @@
 #define  QUAL_INV_DRIVE    0x80
 
 //  from qualify.cpp
-#ifdef  UNICODE
-unsigned qualify (std::wstring& input_path);
-#else
+#ifdef  LEGACY_QUALIFY
 unsigned qualify (TCHAR *argptr);
+#else
+unsigned qualify (std::wstring& input_path);
 #endif
