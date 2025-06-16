@@ -356,6 +356,13 @@ void conio_min::dputs(const TCHAR *outstr)
 }
 
 //********************************************************************
+//  Interesting note: 
+//  If I call dputsf() with L"", then newline is not recognized,
+//  and dnewline() must be called separately.
+//  If I call dputsf() with _T(""), then newline is recognized,
+//  but passing in wstring::c_str() doesn't work properly...
+//  it probably needs to be cast to TCHAR *
+//********************************************************************
 //lint -esym(714, dputsf)
 //lint -esym(759, dputsf)
 //lint -esym(765, dputsf)
