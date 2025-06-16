@@ -53,6 +53,7 @@
 static std::unique_ptr<conio_min> console ;
 
 /******************************************************************/
+//lint -esym(31, qualify)   Redefinition of symbol compared with ...
 //lint -esym(714, qualify)  Symbol not referenced
 //lint -esym(765, qualify)  external could be made static
 unsigned qualify (std::wstring& input_path)
