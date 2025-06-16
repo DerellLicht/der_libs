@@ -15,9 +15,6 @@
 /*                                                                */
 /******************************************************************/
 
-//lint -esym(755, QUAL_NO_PATH)  global macro not referenced
-//lint -esym(757, qualify)  global declarator not referenced
-
 /***********************  qualify() constants  ************************/
 #define  QUAL_WILDCARDS    0x01
 #define  QUAL_NO_PATH      0x02
@@ -25,4 +22,4 @@
 #define  QUAL_INV_DRIVE    0x80
 
 //  from QUALIFY.CPP
-unsigned qualify(TCHAR *argptr);
+unsigned qualify (std::wstring& input_path);

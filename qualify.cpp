@@ -24,7 +24,6 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include <direct.h>     //  _getdrive()
 #include <shlwapi.h>    // PathIsUNC(), etc
 #include <limits.h>
 #include <vector>
