@@ -21,7 +21,10 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include <ctype.h>              //  tolower()
+#ifndef  UNICODE      
+#include <direct.h>     //  only needed for non-Unicode
+#endif
+#include <ctype.h>      //  tolower()
 #include <shlwapi.h>
 #include <tchar.h>
 #include <string>
@@ -29,14 +32,18 @@
 
 #include "common.h"
 #include "qualify.h"
+#ifdef  UNICODE      
 #ifndef _lint
 #include "conio_min.h"
+#endif
 #endif
 
 // #define  LOOP_FOREVER   true
 
+#ifdef  UNICODE      
 //lint -e129  declaration expected, identifier ignored
 static std::unique_ptr<conio_min> console ;
+#endif
 
 /******************************************************************/
 unsigned qualify (TCHAR *argptr)
@@ -75,7 +82,11 @@ static TCHAR path[MAX_PATH_LEN];
       uint drive = towlower(*argptr) ; //lint !e732
       drive -= (97 - 1) ;  //  97 = 'a', +1 converts drive to start at 1 vs 0
       // console->dputsf(L"drive spec [%d]: [%s]\n", drive, input_path.c_str());
+#ifdef  UNICODE      
       wchar_t *p = _wgetdcwd(drive, pathptr, MAX_PATH_LEN);
+#else      
+      char *p = _getdcwd(drive, pathptr, MAX_PATH_LEN);  //lint !e713
+#endif      
       if (p == NULL) {
          return QUAL_INV_DRIVE;
       }
@@ -198,6 +209,8 @@ static TCHAR *test_vectors[] = {
    L"f:\\Games",
    NULL };
 
+//**********************************************************************************
+//  NOTE: STANDALONE program must be built with UNICODE
 //**********************************************************************************
 //lint -esym(529, file)  Symbol not subsequently referenced
 
