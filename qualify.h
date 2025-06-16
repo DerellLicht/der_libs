@@ -21,5 +21,9 @@
 #define  QUAL_IS_FILE      0x04
 #define  QUAL_INV_DRIVE    0x80
 
-//  from QUALIFY.CPP
+//  from qualify.cpp
+#ifdef  UNICODE
 unsigned qualify (std::wstring& input_path);
+#else
+unsigned qualify (TCHAR *argptr);
+#endif

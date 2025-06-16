@@ -44,9 +44,11 @@
 #include "qualify.h"
 #endif
 
+#ifndef NOMAKEDEPEND
 #ifndef UNICODE
 #error This program can only be used with UNICODE
 #include <stophere>
+#endif
 #endif
 
 //lint -e129  declaration expected, identifier ignored
