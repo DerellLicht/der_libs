@@ -15,9 +15,7 @@
 /*                                                                */
 /******************************************************************/
 
-// #ifdef _WIN32_IE >= 0x0600
-// c:\mingw\include\shlwapi.h  72  Error 87: expression too complicated for #ifdef or #ifndef
-//lint -e87   expression too complicated for #ifdef or #ifndef  (rejecting >= )
+//lint -esym(1051, qualify)  Symbol 'qualify' is both a function and a variable
 
 #include <windows.h>
 #include <stdio.h>
