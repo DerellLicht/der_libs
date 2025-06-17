@@ -196,6 +196,20 @@ int main()
 //**********************************************************************************
 //lint -esym(765, test_vectors)  external could be made static
 static std::vector<std::wstring> test_vectors {
+//    L"", 
+//    L".", 
+//    L"..",
+//    L"string\"with\"quotes",
+//    L"c:",   //  c: without backslash, should use relative path
+//    L"q:",   //  invalid drive should be detected
+//    L"d:\\",
+//    L"d:\\*",
+//    L"f:\\Games",
+};
+
+//**********************************************************************************
+//lint -esym(765, test_vectors)  external could be made static
+static TCHAR *test_vector_str[] = {
    L"", 
    L".", 
    L"..",
@@ -205,7 +219,7 @@ static std::vector<std::wstring> test_vectors {
    L"d:\\",
    L"d:\\*",
    L"f:\\Games",
-};
+   NULL };
 
 //**********************************************************************************
 //lint -esym(529, file)  Symbol not subsequently referenced
@@ -218,6 +232,13 @@ int wmain(int argc, wchar_t *argv[])
       return 1 ;
    }
    
+   //  copy test vectors to vector class
+   console->dputsf(L"copy test_vector strings into vector class\n\n");
+   for (int idx=0; test_vector_str[idx] != NULL; idx++) {
+        test_vectors.emplace_back(test_vector_str[idx]);
+   }
+   
+   //  walk through the test vectors
    for(auto &file : test_vectors)
    {
       auto test_path = file ;
