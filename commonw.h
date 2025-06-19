@@ -43,6 +43,14 @@ typedef struct DLGTEMPLATEEX_s {
 // #define  LVN_HOTTRACK                (-121)
 
 //****************************************************************************
+//  lookup table for Windows message-handler procedures
+//****************************************************************************
+typedef struct winproc_table_s {
+   uint win_code ;
+   bool (*winproc_func)(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam, LPVOID private_data) ;
+} winproc_table_t ;
+
+//****************************************************************************
 HWND MyCreateUpDownControl(
       HWND hwndParent, uint ControlID, HINSTANCE ghinst, HWND hwndBuddy, 
       uint MaxValue, uint MinValue, uint InitValue) ;
