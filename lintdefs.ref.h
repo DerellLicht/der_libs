@@ -32,6 +32,7 @@
 //lint -e151   Token 'flist' inconsistent with abstract type
 //lint -e155   Ignoring { }'ed sequence within an expression, 0 assumed
 //lint -e401   symbol not previously declared static at location unknown
+//lint -e438   Last value assigned to variable not used
 //lint -e503   Boolean argument to relational
 //lint -e515   Symbol has arg. count conflict 
 //lint -e516   Symbol has arg. type conflict 
@@ -68,4 +69,5 @@
 //lint -e1066  Symbol declared as "C" conflicts ...
 //lint -e1702  operator 'operator+' is both an ordinary function and something else??
 //lint -e1776  Converting a string literal is not const safe (initialization)
+//lint -e1778  Assignment of string literal to variable is not const safe
 
