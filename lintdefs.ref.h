@@ -1,5 +1,6 @@
 //  PcLint warnings/errors caused by PcLint not supporting STL, C++11 standard, TCHAR
 
+//lint -esym(14,  __created)   Symbol not referenced
 //lint -esym(401, __created)   Symbol not referenced
 //lint -esym(528, __created)   Symbol not referenced
 //lint -esym(843, __created)   Variable could be declared as const
