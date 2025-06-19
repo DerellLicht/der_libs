@@ -68,10 +68,16 @@
 //lint -e1087  Previous declaration of '__gnu_cxx::__is_signed' (line 88) is incompatible
 //lint -e1098  Function template specialization does not match any function template
 //lint -e1514  Creating temporary to copy 'int' to 'struct ffdata &' (context: arg. no. 1)
+//  These "C conflict" warnings mean that lint wants extern "C" added to file,
+//  because it is a .h file, not a .hpp file.
+//  This is not an issue that the compilers actually care about.
+//lint -e1065  Symbol not declared as "C" conflicts with self
+//lint -e1066  Symbol declared as "C" conflicts with self
+//lint -e1709  typedef declared as "C" conflicts with self
 //lint -e1712  default constructor not defined for class 'ffdata'
 //lint -e1025  No function matches invocation 
-//lint -e1066  Symbol declared as "C" conflicts ...
 //lint -e1702  operator 'operator+' is both an ordinary function and something else??
 //lint -e1776  Converting a string literal is not const safe (initialization)
 //lint -e1778  Assignment of string literal to variable is not const safe
+
 
