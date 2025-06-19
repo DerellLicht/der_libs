@@ -38,6 +38,7 @@
 //lint -e401   symbol not previously declared static at location unknown
 //lint -e438   Last value assigned to variable not used
 //lint -e503   Boolean argument to relational
+//lint -e505   Redundant left argument to comma
 //lint -e515   Symbol has arg. count conflict 
 //lint -e516   Symbol has arg. type conflict 
 //lint -e521   Highest operation, a 'constant', lacks side-effects
@@ -49,7 +50,9 @@
 //lint -e560   argument no. 4 should be a pointer
 //lint -e592   Non-literal format specifier used without arguments
 //lint -e628   no argument information provided for function
+//lint -e650   Constant '32' out of range for operator '>'
 //lint -e681   Loop is not entered
+//lint -e685   Relational operator '>' always evaluates to 'false'
 //lint -e707   Mixing narrow and wide string literals in concatenation
 //lint -e719   Too many arguments for format (1 too many)
 //lint -e746   call to function not made in the presence of a prototype
