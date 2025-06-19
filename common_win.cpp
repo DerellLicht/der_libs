@@ -19,9 +19,9 @@
 #include <math.h>    //  fabs()
 #include <limits.h>
 #include <tchar.h>
+#include <tchar.h>
 #include <commctrl.h>
 #include <commdlg.h> //  GetOpenFileName()
-#endif
 #include <shlobj.h>  //  ShellGetPath()
 
 #include "common.h"
