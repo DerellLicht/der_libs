@@ -11,14 +11,10 @@
 //****************************************************************************
 
 //lint -esym(18, _NOTIFYICONDATAA::szTip, _NOTIFYICONDATAW::szTip)
-// #define  _WIN32_IE      0x0501
-// #define  _WIN32_WINDOWS 0x0410
 #include <windows.h>
 #include <time.h>
 #include <stdio.h>   //  vsprintf
 #include <math.h>    //  fabs()
-#include <limits.h>
-#include <tchar.h>
 #include <tchar.h>
 #include <commctrl.h>
 #include <commdlg.h> //  GetOpenFileName()
