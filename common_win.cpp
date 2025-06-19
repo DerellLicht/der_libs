@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2017  Daniel D Miller
+//  Copyright (c) 2008-2025  Daniel D Miller
 //  common_win.cpp - common functions for Windows and other programs.
 //  These functions will comprise all the functions which require linking
 //  comctl32, comdlg32, gdi32, and other non-standard gcc/g++ libraries.
@@ -18,10 +18,6 @@
 #include <stdio.h>   //  vsprintf
 #include <math.h>    //  fabs()
 #include <limits.h>
-#include <tchar.h>
-#ifdef _lint
-#include <stdlib.h>
-#else
 #include <tchar.h>
 #include <commctrl.h>
 #include <commdlg.h> //  GetOpenFileName()
@@ -362,9 +358,9 @@ bool select_file(HWND hDlgWnd, TCHAR *command_filename, TCHAR *ext)
    *(gfptr+slen) = 0 ;  //  add a terminating NULL-term
 
    // syslog("A handles=%d\n", get_handle_count());
-   TCHAR szFile[PATH_MAX];       // buffer for file name
-   TCHAR oldFile[PATH_MAX];       // buffer for file name
-   TCHAR dirFile[PATH_MAX];       // buffer for file name
+   TCHAR szFile[MAX_PATH_LEN];       // buffer for file name
+   TCHAR oldFile[MAX_PATH_LEN];       // buffer for file name
+   TCHAR dirFile[MAX_PATH_LEN];       // buffer for file name
 
    // Initialize OPENFILENAME
    OPENFILENAME ofn;       // common dialog box structure
@@ -401,7 +397,7 @@ bool select_file(HWND hDlgWnd, TCHAR *command_filename, TCHAR *ext)
    if (GetOpenFileName(&ofn)) {
    // syslog("C handles=%d\n", get_handle_count());
       _tcsncpy(oldFile, command_filename, sizeof(oldFile)) ;
-      _tcsncpy(command_filename, ofn.lpstrFile, PATH_MAX) ;
+      _tcsncpy(command_filename, ofn.lpstrFile, MAX_PATH_LEN) ;
 
       SetFocus(hDlgWnd) ;
       return true;
