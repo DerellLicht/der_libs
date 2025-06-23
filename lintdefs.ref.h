@@ -33,6 +33,7 @@
 //lint -e110   Attempt to assign to void
 //lint -e121   Attempting to initialize an object of undefined type 'void'
 //lint -e129   declaration expected, identifier ignored
+//lint -e130   Expected integral type
 //lint -e151   Token 'flist' inconsistent with abstract type
 //lint -e155   Ignoring { }'ed sequence within an expression, 0 assumed
 //lint -e401   symbol not previously declared static at location unknown
@@ -44,6 +45,7 @@
 //lint -e521   Highest operation, a 'constant', lacks side-effects
 //lint -e522   Highest operation, operator '!=', lacks side-effects
 //lint -e526   Symbol not defined
+//lint -e529   Symbol 'file' not subsequently referenced
 //lint -e530   Symbol not initialized
 //lint -e550   Symbol not accessed
 //lint -e559   Size of argument no. 2 inconsistent with format
