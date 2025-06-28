@@ -38,6 +38,7 @@
 //lint -e155   Ignoring { }'ed sequence within an expression, 0 assumed
 //lint -e401   symbol not previously declared static at location unknown
 //lint -e438   Last value assigned to variable not used
+//lint -e441   for clause irregularity: loop variable 'level' not found in 2nd for expression
 //lint -e503   Boolean argument to relational
 //lint -e505   Redundant left argument to comma
 //lint -e515   Symbol has arg. count conflict 
@@ -58,6 +59,7 @@
 //lint -e707   Mixing narrow and wide string literals in concatenation
 //lint -e719   Too many arguments for format (1 too many)
 //lint -e746   call to function not made in the presence of a prototype
+//lint -e785   Too few initializers for aggregate 'dlist' of type 'dirs'
 //lint -e808   No explicit type given symbol 'file', int assumed
 //lint -e1013  Symbol not a member of class ''
 //lint -e1015  Symbol '_M_allocate' not found in class
