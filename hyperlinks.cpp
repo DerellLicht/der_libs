@@ -3,10 +3,13 @@
 // Copyright 2002 Neal Stublen
 // All rights reserved.
 //
+// DDM: This website no longer exists
 // http://www.awesoftware.com
 //
 // DDM: obtained on 10/05/10 from:
 // http://www.codeguru.com/cpp/controls/staticctrl/article.php/c5803
+// As of July 2025, the link is now:
+// https://www.codeguru.com/cplusplus/small-c-class-to-transform-any-static-control-into-a-hyperlink-control/
 
 #include <windows.h>
 
