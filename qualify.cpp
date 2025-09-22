@@ -31,15 +31,18 @@
 #include <memory> //  unique_ptr
 
 #include "common.h"
-#ifndef _lint
-#include "conio_min.h"
-#endif
 
 #ifdef  STANDALONE
 #define  QUAL_WILDCARDS    0x01
 #define  QUAL_NO_PATH      0x02
 #define  QUAL_IS_FILE      0x04
 #define  QUAL_INV_DRIVE    0x80
+#ifndef _lint
+#include "conio_min.h"
+#endif
+//lint -e129  declaration expected, identifier ignored
+static std::unique_ptr<conio_min> console ;
+
 #else
 #include "qualify.h"
 #endif
@@ -50,9 +53,6 @@
 #include <stophere>
 #endif
 #endif
-
-//lint -e129  declaration expected, identifier ignored
-static std::unique_ptr<conio_min> console ;
 
 /******************************************************************/
 //lint -esym(31, qualify)   Redefinition of symbol compared with ...
