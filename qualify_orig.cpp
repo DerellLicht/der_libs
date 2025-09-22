@@ -32,17 +32,18 @@
 
 #include "common.h"
 #include "qualify.h"
+
+#ifdef  STANDALONE
 #ifdef  UNICODE      
 #ifndef _lint
 #include "conio_min.h"
 #endif
 #endif
 
-// #define  LOOP_FOREVER   true
-
 #ifdef  UNICODE      
 //lint -e129  declaration expected, identifier ignored
 static std::unique_ptr<conio_min> console ;
+#endif
 #endif
 
 /******************************************************************/
