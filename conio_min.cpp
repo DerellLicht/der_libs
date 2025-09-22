@@ -301,7 +301,7 @@ void conio_min::dnewline(void)
    //  *this* probably shouldn't use dwSize.Y either...
    if (sinfo.dwCursorPosition.Y >= (sinfo.dwSize.Y-1)) {
       dscroll(original_attribs) ;
-      sinfo.dwCursorPosition.Y = sinfo.dwCursorPosition.Y ;
+      // sinfo.dwCursorPosition.Y = sinfo.dwCursorPosition.Y ; // huh??
    }
    else {
       sinfo.dwCursorPosition.Y++ ;
