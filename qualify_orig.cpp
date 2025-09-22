@@ -14,6 +14,8 @@
 /*          bit 7 == 1 if specified drive is invalid.             */
 /*                                                                */
 /******************************************************************/
+//  Use this original version if we want to pass TCHAR* to qualify(),
+//  rather than std::wstring&
 
 //lint -esym(714, qualify)  Symbol 'qualify' is both a function and a variable
 //lint -esym(765, qualify)  Symbol 'qualify' is both a function and a variable
