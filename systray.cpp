@@ -11,7 +11,9 @@
 #include "common.h"  //  syslog(), get_system_message()
 #include "systray.h"
 
-extern HINSTANCE g_hinst ;
+//  this is *definitely* a no-no ;
+//  Library referencing data in calling application
+// extern HINSTANCE g_hinst ;
 
 static NOTIFYICONDATA NotifyIconData;
 
@@ -19,7 +21,9 @@ static HMENU hMenu = NULL ;
 //***************************************************************
 void load_tray_menu(WORD menuID)
 {
-   HMENU hTopMenu = LoadMenu (g_hinst, MAKEINTRESOURCE(menuID)) ;
+   // HMENU hTopMenu = LoadMenu (g_hinst, MAKEINTRESOURCE(menuID)) ;
+   HMENU hTopMenu = LoadMenu (GetModuleHandle(NULL), MAKEINTRESOURCE(menuID)) ;
+   
    if (hTopMenu == NULL) {
       syslog(_T("LoadMenu: %s\n"), get_system_message()) ;
    } 
@@ -56,7 +60,8 @@ void attach_tray_icon(HWND hwnd, TCHAR const * const szClassName, WORD iconID)
    NotifyIconData.uID = iconID ;
    NotifyIconData.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
    NotifyIconData.uCallbackMessage = WM_USER; // tray events will generate WM_USER event
-   NotifyIconData.hIcon = (HICON) LoadIcon (g_hinst, MAKEINTRESOURCE (iconID));
+   // NotifyIconData.hIcon = (HICON) LoadIcon (g_hinst, MAKEINTRESOURCE (iconID));
+   NotifyIconData.hIcon = (HICON) LoadIcon ((HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE), MAKEINTRESOURCE (iconID));
    lstrcpy (NotifyIconData.szTip, szClassName); // max 64 characters
    //  getting string from STRINGTABLE in .rc file
    // LoadString(hInstance, IDS_APPTOOLTIP,nidApp.szTip,MAX_LOADSTRING);
