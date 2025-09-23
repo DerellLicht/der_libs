@@ -11,10 +11,6 @@
 #include "common.h"  //  syslog(), get_system_message()
 #include "systray.h"
 
-//  this is *definitely* a no-no ;
-//  Library referencing data in calling application
-// extern HINSTANCE g_hinst ;
-
 static NOTIFYICONDATA NotifyIconData;
 
 static HMENU hMenu = NULL ;
