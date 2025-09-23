@@ -57,7 +57,7 @@ void attach_tray_icon(HWND hwnd, TCHAR const * const szClassName, WORD iconID)
    NotifyIconData.uFlags = NIF_ICON | NIF_TIP | NIF_MESSAGE;
    NotifyIconData.uCallbackMessage = WM_USER; // tray events will generate WM_USER event
    // NotifyIconData.hIcon = (HICON) LoadIcon (g_hinst, MAKEINTRESOURCE (iconID));
-   NotifyIconData.hIcon = (HICON) LoadIcon ((HINSTANCE)GetWindowLong(hwnd, GWL_HINSTANCE), MAKEINTRESOURCE (iconID));
+   NotifyIconData.hIcon = (HICON) LoadIcon ((HINSTANCE) GetWindowLong(hwnd, GWL_HINSTANCE), MAKEINTRESOURCE (iconID));
    lstrcpy (NotifyIconData.szTip, szClassName); // max 64 characters
    //  getting string from STRINGTABLE in .rc file
    // LoadString(hInstance, IDS_APPTOOLTIP,nidApp.szTip,MAX_LOADSTRING);
