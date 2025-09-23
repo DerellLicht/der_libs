@@ -115,6 +115,8 @@ void CStatusBar::set_bgnd_color(COLORREF bgnd)
 }
 
 //*****************************************************************************
+//  this function requires common_win.cpp to be linked as well
+//*****************************************************************************
 // "Courier New", 100, 0, EZ_ATTR_BOLD, 0, true) ;
 void CStatusBar::set_statusbar_font(TCHAR * szFaceName, int iDeciPtHeight, unsigned iAttributes)
 {
