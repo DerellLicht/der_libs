@@ -40,7 +40,9 @@ static LRESULT CALLBACK _HyperlinkParentProc(HWND hwnd, UINT message, WPARAM wPa
          if (fHyperlink)
          {
             LRESULT lr = CallWindowProc(pfnOrigProc, hwnd, message, wParam, lParam);
-            SetTextColor(hdc, RGB(0, 0, 192));
+            // SetTextColor(hdc, RGB(0, 0, 192));
+            COLORREF fgnd = GetSysColor(COLOR_HOTLIGHT) ;
+            SetTextColor(hdc, fgnd);
             return lr;
          }
 
