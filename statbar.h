@@ -100,6 +100,7 @@ public:
 //  Note that none of these macros are usable within the context of this class,
 //  because they require access to the HWND, which is private data.
 //-------------------------------------------------------------------------------
+// NOLINTBEGIN(bugprone-macro-parentheses)
 #define Status_GetBorders(hwnd, aBorders) \
     (BOOL) SendMessageA((hwnd), SB_GETBORDERS, 0, (LPARAM) (LPINT) aBorders)
 
@@ -126,4 +127,5 @@ public:
 
 #define Status_Simple(hwnd, fSimple) \
     (BOOL) SendMessageA((hwnd), SB_SIMPLE, (WPARAM) (BOOL) fSimple, 0L)
+// NOLINTEND(bugprone-macro-parentheses)
 
