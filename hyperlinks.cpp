@@ -25,7 +25,7 @@
 #define PROP_UNDERLINE_FONT   TEXT("_Hyperlink_Underline_Font_")
 
 //*************************************************************************************
-static LRESULT CALLBACK _HyperlinkParentProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK lHyperlinkParentProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
    WNDPROC pfnOrigProc = (WNDPROC) GetProp(hwnd, PROP_ORIGINAL_PROC);   //lint !e611
 
@@ -63,8 +63,8 @@ static LRESULT CALLBACK _HyperlinkParentProc(HWND hwnd, UINT message, WPARAM wPa
 }
 
 //*************************************************************************************
-// static LRESULT CALLBACK _HyperlinkProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-static INT_PTR CALLBACK _HyperlinkProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+// static LRESULT CALLBACK lHyperlinkProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+static INT_PTR CALLBACK lHyperlinkProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
    WNDPROC pfnOrigProc = (WNDPROC) GetProp(hwnd, PROP_ORIGINAL_PROC);   //lint !e611
 
@@ -146,10 +146,10 @@ BOOL ConvertStaticToHyperlink(HWND hwndCtl)
    if (NULL != hwndParent)
    {
       WNDPROC pfnOrigProc = (WNDPROC) GetWindowLongIF(hwndParent, GWx_WNDPROC);
-      if (pfnOrigProc != _HyperlinkParentProc)
+      if (pfnOrigProc != lHyperlinkParentProc)
       {
          SetProp(hwndParent, PROP_ORIGINAL_PROC, (HANDLE) pfnOrigProc); //lint !e611
-         SetWindowLong(hwndParent, GWx_WNDPROC, (LONGx) (WNDPROC) _HyperlinkParentProc);
+         SetWindowLong(hwndParent, GWx_WNDPROC, (LONGx) (WNDPROC) lHyperlinkParentProc);
       }
    }
 
@@ -162,7 +162,7 @@ BOOL ConvertStaticToHyperlink(HWND hwndCtl)
 
    WNDPROC pfnOrigProc = (WNDPROC) GetWindowLongIF(hwndCtl, GWx_WNDPROC);
    SetProp(hwndCtl, PROP_ORIGINAL_PROC, (HANDLE) pfnOrigProc); //lint !e611
-   SetWindowLongIF(hwndCtl, GWx_WNDPROC, (LONGx) (WNDPROC) _HyperlinkProc);
+   SetWindowLongIF(hwndCtl, GWx_WNDPROC, (LONGx) (WNDPROC) lHyperlinkProc);
 
    // Create an updated font by adding an underline.
 
