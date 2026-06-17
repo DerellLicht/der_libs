@@ -14,21 +14,22 @@
 //lint -esym(757, get_hex8, get_hex16, get_hex32, IsCharNum, secs_to_date_time_str)
 //lint -esym(758, u64toul) global union not referenced
 
-// typedef  unsigned char        u8 ;
-// typedef  unsigned char        uchar ;
-// typedef  unsigned short       u16 ;
-// typedef  unsigned int         uint ;
-// typedef  unsigned long        ulong ;
-// typedef  unsigned long        u32 ;
-// typedef  unsigned long long   u64 ;
+typedef  unsigned char        u8 ;
+typedef  unsigned char        uchar ;
+typedef  unsigned short       u16 ;
+typedef  unsigned int         uint ;
+typedef  unsigned long        ulong ;
+typedef  unsigned long        u32 ;
+typedef  unsigned long long   u64 ;
 
-using u8 = unsigned char ;
-using uchar = unsigned char ;
-using u16 = unsigned short ;
-using uint = unsigned int ;
-using ulong = unsigned long ;
-using u32 = unsigned long ;
-using u64 = unsigned long long ;
+//  these confound PcLint
+// using u8 = unsigned char ;
+// using uchar = unsigned char ;
+// using u16 = unsigned short ;
+// using uint = unsigned int ;
+// using ulong = unsigned long ;
+// using u32 = unsigned long ;
+// using u64 = unsigned long long ;
 
 #define  STX      2
 #define  ETX      3
