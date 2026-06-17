@@ -41,8 +41,9 @@
 
 //lint -esym(714, TCR, TLF, TTAB)
 //lint -esym(759, TCR, TLF, TTAB)
+//lint -esym(752, TCR, TLF, TTAB)
 //lint -esym(765, TCR, TLF, TTAB)
-const TCHAR  TCR   =  13 ;
+const TCHAR  TCR   =  13 ; //lint !e752
 const TCHAR  TLF   =  10 ;
 const TCHAR  TTAB  =   9 ;
 
@@ -756,7 +757,7 @@ TCHAR *show_error(int error_code)
       return message0 ;
    else
       return get_system_message(ecode) ;
-}  //lint !e843
+}  //lint !e843 !e715
 
 //**********************************************************************
 //lint -esym(714, IsCharNum)
@@ -962,7 +963,7 @@ double dabs(double dvalue1, double dvalue2)
 {
    return (dvalue1 > dvalue2)
         ? (dvalue1 - dvalue2)
-        : (dvalue2 - dvalue1) ;
+        : (dvalue2 - dvalue1) ;  //lint !e524
 }
 
 //**********************************************************************

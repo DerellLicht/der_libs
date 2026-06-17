@@ -1,5 +1,5 @@
 //***************************************************************************
-//  Copyright (c) 2025  Derell Licht
+//  Copyright (c) 2026  Derell Licht
 //  conio_min.h: Template class for minimal 32-bit console programs                        
 //***************************************************************************
 
@@ -12,11 +12,13 @@
 //lint -esym(1762, conio_min::get_scode)  Member function could be made const
 //lint -e1714  Member function not referenced
 
+//lint -e1008  In declaration of class member, did not expect '= delete'; text ignored
+
 //**********************************************************
 #define  USE_CTRL_HANDLER
 // #undef   USE_CTRL_HANDLER
 
-class conio_min {
+class conio_min { // NOLINT
 private:
    HANDLE hStdOut ;
    HANDLE hStdIn ;
@@ -28,10 +30,6 @@ private:
    WORD original_attribs ;
    bool init_success ;
 
-   //  disable the assignment operator and copy constructor
-   conio_min &operator=(const conio_min &src) ;
-   conio_min(const conio_min&);
-   
    //  local functions in class
    static BOOL WINAPI control_handler(DWORD dwCtrlType);
    void dscroll(WORD tBG);
@@ -43,9 +41,16 @@ public:
 #endif   
    conio_min();
    ~conio_min();
-   bool is_redirected(void) const 
+   //  disable the assignment operator and copy constructor
+   conio_min &operator=(const conio_min &src) = delete;
+   conio_min(const conio_min&) = delete;
+   //  disable move constructor and move assignment operator
+   conio_min &operator=(const conio_min &&src) = delete;
+   conio_min(const conio_min&&) = delete;
+   
+   bool is_redirected(void) const   // NOLINT use [[nodiscard]]?
       { return redirected ; };
-   bool init_okay(void) const 
+   bool init_okay(void) const       // NOLINT use [[nodiscard]]?
       { return init_success ; };
    CHAR get_char(void);
    WORD get_scode(void);

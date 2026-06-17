@@ -118,8 +118,8 @@ BOOL WINAPI conio_min::control_handler(DWORD dwCtrlType)
 //  This stores CONSOLE_SCREEN_BUFFER_INFO in global var sinfo
 //***************************************************************************
 conio_min::conio_min() :
-hStdOut (),
-hStdIn (),
+hStdOut (GetStdHandle(STD_OUTPUT_HANDLE)),
+hStdIn (GetStdHandle(STD_INPUT_HANDLE)),
 sinfo ({}), //lint !e1025
 redirected (false),
 original_attribs (3),
@@ -131,14 +131,14 @@ init_success(false)
    //  this doesn't work either
    // _setmode(_fileno(stdout), _O_U16TEXT);
   
-   hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+   // hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
    if (hStdOut == INVALID_HANDLE_VALUE) {
       syslog(_T("GetStdHandle(STD_OUTPUT_HANDLE): %s\n"), get_system_message()) ;
       init_success = false ;
       return ;
    }
    // PERR(hStdOut != INVALID_HANDLE_VALUE, "GetStdHandle");
-   hStdIn = GetStdHandle(STD_INPUT_HANDLE);
+   // hStdIn = GetStdHandle(STD_INPUT_HANDLE);
    if (hStdIn == INVALID_HANDLE_VALUE) {
       syslog(_T("GetStdHandle(STD_INPUT_HANDLE): %s\n"), get_system_message()) ;
       init_success = false ;

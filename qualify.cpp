@@ -75,11 +75,13 @@ unsigned qualify (std::wstring& input_path)
    //  strings in quotes will also foil the DOS routines;
    //  strip out all double quotes
    //******************************************************
-   found = input_path.find_first_of(L"\"");
+   // found = input_path.find_first_of(L"\"");
+   found = input_path.find_first_of(L'\"');
    while (found != std::wstring::npos) {
       // str[found]='*';
       input_path.erase(found, 1);
-      found = input_path.find_first_of(L"\"");
+      // found = input_path.find_first_of(L"\"");
+      found = input_path.find_first_of(L'\"');
    }
    // console->dputsf(_T("after quotes removed: [%s]\n"), input_path.c_str());
 
