@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2025  Daniel D Miller
+//  Copyright (c) 2008-2026  Daniel D Miller
 //  common_funcs.cpp - common functions for Windows and other programs.
 //  common.h - Contains Windows-specific and System-specific definitions
 //  This module, which has been entirely compiled from public-domain sources, 
@@ -14,13 +14,21 @@
 //lint -esym(757, get_hex8, get_hex16, get_hex32, IsCharNum, secs_to_date_time_str)
 //lint -esym(758, u64toul) global union not referenced
 
-typedef  unsigned char        u8 ;
-typedef  unsigned char        uchar ;
-typedef  unsigned short       u16 ;
-typedef  unsigned long        ulong ;
-typedef  unsigned int         uint ;
-typedef  unsigned long        u32 ;
-typedef  unsigned long long   u64 ;
+// typedef  unsigned char        u8 ;
+// typedef  unsigned char        uchar ;
+// typedef  unsigned short       u16 ;
+// typedef  unsigned int         uint ;
+// typedef  unsigned long        ulong ;
+// typedef  unsigned long        u32 ;
+// typedef  unsigned long long   u64 ;
+
+using u8 = unsigned char ;
+using uchar = unsigned char ;
+using u16 = unsigned short ;
+using uint = unsigned int ;
+using ulong = unsigned long ;
+using u32 = unsigned long ;
+using u64 = unsigned long long ;
 
 #define  STX      2
 #define  ETX      3
@@ -88,11 +96,11 @@ extern const TCHAR  TTAB ;
 //lint -esym(754, ul2uc_u::us)
 //lint -esym(756, ul2uc_t)
 //lint -esym(768, ul2uc_u::ul, ul2uc_u::us, ul2uc_u::uc)
-typedef union ul2uc_u {
+union ul2uc_t {
    u32 ul ;
    u16 us[2] ;
    u8  uc[4] ;
-} ul2uc_t ;
+} ;
 
 //lint -esym(768, u64toul::i, u64toul::u)
 union u64toul {
