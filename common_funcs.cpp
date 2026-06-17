@@ -142,7 +142,7 @@ bool control_key_pressed(void)
 //lint -esym(765, file_exists)
 bool file_exists(TCHAR *fefile)
 {
-   struct _stat st ;
+   struct _stat st {};
    if (_tstat(fefile, &st) == 0)
       return true;
    return false;
@@ -168,7 +168,7 @@ bool dir_exists(TCHAR *fefile)
    if (_tcslen(fefile) == 2) {
       return drive_exists(fefile) ;
    } else {
-      struct _stat st ;
+      struct _stat st {};
       if (_tstat(fefile, &st) == 0) {
          if (st.st_mode & _S_IFDIR)
             return true;
@@ -291,7 +291,7 @@ uint calc_elapsed_msec(bool done)
 //lint -esym(765, swap_rgb)
 uint swap_rgb(uint invalue)
 {
-   ul2uc_t uconv ;
+   ul2uc_t uconv {};
    uconv.ul = invalue ;
    u8 utemp = uconv.uc[0] ;
    uconv.uc[0] = uconv.uc[2] ;

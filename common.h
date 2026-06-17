@@ -159,11 +159,11 @@ u16  rand2(void);
 unsigned random_int(unsigned n);
 TCHAR const * const show_bool_str(bool bool_flag);
 
-typedef enum file_time_select_e {
+enum file_time_select_t {
 FILE_DATETIME_CREATE=0,
 FILE_DATETIME_LASTACCESS,
 FILE_DATETIME_LASTWRITE
-} file_time_select_t ;
+} ;
 bool get_file_datetime(TCHAR *file_name, SYSTEMTIME *sdt, file_time_select_t time_select);
 
 // ULLONG_MAX = 18,446,744,073,709,551,615
