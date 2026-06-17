@@ -55,7 +55,7 @@ CStatusBar::CStatusBar(HWND parent_window) :
    // hwndStatusBar = CreateStatusWindowA((LONG) dwStatusBarStyles, "Ready", parent_window, 2);
    // http://msdn.microsoft.com/en-us/library/windows/desktop/hh298378%28v=vs.85%29.aspx
    // Create the status bar.
-   hwndStatusBar = CreateWindowEx(
+   hwndStatusBar = CreateWindowEx(   // NOLINT
         0,                       // no extended styles
         STATUSCLASSNAME,         // name of status bar class
         (LPCTSTR) NULL,          // no text when first created

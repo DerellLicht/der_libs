@@ -51,11 +51,11 @@ CTrackbar::CTrackbar(
 }
 
 //*****************************************************************************
-CTrackbar::~CTrackbar()
-{
-//  Warning 1540: Pointer member neither freed nor zeroed by destructor
-//lint -esym(1540, CTrackbar::hwndTrack, CTrackbar::hwndParent, CTrackbar::idTrackBar)
-}
+// CTrackbar::~CTrackbar()
+// {
+// //  Warning 1540: Pointer member neither freed nor zeroed by destructor
+// //lint -esym(1540, CTrackbar::hwndTrack, CTrackbar::hwndParent, CTrackbar::idTrackBar)
+// }
 
 //*********************************************************************
 void CTrackbar::update_trackbar(unsigned max_time, unsigned tick_spread)

@@ -55,9 +55,7 @@ private:
    unsigned bar_height ;
    HDC   hdcSelf ;   //  used in conjunction with hfont
    HFONT hfont ;  
-   CStatusBar &operator=(const CStatusBar &src) ;
-   CStatusBar(const CStatusBar&);
-
+   
 // protected:
 //    unsigned cxChar ; //  width of char
 //    unsigned cyChar ; //  height of char
@@ -65,6 +63,13 @@ private:
 public:
    CStatusBar(HWND hwndParent) ;
    ~CStatusBar();
+   //  disable copy constructor and assignment operator
+   CStatusBar &operator=(const CStatusBar &src) = delete;
+   CStatusBar(const CStatusBar&) = delete;
+   //  disable move constructor and assignment operator
+   CStatusBar &operator=(const CStatusBar &&src) = delete;
+   CStatusBar(const CStatusBar&&) = delete;
+
    bool IsStatusBarVisible(void);
    unsigned MoveToBottom(unsigned cxClient, unsigned cyClient);
    bool SetParts(int nParts, int *sbparts);
@@ -74,7 +79,7 @@ public:
    void set_bgnd_color(COLORREF bgnd);
    bool RebuildStatusBar (WORD wFlag);
    void StatusBarMessage(WORD wMsg);
-   unsigned height(void) const 
+   [[nodiscard]] unsigned height(void) const 
       { return bar_height ; } ;
 } ;
 

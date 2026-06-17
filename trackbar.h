@@ -26,9 +26,6 @@ private:
    HMENU idTrackBar;
    unsigned tcount ;
 
-   CTrackbar &operator=(const CTrackbar &src) ;
-   CTrackbar(const CTrackbar&);
-   
 public:   
    CTrackbar(
       HWND hwndDlg,  // handle of dialog box (parent window) 
@@ -42,7 +39,14 @@ public:
       unsigned in_iSelMax,  // maximum value in trackbar selection 
       HMENU in_idTrackBar
       );
-   ~CTrackbar();
+   ~CTrackbar() = default;
+   //  disable copy constructor and assignment operator
+   CTrackbar &operator=(const CTrackbar &src) = delete;
+   CTrackbar(const CTrackbar&) = delete;
+   //  disable move constructor and assignment operator
+   CTrackbar &operator=(const CTrackbar &&src) = delete;
+   CTrackbar(const CTrackbar&&) = delete;
+   
    void update_trackbar(unsigned max_time, unsigned tick_spread);
    void set_position(unsigned new_tcount);
    unsigned get_position (void);
