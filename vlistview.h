@@ -101,18 +101,24 @@ private:
    int   old_cursor_y ;
    int   old_hover_column ;
 
-   //  disable assignment and copy operators
-   CVListView &operator=(const CVListView &src) ;
-   CVListView(const CVListView&);
-
+// [cppcoreguidelines-non-private-member-variables-in-classes]
+// The data members should be declared as private and accessed through member functions 
+// instead of exposed to derived classes or class consumers.
 protected:
-   unsigned cxChar ; //  width of char
-   unsigned cyChar ; //  height of char
+   unsigned cxChar ; //  NOLINT  width of char
+   unsigned cyChar ; //  NOLINT  height of char
 
 public:
    // CVListView() ;
    CVListView(HWND hwnd, uint ControlID, HINSTANCE g_hinst, uint lvx0, uint lvy0, uint lvdx, uint lvdy, uint style_flags);
    virtual ~CVListView();
+   //  disable copy constructor and assignment operator
+   CVListView &operator=(const CVListView &src) = delete;
+   CVListView(const CVListView&) = delete;
+   //  disable move constructor and assignment operator
+   CVListView &operator=(const CVListView &&src) = delete;
+   CVListView(const CVListView&&) = delete;
+
    WNDPROC lview_subclass(LONG TermSubclassProc) ;
    WNDPROC header_subclass(LONG TermSubclassProc);
    void lview_assign_column_headers(void);
@@ -126,7 +132,7 @@ public:
    void clear_listview(void);
    void goto_element(uint element_num);
    bool is_lview_hwnd(HWND hwndTarget) const ;
-   bool end_of_page_active(void) const
+   [[nodiscard]] bool end_of_page_active(void) const
       {  return force_end_of_page ; } ;
    void resize(uint x0, uint y0, uint dx, uint dy);
    void resize(uint dx, uint dy);
@@ -148,9 +154,9 @@ public:
    void find_selected_row(NMHDR* pNMHDR, int *clicked_row, int *clicked_column) ;
    void set_selected_row(int row);
    void set_selected_row(int row, bool reset_required);
-   uint get_lview_dx(void) const 
+   [[nodiscard]] uint get_lview_dx(void) const 
       { return cxClient ; } ;
-   uint get_lview_dy(void) const
+   [[nodiscard]] uint get_lview_dy(void) const
       { return cyClient ; } ;
 } ;
 

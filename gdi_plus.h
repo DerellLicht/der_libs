@@ -59,32 +59,36 @@ private:
    void copy_imagelist_item(HDC hdc, int xsrc, int ysrc, int xdest, int ydest);
    // void alloc_clone_elements(void);
 
-   //  disable the assignment operator and copy constructor
-   gdi_plus &operator=(const gdi_plus &src) ;
-   gdi_plus(const gdi_plus&);
-   //  disable the default constructor
-   gdi_plus() ;
-   
+
 public:   
    gdi_plus(wchar_t const * const new_img_name) ;
    gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, uint icon_rows);
    gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height);
+   //  disable the default constructor
+   gdi_plus() = delete;
    ~gdi_plus();
+   //  disable the assignment operator and copy constructor
+   gdi_plus &operator=(const gdi_plus &src) = delete;
+   gdi_plus(const gdi_plus&) = delete;
+   //  disable the assignment operator and move constructor
+   gdi_plus &operator=(const gdi_plus &&src) = delete;
+   gdi_plus(const gdi_plus&&) = delete;
+   
    void render_bitmap(HDC hdc, uint xdest, uint ydest);
    void render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
    void DrawBox(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor);
    void DrawBoxFilled(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor);
-   uint img_width(void) const
+   [[nodiscard]] uint img_width(void) const
       { return nWidth ; } ;
-   uint img_height(void) const
+   [[nodiscard]] uint img_height(void) const
       { return nHeight ; } ;
-   uint horiz_tiles(void) const
+   [[nodiscard]] uint horiz_tiles(void) const
       { return tiles_x ; } ;
-   uint vert_tiles(void) const
+   [[nodiscard]] uint vert_tiles(void) const
       { return tiles_y ; } ;
-   uint get_sprite_dx(void) const
+   [[nodiscard]] uint get_sprite_dx(void) const
       { return sprite_dx ; } ;
-   uint get_sprite_dy(void) const
+   [[nodiscard]] uint get_sprite_dy(void) const
       { return sprite_dy ; } ;
 } ;
 

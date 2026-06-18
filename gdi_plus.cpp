@@ -173,7 +173,7 @@ void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, u
 //lint -esym(578, y0, y1)
 void gdi_plus::DrawBox(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor)
 {
-   ul2uc_t uconv ;
+   ul2uc_t uconv {};
    uconv.ul = (uint) rColor ;
    uconv.uc[3] = 255 ;
    
@@ -191,7 +191,7 @@ void gdi_plus::DrawBox(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor)
 //lint -esym(578, y0, y1)
 void gdi_plus::DrawBoxFilled(HDC hdc, int xdest, int ydest, int dx, int dy, COLORREF rColor)
 {
-   ul2uc_t uconv ;
+   ul2uc_t uconv {};
    uconv.ul = (uint) rColor ;
    uconv.uc[3] = 255 ;
    

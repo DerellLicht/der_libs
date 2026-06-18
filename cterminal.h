@@ -73,9 +73,6 @@ private:
    unsigned rows ;
    unsigned cols ;
 
-   CTerminal &operator=(const CTerminal &src) ;
-   CTerminal(const CTerminal&);
-
    //  private functions
    void set_terminal_dimens(void);
    term_lview_item_p get_lview_element(TCHAR *lpBuf, COLORREF fgnd, COLORREF bgnd);
@@ -83,7 +80,17 @@ private:
 public:   
    CTerminal(HWND hwndParent, uint ControlID, HINSTANCE local_g_hinst, 
       uint x0, uint y0, uint dx, uint dy, uint style_flags) ;
-   ~CTerminal() ;
+// D:/SourceCode/Git/winwiz/der_libs/cterminal.h:83:4: 
+// warning: annotate this function with 'override' or (rarely) 'final' 
+// [cppcoreguidelines-explicit-virtual-functions, modernize-use-override]
+//    83 |    ~CTerminal() ;
+   ~CTerminal() override ;
+   //  disable copy constructor and assignment operator
+   CTerminal &operator=(const CTerminal &src) = delete;
+   CTerminal(const CTerminal&) = delete;
+   //  disable move constructor and assignment operator
+   CTerminal &operator=(const CTerminal &&src) = delete;
+   CTerminal(const CTerminal&&) = delete;
 
    void resize_terminal_window(uint x0, uint y0, uint dx, uint dy);
    void resize_terminal_rows(uint new_rows);
@@ -93,15 +100,15 @@ public:
    void scroll_terminal(bool scroll_down);
    void clear_message_area(void);
    int  copy_selected_rows(void);
-   uint get_term_rows(void) const
+   [[nodiscard]] uint get_term_rows(void) const
       { return rows ; }
-   uint get_term_columns(void) const
+   [[nodiscard]] uint get_term_columns(void) const
       { return cols ; }
-   uint get_term_char_dy(void) const
+   [[nodiscard]] uint get_term_char_dy(void) const
       { return cyChar ; }
-   uint get_element_count(void) const 
+   [[nodiscard]] uint get_element_count(void) const 
       { return curr_row; } ;
-   uint rows2pixels(uint new_rows) const
+   [[nodiscard]] uint rows2pixels(uint new_rows) const
       { return (new_rows * (cyChar + 1)) ; } ;
    void mark_element(uint idx);
    void clear_marked_elements(void);
