@@ -19,11 +19,15 @@ private:
    bool thread_running ;
    void (*close_func)(LPVOID iValue) ;
 
-   CThread &operator=(const CThread &src) ;
-   CThread(const CThread&);
-   
 public:   
    CThread(LPTHREAD_START_ROUTINE thread_func, void *private_data, void (*app_close_func)(LPVOID iValue));
+   //  disable copy constructor and assignment operator
+   CThread &operator=(const CThread &src) = delete;
+   CThread(const CThread&) = delete;
+   //  disable move constructor and assignment operator
+   CThread &operator=(const CThread &&src) = delete;
+   CThread(const CThread&&) = delete;
+   
    ~CThread();
    DWORD get_thread_ID(void) const
       { return ThreadID ; } ;
