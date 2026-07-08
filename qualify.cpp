@@ -64,7 +64,7 @@ unsigned qualify (std::wstring& input_path)
    wchar_t *pathptr = &path[0];
    // TCHAR *strptr, *srchptr ;
    DWORD plen;
-   unsigned len, qresult = 0;
+   unsigned qresult = 0;
    std::size_t found ;
 
    if (input_path.empty()) {
@@ -90,7 +90,7 @@ unsigned qualify (std::wstring& input_path)
       int drive = towlower(input_path[0]) ;
       drive -= (97 - 1) ;  //  97 = 'a', +1 converts drive to start at 1 vs 0
       // console->dputsf(L"drive spec [%d]: [%s]\n", drive, input_path.c_str());
-      wchar_t *p = _wgetdcwd(drive, pathptr, MAX_PATH_LEN);
+      wchar_t const *p = _wgetdcwd(drive, pathptr, MAX_PATH_LEN);
       if (p == NULL) {
          return QUAL_INV_DRIVE;
       }
@@ -113,7 +113,7 @@ unsigned qualify (std::wstring& input_path)
    //  or nothing.  If directory, append wildcard char
    found = input_path.find_first_of(L"*?");
    if (found == std::wstring::npos) {
-      len = input_path.length() ;
+      unsigned len = input_path.length() ;
       // if (*(pathptr + len - 1) == L'\\') {
       if (input_path[len-1] == L'\\') {
          len--;

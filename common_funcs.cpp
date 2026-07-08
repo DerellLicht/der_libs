@@ -152,7 +152,7 @@ bool file_exists(TCHAR *fefile)
 //lint -esym(714, drive_exists)
 //lint -esym(759, drive_exists)
 //lint -esym(765, drive_exists)
-bool drive_exists(TCHAR *fefile)
+bool drive_exists(TCHAR const *fefile)
 {
    DWORD gld_return = GetLogicalDrives() ;
    TCHAR drive_letter = *fefile ;
@@ -179,6 +179,13 @@ bool dir_exists(TCHAR *fefile)
 }
 
 //*******************************************************************************
+// This routine does a CRC-16 check on a block of addressable space.
+// code_ptr arg is a pointer to byte, and points to the start of the block.
+// code_size arg is the size of the block in bytes.
+// start arg is the initial value we want to use for CRC, this allows us to 
+// generate a CRC for discontinuous blocks of data through multiple function
+// calls.  In normal usage it should be set to 0.
+//*******************************************************************************
 static const uint crc_16_table[16] =
 {
   0x0000, 0xCC01, 0xD801, 0x1400, 0xF001, 0x3C00, 0x2800, 0xE401,
@@ -189,25 +196,18 @@ static const uint crc_16_table[16] =
 //lint -esym(759, crc_16)
 //lint -esym(765, crc_16)
 uint crc_16(uint start, u8 *code_ptr, uint code_size)
-{ // This routine does a CRC-16 check on a block of addressable space.
-  // code_ptr arg is a pointer to byte, and points to the start of the block.
-  // code_size arg is the size of the block in bytes.
-  // start arg is the initial value we want to use for CRC, this allows us to 
-  // generate a CRC for discontinuous blocks of data through multiple function
-  // calls.  In normal usage it should be set to 0.
-
-  uint  r = 0;
+{ 
   uint  crc = start;
-  uint j = 0, k = 0;
+  uint k = 0;
   uint segment_size = 0x10000;
   
   // Generate a checksum for that code space...
   while (k<code_size)
   {
-      for (j=0; j<segment_size && k<code_size; j++, k++)
+      for (uint j=0; j<segment_size && k<code_size; j++, k++)
       {       
           // compute checksum of lower four bits of data byte
-          r = crc_16_table[crc & 0xF];
+          uint r = crc_16_table[crc & 0xF];
           crc = (crc >> 4) & 0x0FFF;
           crc = crc ^ r ^ crc_16_table[ code_ptr[j] & 0xF];
 
@@ -900,7 +900,7 @@ TCHAR *skip_spaces_and_commas(TCHAR *hd)
 //lint -esym(714, get_hex8)
 //lint -esym(759, get_hex8)
 //lint -esym(765, get_hex8)
-u8 get_hex8(char *ptr)
+u8 get_hex8(char const *ptr)
 {
    char hex[3] ;
    hex[0] = *(ptr) ;
@@ -913,7 +913,7 @@ u8 get_hex8(char *ptr)
 //lint -esym(714, get_hex16)
 //lint -esym(759, get_hex16)
 //lint -esym(765, get_hex16)
-u16 get_hex16(char *ptr)
+u16 get_hex16(char const *ptr)
 {
    char hex[5] ;
    hex[0] = *(ptr) ;
@@ -929,7 +929,7 @@ u16 get_hex16(char *ptr)
 //lint -esym(714, get_hex32)
 //lint -esym(759, get_hex32)
 //lint -esym(765, get_hex32)
-u32 get_hex32(char *ptr)
+u32 get_hex32(char const *ptr)
 {
    char hex[9] ;
    hex[0] = *(ptr) ;
@@ -985,9 +985,9 @@ static const int high_chars = 0 ; //  print using high-ascii chars, not used for
 //lint -esym(714, hex_dump)
 //lint -esym(759, hex_dump)
 //lint -esym(765, hex_dump)
-int hex_dump(u8 *bfr, int bytes, unsigned addr)
+int hex_dump(u8 const *bfr, int bytes, unsigned addr)
 {
-   int j, len ;
+   int j ;
    char tail[40] ;
    char pstr[81] ;
    static bool hex_dump_active = false ;
@@ -997,13 +997,14 @@ int hex_dump(u8 *bfr, int bytes, unsigned addr)
 
    tail[0] = 0 ;
    int idx = 0 ;
-   int plen = 0 ;
-   while (1) {
+   // int plen = 0 ;
+   while (LOOP_FOREVER) {
+      int len ;
       int leftovers = bytes - idx ;
       if (leftovers > 16)
           leftovers = 16 ;
 
-      plen = wsprintfA(pstr, "%05X:  ", addr+idx) ;  //lint !e737
+      int plen = wsprintfA(pstr, "%05X:  ", addr+idx) ;  //lint !e737
       len = 0 ;
       for (j=0; j<leftovers; j++) {
          u8 chr = bfr[idx+j] ;
@@ -1039,7 +1040,7 @@ int hex_dump(u8 *bfr, int bytes, unsigned addr)
 }
 
 //**************************************************************************
-int hex_dump(u8 *bfr, int bytes)
+int hex_dump(u8 const *bfr, int bytes)
 {
    return hex_dump(bfr, bytes, 0) ;
 }
