@@ -1,5 +1,5 @@
 //***************************************************************************
-//  Copyright (c) 2025  Derell Licht
+//  Copyright (c) 2025-2026  Derell Licht
 //  conio_min: Template class for 32-bit console programs                        
 //***************************************************************************
 //  Windows console data structures
@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <conio.h>   // _getch(), _kbhit()
 #include <tchar.h>
+#include <string>
 
 #include "common.h"  //  syslog()
 #include "conio_min.h"
@@ -346,7 +347,18 @@ void conio_min::dputs(const TCHAR *outstr)
       return ;
 
    if (is_redirected()) {
-      _tprintf(_T("%s"), outstr);
+      //  This suggestion for handling redirected output in Unicode on Windows,
+      //  came from Claude AI, 07/24/26
+      // _tprintf(_T("%s"), outstr);
+      const std::wstring& text = outstr ;
+      int utf8Len = WideCharToMultiByte(CP_UTF8, 0, text.c_str(), static_cast<int>(text.size()),
+                                         nullptr, 0, nullptr, nullptr);
+      std::string utf8(utf8Len, '\0');
+      WideCharToMultiByte(CP_UTF8, 0, text.c_str(), static_cast<int>(text.size()),
+                           &utf8[0], utf8Len, nullptr, nullptr);
+
+      DWORD written;
+      WriteFile(hStdOut, utf8.data(), static_cast<DWORD>(utf8.size()), &written, nullptr);
    }
    else {
       WORD slen = (WORD) _tcslen(outstr) ;
