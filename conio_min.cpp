@@ -277,7 +277,7 @@ CHAR conio_min::get_char(void)
 }
 
 //**********************************************************
-WORD conio_min::get_scode(void)
+WORD conio_min::get_scode(void)  //  NOLINT(readability-convert-member-functions-to-static)
 {
    WORD inchr ;
    inchr = _getch() ;   //lint !e734
@@ -355,7 +355,7 @@ void conio_min::dputs(const TCHAR *outstr)
                                          nullptr, 0, nullptr, nullptr);
       std::string utf8(utf8Len, '\0');
       WideCharToMultiByte(CP_UTF8, 0, text.c_str(), static_cast<int>(text.size()),
-                           &utf8[0], utf8Len, nullptr, nullptr);
+                           (char*) utf8.data(), utf8Len, nullptr, nullptr);
 
       DWORD written;
       WriteFile(hStdOut, utf8.data(), static_cast<DWORD>(utf8.size()), &written, nullptr);

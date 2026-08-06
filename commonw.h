@@ -83,7 +83,7 @@ HFONT EzCreateFont(HDC hdc, TCHAR * szFaceName, int iDeciPtHeight,
 
 #ifdef UNICODE
 int str_unicode_to_ascii(WCHAR *UnicodeStr, char *AsciiStr, uint AsciiLen);
-int str_ascii_to_unicode(char *AsciiStr, WCHAR *UnicodeStr, uint UnicodeLen);
+int str_ascii_to_unicode(char *AsciiStr, WCHAR *UnicodeStr, uint AsciiLen);
 WCHAR *ascii2unicode(char *AsciiStr, uint AsciiLen);
 WCHAR *ascii2unicode(char *AsciiStr);
 char *unicode2ascii(WCHAR *UnicodeStr);

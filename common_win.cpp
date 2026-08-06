@@ -215,7 +215,7 @@ uint get_bottom_line(HWND hwnd, uint ctrl_id)
    GetWindowRect(GetDlgItem(hwnd, ctrl_id), &myRect) ;
    // syslog("bottom of DeviceDetection box: %u", (uint) myRect.bottom) ;
    // [20880] bottom of DeviceDetection box: 6617752
-   return (uint) ((uint) myRect.bottom - (uint) pt.y) ;
+   return ((uint) myRect.bottom - (uint) pt.y) ;
 }
 
 //****************************************************************************
@@ -461,7 +461,7 @@ HFONT EzCreateFont(HDC hdc, TCHAR * szFaceName, int iDeciPtHeight,
 
    DPtoLP (hdc, &pt, 1) ;
 
-   lf.lfHeight         = - (int) (fabs ((double) pt.y) / 10.0 + 0.5) ;
+   lf.lfHeight         = - (int) ((fabs ((double) pt.y) / 10.0) + 0.5) ;
    lf.lfWidth          = 0 ;
    lf.lfEscapement     = textangle ;
    lf.lfOrientation    = textangle ;
@@ -484,8 +484,8 @@ HFONT EzCreateFont(HDC hdc, TCHAR * szFaceName, int iDeciPtHeight,
 
       DeleteObject (SelectObject (hdc, hFont)) ;
 
-      lf.lfWidth = (int) (txtm.tmAveCharWidth *
-                          fabs ((double) pt.x) / fabs ((double) pt.y) + 0.5) ;
+      lf.lfWidth = (int) ((txtm.tmAveCharWidth *
+                          (fabs ((double) pt.x) / fabs ((double) pt.y))) + 0.5) ;
 
       hFont = CreateFontIndirect(&lf) ;
    }
@@ -532,8 +532,8 @@ BOOL CenterWindow (HWND hwnd)
    width = rect.right - rect.left;
    height = rect.bottom - rect.top;
 
-   x = ((rectP.right - rectP.left) - width) / 2 + rectP.left;
-   y = ((rectP.bottom - rectP.top) - height) / 2 + rectP.top;
+   x = (((rectP.right - rectP.left) - width)  / 2) + rectP.left;
+   y = (((rectP.bottom - rectP.top) - height) / 2) + rectP.top;
 
    screenwidth = GetSystemMetrics (SM_CXSCREEN);
    screenheight = GetSystemMetrics (SM_CYSCREEN);
@@ -700,9 +700,10 @@ void center_dialog_on_screen(HWND hDlg)
 bool are_normal_fonts_active(void)
 {
    uint curr_dpi = GetScreenDPI() ; //lint !e732 Loss of sign
-   if (curr_dpi == 96)
-      return true;
-   return false;
+   return (curr_dpi == 96) ;
+   // if (curr_dpi == 96)
+   //    return true;
+   // return false;
 }
 
 //****************************************************************************
