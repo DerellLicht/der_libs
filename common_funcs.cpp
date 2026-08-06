@@ -81,7 +81,7 @@ static unsigned long holdrand = 0 ;
 //lint -esym(765, rand2)
 u16 rand2(void)
 {
-   return((u16) ((holdrand = holdrand * 214013UL + 2531011UL) >> 16) & 0x7FFFUL); 
+   return((u16) ((holdrand = (holdrand * 214013UL) + 2531011UL) >> 16) & 0x7FFFUL); 
 }
 
 //lint -esym(714, srand2)
@@ -117,7 +117,7 @@ void srand2(unsigned long seed)
 unsigned random_int(unsigned n)
 {
    //  Note that this *may* overflow if n > 0xFFFF
-   return (unsigned) ((unsigned) rand2() * n / (unsigned) (RAND_MAX2 + 1)) ;
+   return (unsigned) ((unsigned) rand2() * n / (unsigned) (RAND_MAX2 + 1)) ; //  NOLINT(readability-redundant-casting)
 }
 
 //****************************************************************************
@@ -126,9 +126,7 @@ unsigned random_int(unsigned n)
 //lint -esym(765, control_key_pressed)
 bool control_key_pressed(void)
 {
-   if (GetKeyState(VK_CONTROL) & 0x8000)
-      return true;
-   return false;
+   return (GetKeyState(VK_CONTROL) & 0x8000) ? true : false ;  //  NOLINT(readability-simplify-boolean-expr)
 }
 
 //****************************************************************************
@@ -144,9 +142,7 @@ bool control_key_pressed(void)
 bool file_exists(TCHAR *fefile)
 {
    struct _stat st {};
-   if (_tstat(fefile, &st) == 0)
-      return true;
-   return false;
+   return (_tstat(fefile, &st) == 0) ? true : false ;  //  NOLINT(readability-simplify-boolean-expr)
 }
 
 //lint -esym(714, drive_exists)
@@ -158,7 +154,7 @@ bool drive_exists(TCHAR const *fefile)
    TCHAR drive_letter = *fefile ;
    drive_letter |= 0x20 ;  //  convert to lower case
    uint drive_mask = 1U << (uint) (drive_letter - 'a') ; //lint !e571
-   return (gld_return & drive_mask) ? true : false ;
+   return ((gld_return & drive_mask) != 0) ? true : false ;  //  NOLINT(readability-simplify-boolean-expr)
 }
 
 //lint -esym(714, dir_exists)
@@ -168,11 +164,11 @@ bool dir_exists(TCHAR *fefile)
 {
    if (_tcslen(fefile) == 2) {
       return drive_exists(fefile) ;
-   } else {
-      struct _stat st {};
-      if (_tstat(fefile, &st) == 0) {
-         if (st.st_mode & _S_IFDIR)
-            return true;
+   } 
+   struct _stat st {};
+   if (_tstat(fefile, &st) == 0) {
+      if (st.st_mode & _S_IFDIR) {
+         return true;
       }
    }
    return false;
@@ -690,14 +686,13 @@ TCHAR *get_system_message(DWORD errcode)
    // Process any inserts in lpMsgBuf.
    // ...
    // Display the string.
-   if (dresult == 0) {
+   if (dresult == 0) {  
       DWORD glError = GetLastError() ;
       if (glError == 317) {   //  see comment at start of function
          _stprintf(msg, _T("FormatMessage(): no message for error code %d"), result) ;
       } else {
          _stprintf(msg, _T("FormatMessage() failed: [%u], errcode %d"), (uint) GetLastError(), result) ;
       }
-      
    } else
    if (lpMsgBuf == NULL) {
       _stprintf(msg, _T("NULL buffer in response from FormatMessage() [%u]"), (uint) GetLastError()) ;
@@ -709,7 +704,7 @@ TCHAR *get_system_message(DWORD errcode)
    }
 
    //  trim the newline off the message before copying it...
-   strip_newlines(msg) ;
+   strip_newlines(msg) ;  //  NOLINT(readability-misleading-indentation)
 
    return msg;
 }
@@ -753,10 +748,10 @@ TCHAR *show_error(int error_code)
 {
    static TCHAR *message0 = _T("no response from ODU") ; // NOLINT
    uint ecode = (uint) (error_code < 0) ? -error_code : error_code ; //lint !e732
-   if (ecode == 0)
+   if (ecode == 0) {
       return message0 ;
-   else
-      return get_system_message(ecode) ;
+   }
+   return get_system_message(ecode) ;
 }  //lint !e843 !e715
 
 //**********************************************************************
@@ -765,10 +760,7 @@ TCHAR *show_error(int error_code)
 //lint -esym(765, IsCharNum)
 bool IsCharNum(char inchr)
 {
-   // if (inchr >= '0'  &&  inchr <= '9')
-   if (inchr >= '0'  &&  inchr <= '9')
-      return true ;
-   return false;
+   return (inchr >= '0'  &&  inchr <= '9') ? true : false ;  // NOLINT(readability-simplify-boolean-expr)
 }
 
 //**********************************************************************
