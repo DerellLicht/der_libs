@@ -88,11 +88,12 @@ CVListView::CVListView(HWND hwndParent, uint ControlID, HINSTANCE g_hinst,
    //    dwStyle |= LVS_EX_FULLROWSELECT ;
    // }
 
-   if (local_style_flags & LVL_STY_PAGE_TO_END) {
-      force_end_of_page = true ;
-   } else {
-      force_end_of_page = false ;
-   }
+   force_end_of_page = ((local_style_flags & LVL_STY_PAGE_TO_END) != 0) ;
+   // if (local_style_flags & LVL_STY_PAGE_TO_END) {
+   //    force_end_of_page = true ;
+   // } else {
+   //    force_end_of_page = false ;
+   // }
    // syslog("VLV Create: dx=%u, dy=%u\n", dx, dy) ;
 
    hwndVListView = CreateWindowEx(WS_EX_CLIENTEDGE,   // ex style
@@ -237,7 +238,7 @@ void CVListView::lview_assign_column_headers(lv_cols_p lv_cols, LPARAM image_lis
       ListView_SetExtendedListViewStyle(hwndVListView, styles) ;   //lint !e522
    // (void) ListView_SetImageList(hwndLVtop, get_image_list(), LVSIL_SMALL);
    if (image_list != 0) {
-      SendMessage(hwndVListView, LVM_SETIMAGELIST, (WPARAM) LVSIL_SMALL, (LPARAM) image_list);
+      SendMessage(hwndVListView, LVM_SETIMAGELIST, (WPARAM) LVSIL_SMALL, image_list);
    }
 
    columns_created = true ;
@@ -320,7 +321,7 @@ void CVListView::lview_assign_column_headers(lv_cols_p lv_cols[], LPARAM image_l
       ListView_SetExtendedListViewStyle(hwndVListView, styles) ;   //lint !e522
    // (void) ListView_SetImageList(hwndLVtop, get_image_list(), LVSIL_SMALL);
    if (image_list != 0) {
-      SendMessage(hwndVListView, LVM_SETIMAGELIST, (WPARAM) LVSIL_SMALL, (LPARAM) image_list);
+      SendMessage(hwndVListView, LVM_SETIMAGELIST, (WPARAM) LVSIL_SMALL, image_list);
    }
 
    columns_created = true ;
@@ -347,7 +348,7 @@ void CVListView::lview_assign_column_headers(lv_cols_p lv_cols[], LPARAM image_l
       LvCol.pszText = lvptr->txt ;
       LvCol.cx = lvptr->cx ;
       SendMessage(hwndVListView, LVM_INSERTCOLUMN, idx, (LPARAM) &LvCol); // Insert/Show the column
-      dx += (uint) lvptr->cx ;
+      dx += lvptr->cx ;
    }
    if (dx > 0) {
       resize(0, 0, dx+24, cyClient) ;
@@ -524,7 +525,7 @@ void CVListView::recalc_dx(lv_cols_p lvptr, uint min_dx)
    unsigned dx = 0 ;
    for (; lvptr->txt != 0; lvptr++) {
       if (lvptr->active)
-         dx += (uint) lvptr->cx ;
+         dx += lvptr->cx ;
    }
    dx += 24 ;  //  allow room for vertical scroll bar
    if (dx < min_dx) {
@@ -536,13 +537,13 @@ void CVListView::recalc_dx(lv_cols_p lvptr, uint min_dx)
 //*****************************************************************************
 WNDPROC CVListView::lview_subclass(LONG TermSubclassProc)
 {
-   return (WNDPROC) SetWindowLongPtr(hwndVListView, GWL_WNDPROC, (LONG) TermSubclassProc); 
+   return (WNDPROC) SetWindowLongPtr(hwndVListView, GWL_WNDPROC, TermSubclassProc); 
 }
 
 //*****************************************************************************
 WNDPROC CVListView::header_subclass(LONG TermSubclassProc)
 {
-   return (WNDPROC) SetWindowLongPtr(hwndLVHeader, GWL_WNDPROC, (LONG) TermSubclassProc); 
+   return (WNDPROC) SetWindowLongPtr(hwndLVHeader, GWL_WNDPROC, TermSubclassProc); 
 }
 
 //*************************************************************************
@@ -629,7 +630,7 @@ bool CVListView::is_lview_hwnd(HWND hwndTarget) const
 {
    if (hwndVListView == NULL)
       return false;
-   return (hwndTarget == hwndVListView) ? true : false ;
+   return (hwndTarget == hwndVListView) ;
 }
 
 //****************************************************************************

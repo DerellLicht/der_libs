@@ -113,7 +113,7 @@ gdi_plus::gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, ui
 //********************************************************************
 gdi_plus::~gdi_plus()
 {
-   if (img_name != NULL) {
+   if (img_name != NULL) { // NOLINT(readability-delete-null-pointer)
       delete [] img_name ;
    }
    DeleteObject(hBitmap);
@@ -171,7 +171,7 @@ void gdi_plus::render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, u
 
 /************************************************************************/
 //lint -esym(578, y0, y1)
-void gdi_plus::DrawBox(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor)
+void gdi_plus::DrawBox(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor)  //  NOLINT(readability-convert-member-functions-to-static)
 {
    ul2uc_t uconv {};
    uconv.ul = (uint) rColor ;
@@ -189,7 +189,7 @@ void gdi_plus::DrawBox(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor)
 
 /************************************************************************/
 //lint -esym(578, y0, y1)
-void gdi_plus::DrawBoxFilled(HDC hdc, int xdest, int ydest, int dx, int dy, COLORREF rColor)
+void gdi_plus::DrawBoxFilled(HDC hdc, int xdest, int ydest, int dx, int dy, COLORREF rColor)  //  NOLINT(readability-convert-member-functions-to-static)
 {
    ul2uc_t uconv {};
    uconv.ul = (uint) rColor ;

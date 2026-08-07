@@ -118,11 +118,11 @@ public:
    void set_terminal_font(TCHAR * szFaceName, int iDeciPtHeight, unsigned iAttributes);
    void set_term_attr(COLORREF fgnd, COLORREF bgnd);
    void set_term_attr_default(void);
-   void get_term_attr(COLORREF *prev_fgnd, COLORREF *prev_bgnd) ;
+   void get_term_attr(COLORREF *prev_fgnd, COLORREF *prev_bgnd) const ;
    void reverse_list_entries(void);
    void copy_elements_to_clipboard(void);
    void copy_list_to_clipboard(void);
-   LRESULT TerminalCustomDraw (LPARAM lParam) ;
+   LRESULT TerminalCustomDraw (LPARAM lParam) const ;
    void get_terminal_entry(LPARAM lParam);
    TCHAR *get_last_term_entry(void);
    void put(TCHAR *lpBuf);

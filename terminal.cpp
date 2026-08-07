@@ -157,7 +157,7 @@ bool term_notify(HWND hwnd, LPARAM lParam)
 //******************************************************************
 WNDPROC term_lview_subclass(LONG TermSubclassProc)
 {
-   return myTerminal->terminal_lview_subclass((LONG) TermSubclassProc); 
+   return myTerminal->terminal_lview_subclass(TermSubclassProc); 
 }
 
 //******************************************************************

@@ -475,7 +475,7 @@ void CTerminal::set_term_attr_default(void)
 //  DDM: if I put const on this member function, I get compile errors from g++:
 //    undefined reference to `CTerminal::get_term_attr(unsigned long*, unsigned long*)'
 //lint -esym(1762, CTerminal::get_term_attr)
-void CTerminal::get_term_attr(COLORREF *prev_fgnd, COLORREF *prev_bgnd)
+void CTerminal::get_term_attr(COLORREF *prev_fgnd, COLORREF *prev_bgnd) const
 {
    *prev_fgnd = term_fgnd ;
    *prev_bgnd = term_bgnd ;
@@ -500,7 +500,7 @@ term_lview_item_p CTerminal::get_lview_element(TCHAR *lpBuf, COLORREF fgnd, COLO
 // Info 1762: Member function 'CTerminal::TerminalCustomDraw(long)' could be made const
 // DDM: except that this *isn't* const...  it changes lParam)
 //lint -esym(1762, CTerminal::TerminalCustomDraw)
-LRESULT CTerminal::TerminalCustomDraw (LPARAM lParam)
+LRESULT CTerminal::TerminalCustomDraw (LPARAM lParam) const
 {
    //  remember which item number we are currently dealing with.
    LPNMLVCUSTOMDRAW lplvcd = (LPNMLVCUSTOMDRAW) lParam;
