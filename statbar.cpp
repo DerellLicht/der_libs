@@ -220,7 +220,7 @@ void CStatusBar::StatusBarMessage(WORD wMsg)
    case IDM_ST_GETBORDERS:
       {
       char ach[180];
-      int aiBorders[3];
+      int aiBorders[3] {};
 
       Status_GetBorders(hwndStatusBar, (LPARAM) &aiBorders[0]);   //lint !e665 !e522
       wsprintfA (ach, "Horiz Width = %d\n"
