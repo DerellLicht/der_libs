@@ -337,6 +337,7 @@ void conio_min::dclrscr(void)
 
 //******************************************************************************
 //  Sadly, neither of these output functions handle Unicode on redirection
+//  08/08/26  With ClaudeAI's help, this is no longer true.
 //******************************************************************************
 void conio_min::dputs(const TCHAR *outstr)
 {
@@ -349,7 +350,6 @@ void conio_min::dputs(const TCHAR *outstr)
    if (is_redirected()) {
       //  This suggestion for handling redirected output in Unicode on Windows,
       //  came from Claude AI, 07/24/26
-      // _tprintf(_T("%s"), outstr);
       const std::wstring& text = outstr ;
       int utf8Len = WideCharToMultiByte(CP_UTF8, 0, text.c_str(), static_cast<int>(text.size()),
                                          nullptr, 0, nullptr, nullptr);
@@ -357,8 +357,7 @@ void conio_min::dputs(const TCHAR *outstr)
       WideCharToMultiByte(CP_UTF8, 0, text.c_str(), static_cast<int>(text.size()),
                            (char*) utf8.data(), utf8Len, nullptr, nullptr);
 
-      DWORD written;
-      WriteFile(hStdOut, utf8.data(), static_cast<DWORD>(utf8.size()), &written, nullptr);
+      WriteFile(hStdOut, utf8.data(), static_cast<DWORD>(utf8.size()), &wrlen, nullptr);
    }
    else {
       WORD slen = (WORD) _tcslen(outstr) ;
