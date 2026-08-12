@@ -384,7 +384,7 @@ int CTerminal::save_terminal_contents(TCHAR *outfile, file_type_e file_type)
    _tstrtime( tbuffer );
 
    switch (file_type) {
-   case FTYP_TEXT:
+   case file_type_e::FTYP_TEXT:
       fd = _tfopen(outfile, _T("a+t")) ; //lint !e64
       if (fd == NULL) {
          return -(int)GetLastError();
@@ -398,7 +398,7 @@ int CTerminal::save_terminal_contents(TCHAR *outfile, file_type_e file_type)
       }
       break;
 
-   case FTYP_HTML:
+   case file_type_e::FTYP_HTML:
       if (file_exists(outfile)) {
          //  from January 1999 MSDN:
          //  When a file is opened with the "a" or "a+" access type, 
@@ -505,8 +505,13 @@ LRESULT CTerminal::TerminalCustomDraw (LPARAM lParam) const
    //  remember which item number we are currently dealing with.
    LPNMLVCUSTOMDRAW lplvcd = (LPNMLVCUSTOMDRAW) lParam;
 
+// D:/SourceCode/Git/winagrams/der_libs/cterminal.cpp:509:4: 
+//    warning: switch has 2 consecutive identical branches [bugprone-branch-clone]
+//    We probably *should* care about this??
+//   509 |    case CDDS_PREPAINT:       //Before the paint cycle begins
    switch (lplvcd->nmcd.dwDrawStage) {
-   case CDDS_PREPAINT:       //Before the paint cycle begins
+   //Before the paint cycle begins
+   case CDDS_PREPAINT:  //  NOLINT(bugprone-branch-clone)
       // syslog("CDDS_PREPAINT\n") ;
       //request notifications for individual listview items
       return CDRF_NOTIFYITEMDRAW;

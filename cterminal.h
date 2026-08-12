@@ -31,7 +31,8 @@
 //  define their own termout() derivative function(s)
 #define  MAX_TERM_CHARS    1024
 
-enum file_type_e {
+// enum file_type_e {
+enum class file_type_e : uint8_t {
    FTYP_TEXT=0,
    FTYP_HTML
 } ;
@@ -122,7 +123,7 @@ public:
    void reverse_list_entries(void);
    void copy_elements_to_clipboard(void);
    void copy_list_to_clipboard(void);
-   LRESULT TerminalCustomDraw (LPARAM lParam) const ;
+   [[nodiscard]] LRESULT TerminalCustomDraw (LPARAM lParam) const ;
    void get_terminal_entry(LPARAM lParam);
    TCHAR *get_last_term_entry(void);
    void put(TCHAR *lpBuf);
