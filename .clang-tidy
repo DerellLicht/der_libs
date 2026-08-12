@@ -1,4 +1,10 @@
 #https://clang.llvm.org/extra/clang-tidy/#id2
+# D:/SourceCode/Git/winagrams/der_libs/cterminal.cpp
+# there are a *lot* of new/delete in this file.
+# It should probably be updated at some point!
+# warning: deleting a pointer through a type that is not marked 'gsl::owner<>'; 
+# consider using a smart pointer instead [cppcoreguidelines-owning-memory]
+# 
 # checks to revisit once this is under control:
 # cppcoreguidelines-pro-bounds-constant-array-index — revisit w/ gsl::at, not urgent
 # cppcoreguidelines-init-variables
@@ -10,9 +16,6 @@
 # der_libs/common_funcs.cpp:292:10: warning: do not access members of unions; 
 #    consider using (boost::)variant instead 
 #    [cppcoreguidelines-pro-type-union-access]
-# der_libs/common_funcs.cpp:1068:4: warning: calling legacy resource function without 
-#    passing a 'gsl::owner<>' 
-#    [cppcoreguidelines-owning-memory]
 
 InheritParentConfig: true
 Checks: >
@@ -40,6 +43,7 @@ Checks: >
   -cppcoreguidelines-pro-type-union-access,
   -cppcoreguidelines-narrowing-conversions,
   -cppcoreguidelines-use-default-member-init,
+  -cppcoreguidelines-owning-memory,
   modernize-*,
   -modernize-avoid-c-arrays,
   -modernize-use-trailing-return-type,
