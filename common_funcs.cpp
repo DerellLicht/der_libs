@@ -16,7 +16,8 @@
 //lint -e537
 
 #include <windows.h>
-#include <stdio.h>   //  vsprintf
+#include <cstdio>   //  vsprintf
+#include <memory>
 #include <tchar.h>
 #include <sys/stat.h>
 #ifdef _lint
@@ -1054,24 +1055,24 @@ int hex_dump(u8 const *bfr, int bytes)
 //lint -esym(765, file_copy_by_line)
 int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
 {
-   FILE *infile = _tfopen(source_file, _T("rt")) ; //lint !e64  NOLINT
+   unique_file infile(_tfopen(source_file, _T("rt"))) ;
    if (infile == NULL) {
       syslog(_T("%s: %s\n"), source_file, strerror(errno)) ;
       return -errno;
    }
-   FILE *outfile = _tfopen(dest_file, _T("wt")) ; //lint !e64   NOLINT
+   unique_file outfile(_tfopen(dest_file, _T("wt"))) ;
    if (outfile == NULL) {
-      syslog(_T("%s: %s\n"), dest_file, strerror(errno)) ;  //  NOLINT
+      syslog(_T("%s: %s\n"), dest_file, strerror(errno)) ;
       return -errno;
    }
    TCHAR inpstr[260] ;
    int line_count = 0 ;
-   while (_fgetts(inpstr, sizeof(inpstr), infile) != 0) {
-      _fputts(inpstr, outfile) ;
+   while (_fgetts(inpstr, sizeof(inpstr), infile.get()) != nullptr) {
+      _fputts(inpstr, outfile.get()) ;
       line_count++ ;
    }
-   fclose(infile) ;
-   fclose(outfile) ;
+   // fclose(infile) ;
+   // fclose(outfile) ;
    return line_count;
 }
 

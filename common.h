@@ -9,6 +9,7 @@
 //****************************************************************************
 
 #include <cstdint>
+#include <memory>
 
 //lint -e755  global macro not referenced
 //lint -esym(756, uchar) global typedef not referenced
@@ -116,6 +117,25 @@ inline void delay_ms(uint msec)
 {
    SleepEx(msec, false) ;
 }
+
+//**************************************************************************
+// ClaudeAI code
+// Deleter that calls fclose instead of delete
+// For example of use:
+// int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
+//**************************************************************************
+
+struct FileCloser
+{
+   void operator()(FILE *f) const noexcept
+   {
+      if (f)
+      {
+         fclose(f);  //  NOLINT(cppcoreguidelines-owning-memory)
+      }
+   }
+};
+using unique_file = std::unique_ptr<FILE, FileCloser>;
 
 //  common_funcs.cpp
 unsigned get_build_size(void);   //  returns whether exe is 32-bit or 64-bit
