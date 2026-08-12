@@ -362,7 +362,7 @@ void CVListView::lview_assign_column_headers(lv_cols_p lv_cols[], LPARAM image_l
 //  CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "filename.manifest"
 //***********************************************************************
 // http://www.gamedev.net/topic/569020-set-list-view-header-sort-arrow-c-win32/
-BOOL CVListView::SetHeaderSortImage(int  columnIndex, SHOW_ARROW showArrow) 
+BOOL CVListView::SetHeaderSortImage(int  columnIndex, eShowArrow showArrow) 
 {  
    HDITEM  hdrItem  = { 0 };
 
@@ -371,10 +371,10 @@ BOOL CVListView::SetHeaderSortImage(int  columnIndex, SHOW_ARROW showArrow)
       hdrItem.mask = HDI_FORMAT;
 
       if ( Header_GetItem(hHeader, columnIndex, &hdrItem) ) {
-         if (showArrow == SHOW_UP_ARROW) {
+         if (showArrow == eShowArrow::SHOW_UP_ARROW) {
             hdrItem.fmt = (hdrItem.fmt & ~HDF_SORTDOWN) | HDF_SORTUP;
          } else 
-         if (showArrow == SHOW_DOWN_ARROW) {
+         if (showArrow == eShowArrow::SHOW_DOWN_ARROW) {
             hdrItem.fmt = (hdrItem.fmt & ~HDF_SORTUP) | HDF_SORTDOWN;
          } else 
          {

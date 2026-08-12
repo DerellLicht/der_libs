@@ -389,7 +389,7 @@ exit_point:
 //lint -esym(757, get_file_datetime)
 //lint -esym(759, get_file_datetime)
 //lint -esym(765, get_file_datetime)
-bool get_file_datetime(char *file_name, SYSTEMTIME *sdt, file_time_select_t time_select)
+bool get_file_datetime(char *file_name, SYSTEMTIME *sdt, file_time_select_e time_select)
 {
    WIN32_FIND_DATAA fdata ;
    HANDLE fd = FindFirstFileA(file_name, &fdata) ;
@@ -400,9 +400,15 @@ bool get_file_datetime(char *file_name, SYSTEMTIME *sdt, file_time_select_t time
 
    FILETIME lft ;
    switch (time_select) {
-   case FILE_DATETIME_CREATE:     FileTimeToLocalFileTime(&(fdata.ftCreationTime),   &lft);  break;
-   case FILE_DATETIME_LASTACCESS: FileTimeToLocalFileTime(&(fdata.ftLastAccessTime), &lft);  break;
-   case FILE_DATETIME_LASTWRITE:  FileTimeToLocalFileTime(&(fdata.ftLastWriteTime),  &lft);  break;
+   case file_time_select_e::FILE_DATETIME_CREATE:     
+      FileTimeToLocalFileTime(&(fdata.ftCreationTime),   &lft);  
+      break;
+   case file_time_select_e::FILE_DATETIME_LASTACCESS: 
+      FileTimeToLocalFileTime(&(fdata.ftLastAccessTime), &lft);  
+      break;
+   case file_time_select_e::FILE_DATETIME_LASTWRITE:  
+      FileTimeToLocalFileTime(&(fdata.ftLastWriteTime),  &lft);  
+      break;
    default:
       return false;
    }

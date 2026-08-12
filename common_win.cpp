@@ -12,9 +12,9 @@
 
 //lint -esym(18, _NOTIFYICONDATAA::szTip, _NOTIFYICONDATAW::szTip)
 #include <windows.h>
-#include <time.h>
-#include <stdio.h>   //  vsprintf
-#include <math.h>    //  fabs()
+#include <cstdio>   //  vsprintf
+#include <cmath>     //  fabs(), lround()
+#include <ctime>
 #include <tchar.h>
 #include <commctrl.h>
 #include <commdlg.h> //  GetOpenFileName()
@@ -461,7 +461,17 @@ HFONT EzCreateFont(HDC hdc, TCHAR * szFaceName, int iDeciPtHeight,
 
    DPtoLP (hdc, &pt, 1) ;
 
-   lf.lfHeight         = - (int) ((fabs ((double) pt.y) / 10.0) + 0.5) ;
+   //****************************************************************************
+   // comments from Claude:
+   // Why clang-tidy flags the original: 
+   // (int)(x + 0.5) is a classic "round half away from zero" idiom, 
+   // but it has two problems lround avoids — it silently truncates 
+   // instead of rounding for values outside int range, and doing your 
+   // own + 0.5 arithmetic is float-precision-fragile near exact .5 boundaries. 
+   // lround uses the current rounding mode logic correctly.
+   //****************************************************************************
+   // lf.lfHeight         = - (int) ((fabs ((double) pt.y) / 10.0) + 0.5) ;
+   lf.lfHeight         = -lround (fabs ((double) pt.y) / 10.0) ;
    lf.lfWidth          = 0 ;
    lf.lfEscapement     = textangle ;
    lf.lfOrientation    = textangle ;
@@ -484,8 +494,8 @@ HFONT EzCreateFont(HDC hdc, TCHAR * szFaceName, int iDeciPtHeight,
 
       DeleteObject (SelectObject (hdc, hFont)) ;
 
-      lf.lfWidth = (int) ((txtm.tmAveCharWidth *
-                          (fabs ((double) pt.x) / fabs ((double) pt.y))) + 0.5) ;
+      // lf.lfWidth = (int) ((txtm.tmAveCharWidth * (fabs ((double) pt.x) / fabs ((double) pt.y))) + 0.5) ;
+      lf.lfWidth =  lround(txtm.tmAveCharWidth * (fabs ((double) pt.x) / fabs ((double) pt.y))) ;
 
       hFont = CreateFontIndirect(&lf) ;
    }

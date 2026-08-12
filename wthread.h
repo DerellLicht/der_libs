@@ -17,6 +17,8 @@ private:
    DWORD ThreadID ;
    VOID *private_data ;
    bool thread_running ;
+   
+   //  internal function
    void (*close_func)(LPVOID iValue) ;
 
 public:   
@@ -29,9 +31,9 @@ public:
    CThread(const CThread&&) = delete;
    
    ~CThread();
-   DWORD get_thread_ID(void) const
+   [[nodiscard]] DWORD get_thread_ID(void) const
       { return ThreadID ; } ;
-   bool is_thread_running(void) const
+   [[nodiscard]] bool is_thread_running(void) const
       { return thread_running ; } ;
 } ;
 

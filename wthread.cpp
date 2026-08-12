@@ -1,5 +1,5 @@
 //*****************************************************************************
-//  Copyright (c) 2012  Daniel D Miller
+//  Copyright (c) 2012-2026  Daniel D Miller
 //  Thread class for encapsulating Windows thread handling
 //
 //  This module, which has been entirely compiled from public-domain sources, 
@@ -17,13 +17,10 @@ CThread::CThread(LPTHREAD_START_ROUTINE thread_func,
       void *my_private_data, void (*app_close_func)(LPVOID iValue)) :
    hdlThread(NULL),
    ThreadID(0),
-   private_data(NULL),
-   thread_running(false),
-   close_func(NULL)
+   private_data(my_private_data),
+   thread_running(true),
+   close_func(app_close_func)
 {
-   thread_running = true ;
-   close_func = app_close_func ; //  save this for thread destructor
-   private_data = my_private_data ;
    hdlThread = CreateThread(NULL, 0, thread_func, (VOID *) my_private_data, 0, &ThreadID);
 }
 
@@ -31,8 +28,9 @@ CThread::CThread(LPTHREAD_START_ROUTINE thread_func,
 CThread::~CThread()
 {
    thread_running = false ;
-   if (close_func != NULL)
+   if (close_func != NULL) {
        close_func(private_data) ;
+   }
    //**********************************************************************************
    //  Well, TerminateThread() *does* terminate the thread.
    //  Note, however, that even if close_func() did not succeed,

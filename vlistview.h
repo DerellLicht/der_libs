@@ -25,6 +25,7 @@
 //****************************************************************************
 
 // #define  _WIN32_IE   0x0501
+#include <cstdint>
 #include <commctrl.h>
 
 //lint -esym(1714, CVListView::lview_subclass, CVListView::lview_assign_column_headers, CVListView::is_lview_hwnd)
@@ -61,13 +62,12 @@
 #define  HDF_SORTDOWN   0x200
 #define  HDF_SORTUP     0x400
 
-//lint -esym(769, SHOW_ARROW::SHOW_NO_ARROW)
-typedef enum 
-{
-   SHOW_NO_ARROW,
+// typedef enum SHOW_ARROW
+enum class eShowArrow : uint8_t {
+   SHOW_NO_ARROW=0,
    SHOW_UP_ARROW,
    SHOW_DOWN_ARROW
-} SHOW_ARROW;
+} ;
 
 //****************************************************************************
 //  listview column-header definition struct
@@ -137,7 +137,7 @@ public:
    void resize(uint x0, uint y0, uint dx, uint dy);
    void resize(uint dx, uint dy);
    void resize_column(uint dx);
-   BOOL SetHeaderSortImage(int  columnIndex, SHOW_ARROW showArrow);
+   BOOL SetHeaderSortImage(int  columnIndex, eShowArrow showArrow);
    void hide_horiz_scrollbar(void);
    int  get_next_listview_index(int nCurItem);
    int  HitTest(LVHITTESTINFO *lvhti, LPARAM lParam);

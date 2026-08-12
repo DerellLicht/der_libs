@@ -8,6 +8,8 @@
 //  Collected and Organized by:  Dan Miller
 //****************************************************************************
 
+#include <cstdint>
+
 //lint -e755  global macro not referenced
 //lint -esym(756, uchar) global typedef not referenced
 //lint -esym(757, convert_to_commas, file_copy_by_line, get_dtimes_str)
@@ -160,12 +162,13 @@ u16  rand2(void);
 unsigned random_int(unsigned n);
 TCHAR const * const show_bool_str(bool bool_flag);
 
-enum file_time_select_t {
-FILE_DATETIME_CREATE=0,
-FILE_DATETIME_LASTACCESS,
-FILE_DATETIME_LASTWRITE
+// enum file_time_select_t {
+enum class file_time_select_e : uint8_t {
+   FILE_DATETIME_CREATE=0,
+   FILE_DATETIME_LASTACCESS,
+   FILE_DATETIME_LASTWRITE
 } ;
-bool get_file_datetime(TCHAR *file_name, SYSTEMTIME *sdt, file_time_select_t time_select);
+bool get_file_datetime(TCHAR *file_name, SYSTEMTIME *sdt, file_time_select_e time_select);
 
 // ULLONG_MAX = 18,446,744,073,709,551,615
 #define  MAX_ULL_COMMA_LEN  26
