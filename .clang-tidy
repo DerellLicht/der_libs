@@ -52,7 +52,6 @@ Checks: >
   -modernize-macro-to-enum,
   -modernize-use-nullptr,
   -modernize-avoid-c-style-cast,
-  -modernize-deprecated-headers,
   -modernize-use-auto,
   -modernize-avoid-variadic-functions,
   -modernize-use-bool-literals,

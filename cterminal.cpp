@@ -39,9 +39,9 @@
 //       return sample_notify(hwnd, this_device, lParam) ;
 //****************************************************************************
 #include <windows.h>
-#include <stdio.h>   //  vsprintf, sprintf, which supports %f
-#include <stdlib.h>  //  atoi()
-#include <time.h>    //  _strdate, _strtime
+#include <cstdio>   //  vsprintf, sprintf, which supports %f
+#include <cstdlib>  //  atoi()
+#include <ctime>    //  _strdate, _strtime
 #include <tchar.h>
 
 #include "common.h"
