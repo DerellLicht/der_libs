@@ -119,10 +119,10 @@ HWND MyCreateUpDownControl(
 //lint -esym(765, ShellGetPath)
 BOOL ShellGetPath(HANDLE hDlg, char lpszPath[])
 {
-   BOOL bRet;
+   BOOL bRet {};
    char szPath[MAX_PATH_LEN];
-   LPITEMIDLIST lpil;
-   HGLOBAL hgMem;
+   LPITEMIDLIST lpil {};
+   HGLOBAL hgMem {};
    BROWSEINFOA bi;
 
    bi.hwndOwner = (HWND) hDlg;
@@ -224,9 +224,9 @@ uint get_bottom_line(HWND hwnd, uint ctrl_id)
 //lint -esym(765, WriteFileF)
 int WriteFileF(HANDLE hdl, const TCHAR *fmt, ...)
 {
-   DWORD bytesWritten ;
+   DWORD bytesWritten {};
    TCHAR consoleBuffer[260];
-   va_list al; //lint !e522
+   va_list al {}; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
    _vstprintf(consoleBuffer, fmt, al);   //lint !e64

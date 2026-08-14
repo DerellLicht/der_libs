@@ -353,7 +353,7 @@ char *get_dtimes_str(char *dest)
 char *secs_to_date_time_str(uint total_seconds, char *dest)
 {
    static char ctm[GET_TIME_LEN+1] ;
-   uint secs, mins, hours ;
+   uint secs {}, mins {}, hours {} ;
 
    if (dest == NULL)
        dest = ctm ;
@@ -680,7 +680,7 @@ TCHAR *get_system_message(DWORD errcode)
       return snmp_error_msgs[errcode - SNMP_ERROR_FIRST];
    }
 
-   LPVOID lpMsgBuf;
+   LPVOID lpMsgBuf {};
    DWORD dresult = FormatMessage(
       FORMAT_MESSAGE_ALLOCATE_BUFFER |
       FORMAT_MESSAGE_FROM_SYSTEM |
@@ -738,7 +738,7 @@ TCHAR *get_system_message(void)
 int syslog(const TCHAR *fmt, ...)
 {
    TCHAR consoleBuffer[3000] ;
-   va_list al; //lint !e522
+   va_list al {}; //lint !e522
 
    va_start(al, fmt);   //lint !e1055 !e530
    _vstprintf(consoleBuffer, fmt, al);   //lint !e64
@@ -986,7 +986,7 @@ static const int high_chars = 0 ; //  print using high-ascii chars, not used for
 //lint -esym(765, hex_dump)
 int hex_dump(u8 const *bfr, int bytes, unsigned addr)
 {
-   int j ;
+   int j {};
    char tail[40] ;
    char pstr[81] ;
    static bool hex_dump_active = false ;
@@ -998,7 +998,7 @@ int hex_dump(u8 const *bfr, int bytes, unsigned addr)
    int idx = 0 ;
    // int plen = 0 ;
    while (LOOP_FOREVER) {
-      int len ;
+      int len {};
       int leftovers = bytes - idx ;
       if (leftovers > 16)
           leftovers = 16 ;
@@ -1084,8 +1084,8 @@ int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
 //lint -esym(765, convert_to_commas)
 TCHAR *convert_to_commas(ULONGLONG uli, TCHAR *outstr)
 {  //lint !e1066
-   unsigned slen, j, inIdx ;
-   TCHAR *strptr ;
+   unsigned slen {}, j {}, inIdx {} ;
+   TCHAR *strptr {};
    TCHAR temp_ull_str[MAX_ULL_COMMA_LEN+1] ;
    static TCHAR local_ull_str[MAX_ULL_COMMA_LEN+1] ;
    if (outstr == NULL)

@@ -6,11 +6,8 @@
 # consider using a smart pointer instead [cppcoreguidelines-owning-memory]
 # 
 # checks to revisit once this is under control:
-# cppcoreguidelines-pro-bounds-constant-array-index — revisit w/ gsl::at, not urgent
-# cppcoreguidelines-init-variables
-# modernize-use-nullptr
-# modernize-deprecated-headers
-# modernize-use-auto
+# modernize-use-nullptr   (244 instances)
+# modernize-use-auto      (too many instances)
 # modernize-use-bool-literals
 # performance-no-int-to-ptr
 # der_libs/common_funcs.cpp:292:10: warning: do not access members of unions; 
@@ -39,11 +36,11 @@ Checks: >
   -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
   -cppcoreguidelines-avoid-non-const-global-variables,
   -cppcoreguidelines-avoid-goto,
-  -cppcoreguidelines-init-variables,
   -cppcoreguidelines-pro-type-union-access,
   -cppcoreguidelines-narrowing-conversions,
   -cppcoreguidelines-use-default-member-init,
   -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-init-variables,
   modernize-*,
   -modernize-avoid-c-arrays,
   -modernize-use-trailing-return-type,
