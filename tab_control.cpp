@@ -341,9 +341,9 @@ int CTabControl::get_curr_tab(void)
 //******************************************************************
 void CTabControl::resize_window(uint dx, uint dy)
 {
-   ShowWindow(hwndSelf, SW_HIDE) ;
+   // ShowWindow(hwndSelf, SW_HIDE) ;
    SetWindowPos(hwndSelf, NULL, 0, 0, dx, dy, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
-   ShowWindow(hwndSelf, SW_SHOW) ;
+   // ShowWindow(hwndSelf, SW_SHOW) ;
 }
 
 //******************************************************************

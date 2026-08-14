@@ -89,11 +89,6 @@ CVListView::CVListView(HWND hwndParent, uint ControlID, HINSTANCE g_hinst,
    // }
 
    force_end_of_page = ((local_style_flags & LVL_STY_PAGE_TO_END) != 0) ;
-   // if (local_style_flags & LVL_STY_PAGE_TO_END) {
-   //    force_end_of_page = true ;
-   // } else {
-   //    force_end_of_page = false ;
-   // }
    // syslog("VLV Create: dx=%u, dy=%u\n", dx, dy) ;
 
    hwndVListView = CreateWindowEx(WS_EX_CLIENTEDGE,   // ex style
@@ -592,20 +587,31 @@ void CVListView::listview_update(uint idx)
 //****************************************************************************
 void CVListView::resize(uint x0, uint y0, uint dx, uint dy)
 {
-   ShowWindow(hwndVListView, SW_HIDE) ;
+   // ShowWindow(hwndVListView, SW_HIDE) ;
    MoveWindow(hwndVListView, x0, y0, dx, dy, true) ;
-   ShowWindow(hwndVListView, SW_SHOW) ;
+   // ShowWindow(hwndVListView, SW_SHOW) ;
    cxClient = dx ;
    cyClient = dy ;
 }
 
 //****************************************************************************
+// Claude 08/14/26 - this used to wrap the resize in ShowWindow(SW_HIDE) /
+// ShowWindow(SW_SHOW) as an anti-flicker trick. Called synchronously from
+// inside the PARENT dialog's WM_SIZE handler during a live resize drag,
+// that hide/show toggle is what's generating the phantom WM_SIZE(height=0)
+// seen in the debug log immediately after every successful resize -- toggling
+// a large child's visibility mid-drag causes the dialog's live-resize
+// tracking to re-sample the window and misreport a transient 0-height rect.
+// Modern comctl32 listviews (this one is owner-data/virtual, so there's no
+// per-item redraw storm to guard against) don't need the hide/show dance --
+// a plain SetWindowPos redraws cleanly on its own. If flicker actually shows
+// up in practice, prefer WM_SETREDRAW FALSE/TRUE (paired with one explicit
+// InvalidateRect) over ShowWindow, since WM_SETREDRAW doesn't touch window
+// visibility/activation state.
+//****************************************************************************
 void CVListView::resize(uint dx, uint dy)
 {
-   ShowWindow(hwndVListView, SW_HIDE) ;
-   // SetWindowPos(hwndVListView, HWND_TOP, 0, 0, dx, dy, SWP_NOMOVE) ;
    SetWindowPos(hwndVListView, HWND_TOP, 0, 0, dx, dy, SWP_NOMOVE) ;
-   ShowWindow(hwndVListView, SW_SHOW) ;
    cxClient = dx ;
    cyClient = dy ;
    // syslog("resize: new height=%u pixels", dy) ;
@@ -620,9 +626,9 @@ void CVListView::resize_column(uint dx)
 //****************************************************************************
 void CVListView::hide_horiz_scrollbar(void)
 {
-   ShowWindow(hwndVListView, SW_HIDE) ;
+   // ShowWindow(hwndVListView, SW_HIDE) ;
    ShowScrollBar(hwndVListView, (int) SB_HORZ, false);
-   ShowWindow(hwndVListView, SW_SHOW) ;
+   // ShowWindow(hwndVListView, SW_SHOW) ;
 }
 
 //******************************************************************

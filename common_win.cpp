@@ -574,10 +574,10 @@ BOOL CenterWindow (HWND hwnd)
 //lint -esym(765, resize_window)
 void resize_window(HWND hwnd, int dx, int dy)
 {
-   ShowWindow(hwnd, SW_HIDE) ;
+   // ShowWindow(hwnd, SW_HIDE) ;
    // SetWindowPos(hwnd, NULL, 0, 0, dx, dy, SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
    SetWindowPos(hwnd, NULL, 0, 0, dx, dy, SWP_NOMOVE);
-   ShowWindow(hwnd, SW_SHOW) ;
+   // ShowWindow(hwnd, SW_SHOW) ;
 }
 #ifdef UNICODE
 //****************************************************************************
@@ -646,17 +646,38 @@ static const uint STD_DPI = 96 ;
 static uint screen_width  = 0 ;
 static uint screen_height = 0 ;
 
-//lint -esym(714, get_monitor_dimens)
-//lint -esym(752, get_monitor_dimens)
-//lint -esym(759, get_monitor_dimens)
-//lint -esym(765, get_monitor_dimens)
+//*******************************************************************************************
+// One thing worth flagging before you commit to MonitorFromPoint() ;
+// since it changes behavior slightly from what you have now: 
+// MonitorFromWindow(hwnd, ...) picks whichever monitor the window itself 
+// is currently sitting on. 
+// MonitorFromPoint({0,0}, MONITOR_DEFAULTTOPRIMARY) always answers for the 
+// primary monitor, regardless of where the dialog actually is. 
+// On a single-monitor machine that's identical. 
+// On a multi-monitor setup, if the user's dragged WinaGrams over to a secondary 
+// display and then resizes it there, a lazy hwnd-less get_screen_height() 
+// would hand back the primary monitor's height as the max-track constraint — 
+// which could be wrong (too big or too small) for the monitor the dialog's actually on.
+//*******************************************************************************************
 void get_monitor_dimens(HWND hwnd)
 {
-   HMONITOR currentMonitor;      // Handle to monitor where fullscreen should go
+   HMONITOR hCurrentMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
    MONITORINFO mi;               // Info of that monitor
-   currentMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
    mi.cbSize = sizeof(MONITORINFO);
-   if (GetMonitorInfo(currentMonitor, &mi) != FALSE) {
+   if (GetMonitorInfo(hCurrentMonitor, &mi) != FALSE) {
+      screen_width  = mi.rcMonitor.right  - mi.rcMonitor.left ;
+      screen_height = mi.rcMonitor.bottom - mi.rcMonitor.top ;
+   }
+   // curr_dpi = GetScreenDPI() ;
+}
+
+void get_monitor_dimens()
+{
+   POINT pt = {0, 0};                                                   
+   HMONITOR hCurrentMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTOPRIMARY);   
+   MONITORINFO mi;               // Info of that monitor
+   mi.cbSize = sizeof(MONITORINFO);
+   if (GetMonitorInfo(hCurrentMonitor, &mi) != FALSE) {
       screen_width  = mi.rcMonitor.right  - mi.rcMonitor.left ;
       screen_height = mi.rcMonitor.bottom - mi.rcMonitor.top ;
    }
@@ -669,6 +690,9 @@ void get_monitor_dimens(HWND hwnd)
 //lint -esym(765, get_screen_width)
 uint get_screen_width(void)
 {
+   if (screen_width == 0) {
+      get_monitor_dimens();
+   }
    return screen_width ;
 }
 
@@ -678,6 +702,9 @@ uint get_screen_width(void)
 //lint -esym(765, get_screen_height)
 uint get_screen_height(void)
 {
+   if (screen_height == 0) {
+      get_monitor_dimens();
+   }
    return screen_height ;
 }
 

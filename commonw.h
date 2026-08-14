@@ -98,6 +98,8 @@ char *unicode2ascii(WCHAR *UnicodeStr);
 //****************************************************************************
 
 //  dialog dimension functions
+void get_monitor_dimens();
+void get_monitor_dimens(HWND hwnd);
 uint get_screen_width(void);
 uint get_screen_height(void);
 bool cp_recalc_dlu_width (uint *psheet_dx);
@@ -105,6 +107,5 @@ bool cp_recalc_dlu_height(uint *psheet_dy);
 void center_dialog_on_screen(HWND hDlg);
 
 //  general system functions
-void get_monitor_dimens(HWND hwnd);
 bool are_normal_fonts_active(void);
 
