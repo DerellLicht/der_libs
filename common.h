@@ -9,6 +9,7 @@
 //****************************************************************************
 
 #include <cstdint>
+#include <cstdio>
 #include <memory>
 
 //lint -e755  global macro not referenced
