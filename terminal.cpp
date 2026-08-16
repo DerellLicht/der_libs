@@ -18,7 +18,8 @@
 #include "terminal.h"
 #include "winmsgs.h"
 
-static CTerminal *myTerminal = NULL;
+// static CTerminal *myTerminal = NULL;
+std::unique_ptr<CTerminal> myTerminal {};
 
 static bool debug_enabled = false ;
 
@@ -181,9 +182,14 @@ void setup_terminal_window(HWND hwnd, uint StatusBarHeight, uint bottom_ref_cont
    ctrl_bottom += 3 ;
    uint lvdy = dy - ctrl_bottom - StatusBarHeight ;
 
-   myTerminal = new CTerminal(hwnd, terminal_control, (HINSTANCE) GetWindowLong(hwnd, GWL_HINSTANCE), 
+   // myTerminal = new CTerminal(hwnd, terminal_control, (HINSTANCE) GetWindowLong(hwnd, GWL_HINSTANCE), 
+   //    0, ctrl_bottom, dx-1, lvdy,
+   //    LVL_STY_VIRTUAL | LVL_STY_NO_HEADER | LVL_STY_PAGE_TO_END | LVL_STY_EX_GRIDLINES) ;
+      
+   myTerminal = std::make_unique<CTerminal>(hwnd, terminal_control, (HINSTANCE) GetWindowLong(hwnd, GWL_HINSTANCE), 
       0, ctrl_bottom, dx-1, lvdy,
       LVL_STY_VIRTUAL | LVL_STY_NO_HEADER | LVL_STY_PAGE_TO_END | LVL_STY_EX_GRIDLINES) ;
+   
    myTerminal->set_terminal_font(_T("Courier New"), 100, EZ_ATTR_BOLD) ;    // NOLINT
    myTerminal->lview_assign_column_headers() ;
 }
