@@ -1,11 +1,11 @@
 //****************************************************************************
-//  Copyright (c) 1985-2025  Daniel D Miller
+//  Copyright (c) 1985-2026  Daniel D Miller
 //  Wrapper functions for interface to CTerminal module
 //
 //  Written by:  Dan Miller
 //****************************************************************************
 #include <windows.h>
-#include <stdio.h>   //  vsprintf, sprintf, which supports %f
+#include <cstdio>   //  vsprintf, sprintf, which supports %f
 #include <tchar.h>
 
 #include "common.h"
