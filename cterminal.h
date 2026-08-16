@@ -75,7 +75,6 @@ private:
    unsigned cols ;
 
    //  private functions
-   void set_terminal_dimens(void);
    term_lview_item_p get_lview_element(TCHAR *lpBuf, COLORREF fgnd, COLORREF bgnd);
 
 public:   
@@ -97,6 +96,7 @@ public:
    void resize_terminal_rows(uint new_rows);
    void resize_terminal_width(uint new_dx);
    void resize_terminal_pixels(uint new_dx, uint new_dy);
+   void set_terminal_dimens(void);
    void get_terminal_dimens(uint *array_of_four) const;
    void scroll_terminal(bool scroll_down);
    void clear_message_area(void);

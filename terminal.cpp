@@ -78,6 +78,7 @@ void term_clear_message_area(void)
 void term_resize(uint dxi, uint dyi)
 {
    myTerminal->resize(dxi, dyi);
+   myTerminal->set_terminal_dimens();
 }
 
 //******************************************************************
