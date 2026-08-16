@@ -795,7 +795,7 @@ TCHAR *next_field(TCHAR *q)
 TCHAR *find_newlines(TCHAR *hd)
 {
    TCHAR *tl = hd ;
-   while (1) {
+   while (LOOP_FOREVER) {
       if (*tl == 0)
          return 0;
       if (*tl == CR  ||  *tl == LF) {
@@ -814,7 +814,7 @@ TCHAR *find_newlines(TCHAR *hd)
 void strip_newlines(TCHAR *rstr)
 {
    int slen = (int) _tcslen(rstr) ;
-   while (1) {
+   while (LOOP_FOREVER) {
       if (slen == 0)
          break;
       if (*(rstr+slen-1) == '\n'  ||  *(rstr+slen-1) == '\r') {
