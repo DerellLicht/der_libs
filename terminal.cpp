@@ -75,6 +75,12 @@ void term_clear_message_area(void)
 }
 
 //******************************************************************
+void term_resize(uint dxi, uint dyi)
+{
+   myTerminal->resize(dxi, dyi);
+}
+
+//******************************************************************
 void term_copy_selected_rows(void)
 {
    myTerminal->copy_selected_rows() ;

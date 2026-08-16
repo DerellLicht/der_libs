@@ -12,4 +12,5 @@ uint term_get_columns(void);
 uint term_get_rows(void);
 void term_copy_selected_rows(void);
 void term_clear_message_area(void);
+void term_resize(uint dxi, uint dyi);
 
