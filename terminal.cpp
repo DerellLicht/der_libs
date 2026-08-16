@@ -1,8 +1,12 @@
 //****************************************************************************
-//  Copyright (c) 1985-2026  Daniel D Miller
+//  Copyright (c) 1985-2026  Derell Licht
 //  Wrapper functions for interface to CTerminal module
 //
-//  Written by:  Dan Miller
+//  Notes about this wrapper module...
+//  Its main benefit is that it encapsulates the CTerminal instance...
+//  However, if this module is used, only *one* instance of a terminal
+//  can be present at one time.  
+//  In most cases, that is fine, just be aware of the issue.
 //****************************************************************************
 #include <windows.h>
 #include <cstdio>   //  vsprintf, sprintf, which supports %f
@@ -13,13 +17,6 @@
 #include "cterminal.h" 
 #include "terminal.h"
 #include "winmsgs.h"
-
-//lint -esym(714, term_append, term_copy_selected_rows, term_clear_message_area)
-//lint -esym(759, term_append, term_copy_selected_rows, term_clear_message_area)
-//lint -esym(765, term_append, term_copy_selected_rows, term_clear_message_area)
-//lint -esym(714, term_lview_subclass, term_set_debug, term_set_font)
-//lint -esym(759, term_lview_subclass, term_set_debug, term_set_font)
-//lint -esym(765, term_lview_subclass, term_set_debug, term_set_font)
 
 static CTerminal *myTerminal = NULL;
 
@@ -43,17 +40,11 @@ void term_put(TCHAR *term_str)
    myTerminal->put(term_str);
 }
 
-//lint -esym(714, term_append)
-//lint -esym(759, term_append)
-//lint -esym(765, term_append)
 void term_append(TCHAR *term_str)
 {
    myTerminal->append(term_str);
 }
 
-//lint -esym(714, term_replace)
-//lint -esym(759, term_replace)
-//lint -esym(765, term_replace)
 void term_replace(TCHAR *term_str)
 {
    myTerminal->replace(term_str);
@@ -74,11 +65,21 @@ void term_clear_message_area(void)
    myTerminal->clear_message_area() ;
 }
 
-//******************************************************************
+//**********************************************************************************
+// Claude 08/16/26 - was calling the base-class resize()+set_terminal_dimens()
+// separately, which is exactly what resize_terminal_pixels() already does --
+// except resize_terminal_pixels() also calls resize_column() afterward, to
+// stretch the listview's main column along with the control. Without that,
+// the control's outer window grows/shrinks but the column inside it (and
+// therefore the visible text area) stays whatever width it was at init.
+// -25 (not the vlistview.cpp init-time -6-SM_CXVSCROLL) is resize_terminal_width()'s
+// existing margin for this same column, kept here for consistency.
+//**********************************************************************************
 void term_resize(uint dxi, uint dyi)
 {
-   myTerminal->resize(dxi, dyi);
-   myTerminal->set_terminal_dimens();
+//   myTerminal->resize(dxi, dyi);
+//   myTerminal->set_terminal_dimens();
+   myTerminal->resize_terminal_pixels(dxi, dyi);
 }
 
 //******************************************************************
