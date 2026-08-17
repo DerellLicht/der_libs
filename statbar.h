@@ -38,13 +38,22 @@
                 (c) Paul Yao, 1996
   -------------------------------------------*/
 
-//lint -esym(1714, CStatusBar::show_message, CStatusBar::set_bgnd_color)
-//lint -esym(1714, CStatusBar::set_statusbar_font, CStatusBar::height)
+//-------------------------------------------------------------------
 
-//lint -esym(1719, CStatusBar)
-//lint -esym(1720, CStatusBar)
-//lint -esym(1722, CStatusBar)
-//lint -esym(1704, CStatusBar::CStatusBar)
+//  flags for RebuildStatusBar()
+#define IDM_STAT_IGNORESIZE             50000
+#define IDM_STAT_SIZEGRIP               50001
+#define IDM_STAT_TOP                    50002
+#define IDM_STAT_BOTTOM                 50003
+#define IDM_STAT_NOMOVEY                50004
+#define IDM_STAT_NOPARENTALIGN          50005
+#define IDM_STAT_NORESIZE               50006
+
+//  flags for StatusBarMessage()
+#define IDM_ST_GETBORDERS               51000
+#define IDM_ST_GETPARTS                 51001
+#define IDM_ST_SETTEXT                  51002
+#define IDM_ST_SIMPLE                   51003
 
 // Info 1712: default constructor not defined for class 'CStatusBar'
 //lint -esym(1712, CStatusBar)
@@ -82,23 +91,6 @@ public:
    [[nodiscard]] unsigned height(void) const 
       { return bar_height ; } ;
 } ;
-
-//-------------------------------------------------------------------
-
-//  flags for RebuildStatusBar()
-#define IDM_STAT_IGNORESIZE             600
-#define IDM_STAT_SIZEGRIP               700
-#define IDM_STAT_TOP                    701
-#define IDM_STAT_BOTTOM                 702
-#define IDM_STAT_NOMOVEY                703
-#define IDM_STAT_NOPARENTALIGN          704
-#define IDM_STAT_NORESIZE               705
-
-//  flags for StatusBarMessage()
-#define IDM_ST_GETBORDERS               800
-#define IDM_ST_GETPARTS                 801
-#define IDM_ST_SETTEXT                  802
-#define IDM_ST_SIMPLE                   803
 
 //-------------------------------------------------------------------------------
 //  Status Bar Helper Macros
