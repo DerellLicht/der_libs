@@ -5,7 +5,7 @@
 //  This module, which has been entirely compiled from public-domain sources, 
 //  is itself declared in the public domain.
 //
-//  Produced and Directed by:  Dan Miller
+//  Produced and Directed by:  Derell Licht
 //****************************************************************************
 //  Other requirements for this object:
 //  In order for the virtual-listview elements to get drawn, 

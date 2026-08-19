@@ -5,7 +5,7 @@
 //  This module, which has been entirely compiled from public-domain sources, 
 //  is itself declared in the public domain.
 //
-//  Written by:  Dan Miller
+//  Written by:  Derell Licht
 //****************************************************************************
 //  08/09/12 - I though of modifying CTerminal to inherit from CStrList
 //  as well as CVListView, since CTerminal is essentially duplicating the

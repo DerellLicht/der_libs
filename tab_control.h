@@ -1,7 +1,7 @@
 //****************************************************************************
 //  Copyright (c) 2011-2013  Derell Licht
 //  tab_control.cpp - a Tab Control class, to simplify future implementations
-//  Written by:  Dan Miller
+//  Written by:  Derell Licht
 //****************************************************************************
 
 //lint -esym(1704, CTabControl::CTabControl)

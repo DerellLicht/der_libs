@@ -7,7 +7,7 @@
 //  This module, which has been entirely compiled from public-domain sources, 
 //  is itself declared in the public domain.
 //  
-//  Collected and Organized by:  Dan Miller
+//  Collected and Organized by:  Derell Licht
 //****************************************************************************
 
 //lint -esym(18, _NOTIFYICONDATAA::szTip, _NOTIFYICONDATAW::szTip)
