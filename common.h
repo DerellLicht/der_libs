@@ -142,6 +142,7 @@ using unique_file = std::unique_ptr<FILE, FileCloser>;
 unsigned get_build_size(void);   //  returns whether exe is 32-bit or 64-bit
 u64 proc_time(void);
 u64 get_clocks_per_second(void);
+u64 get_clocks_per_msec(void);
 uint calc_elapsed_time(bool done);
 uint calc_elapsed_msec(bool done);
 TCHAR *get_system_message(void);

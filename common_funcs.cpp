@@ -247,6 +247,12 @@ u64 get_clocks_per_second(void)
    return clocks_per_sec64 ;
 }
 
+//*************************************************************************
+u64 get_clocks_per_msec(void)
+{
+   return get_clocks_per_second() / 1000 ;
+}
+
 //****************************************************************************
 //lint -esym(714, calc_elapsed_time)
 //lint -esym(759, calc_elapsed_time)
