@@ -1,5 +1,5 @@
 //*****************************************************************************
-//  Copyright (c) 2012  Daniel D Miller
+//  Copyright (c) 2012  Derell Licht
 //  Thread class for encapsulating Windows thread handling
 //
 //  This module, which has been entirely compiled from public-domain sources, 

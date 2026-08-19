@@ -1,11 +1,11 @@
 //****************************************************************************
-//  Copyright (c) 2011-2013  Daniel D Miller
+//  Copyright (c) 2011-2013  Derell Licht
 //  vlistview.h - declarations for virtual listview control class
 //
 //  This module, which has been entirely compiled from public-domain sources, 
 //  is itself declared in the public domain.
 //  
-//  Written by:   Daniel D. Miller
+//  Written by:   Derell Licht
 //****************************************************************************
 //  Sample usage:
 //    CVListView SummaryLView = NULL ;

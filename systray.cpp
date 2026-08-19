@@ -1,8 +1,8 @@
 //**************************************************************************************
-//  Copyright (c) 2017-2025  Daniel D Miller
+//  Copyright (c) 2017-2025  Derell Licht
 //  Handlers for system-tray access
 //  
-//  Collected by:   Daniel D. Miller
+//  Collected by:   Derell Licht
 //**************************************************************************************
 #include <windows.h>
 #include <tchar.h>

@@ -1,8 +1,8 @@
 //****************************************************************************
-//  Copyright (c) 2008-2023  Daniel D Miller
+//  Copyright (c) 2008-2023  Derell Licht
 //  tooltips.cpp - tooltip functions/data
 //
-//  Written by:  Daniel D Miller 
+//  Written by:  Derell Licht 
 //****************************************************************************
 //  Usage:
 //    HWND hToolTip = create_tooltips(hwnd, 150, 100, 10000) ;

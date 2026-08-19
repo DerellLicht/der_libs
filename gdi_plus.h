@@ -1,5 +1,6 @@
-//********************************************************************
-//  Copyright (c) 2025  Daniel D Miller
+//*****************************************************************
+**
+//  Copyright (c) 2025  Derell Licht
 //  This class encapsulates the interface to the LodePNG library.
 //********************************************************************
 //  WARNING about instantiating this class:

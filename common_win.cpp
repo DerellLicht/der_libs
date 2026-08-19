@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2025  Daniel D Miller
+//  Copyright (c) 2008-2025  Derell Licht
 //  common_win.cpp - common functions for Windows and other programs.
 //  These functions will comprise all the functions which require linking
 //  comctl32, comdlg32, gdi32, and other non-standard gcc/g++ libraries.

@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2025  Daniel D Miller
+//  Copyright (c) 2008-2025  Derell Licht
 //  common_funcs.cpp - common functions for console applications.
 //  This module, which has been entirely compiled from public-domain sources, 
 //  is itself declared in the public domain.

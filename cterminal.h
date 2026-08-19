@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2014  Daniel D Miller
+//  Copyright (c) 2008-2014  Derell Licht
 //  cterminal.cpp - Terminal class, derived from VListView class
 //
 //  This module, which has been entirely compiled from public-domain sources, 

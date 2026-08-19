@@ -1,9 +1,9 @@
 //**********************************************************************
-//  Copyright (c) 2009-2022  Daniel D Miller
+//  Copyright (c) 2009-2022  Derell Licht
 //  iface_32_64.h - conversion constants for building programs
 //  in 32 *or* 64 bit, with minimal problems.
 //  
-//  Written by:   Daniel D. Miller
+//  Written by:   Derell Licht
 //**********************************************************************
 
 

@@ -1,5 +1,5 @@
 //*****************************************************************************
-//  Copyright (c) 2018  Daniel D Miller
+//  Copyright (c) 2018  Derell Licht
 //  WinAPI/Comctl32 trackbar class
 //
 //  This module, which has been entirely compiled from public-domain sources, 

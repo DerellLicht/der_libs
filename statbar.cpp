@@ -1,5 +1,5 @@
 //*****************************************************************************
-//  Copyright (c) 2012-2013  Daniel D Miller
+//  Copyright (c) 2012-2013  Derell Licht
 //  Converting original statbar.cpp utility to a status-bar class
 //
 //  This module, which has been entirely compiled from public-domain sources, 

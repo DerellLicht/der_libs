@@ -1,11 +1,11 @@
 //*********************************************************************************
-//  Copyright (c) 2011-2013  Daniel D Miller
+//  Copyright (c) 2011-2013  Derell Licht
 //  vlistview.cpp - functions for virtual listview control Class
 //
 //  This module, which has been entirely compiled from public-domain sources, 
 //  is itself declared in the public domain.
 //  
-//  Written by:   Daniel D. Miller
+//  Written by:   Derell Licht
 //*********************************************************************************
 //  This is based heavily on Microsoft's VListVw example:
 // ===========================================

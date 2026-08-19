@@ -1,5 +1,5 @@
 //**************************************************************************
-//  Copyright (c) 2011-2025  Daniel D Miller
+//  Copyright (c) 2011-2025  Derell Licht
 //  This code was removed from common_funcs.cpp because it added 15KB
 //  to the output file size, and was rarely needed.
 //

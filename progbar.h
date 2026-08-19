@@ -1,5 +1,5 @@
 //*****************************************************************************
-//  Copyright (c) 2013  Daniel D Miller
+//  Copyright (c) 2013  Derell Licht
 //  class to handle WinAPI progress bar control
 //
 //  This module, which has been entirely compiled from public-domain sources, 
