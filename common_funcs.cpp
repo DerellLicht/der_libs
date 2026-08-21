@@ -789,6 +789,14 @@ TCHAR *next_field(TCHAR *q)
    return q;
 }
 
+//************************************************************************
+char *skip_spaces(char *inpstr)
+{
+   while (*inpstr == ' '  ||  *inpstr == HTAB)
+      inpstr++ ;
+   return inpstr;
+}
+
 //********************************************************************
 //  this function searches input string for CR/LF TCHARs.
 //  If any are found, it will replace ALL CR/LF with 0,

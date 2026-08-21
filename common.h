@@ -150,6 +150,7 @@ TCHAR *get_system_message(DWORD errcode);
 int syslog(const TCHAR *fmt, ...);
 TCHAR *show_error(int error_code);
 TCHAR *next_field(TCHAR *q);
+char *skip_spaces(char *inpstr);
 void strip_newlines(TCHAR *rstr);
 TCHAR *find_newlines(TCHAR *hd);
 TCHAR *strip_leading_spaces(TCHAR *str);
