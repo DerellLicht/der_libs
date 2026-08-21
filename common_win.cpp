@@ -579,6 +579,14 @@ void resize_window(HWND hwnd, int dx, int dy)
    SetWindowPos(hwnd, NULL, 0, 0, dx, dy, SWP_NOMOVE);
    // ShowWindow(hwnd, SW_SHOW) ;
 }
+
+//**************************************************************************
+BOOL MoveWindowPos(HWND hwnd, int X, int Y)
+{
+   return SetWindowPos(hwnd, HWND_TOP, X, Y, 0,0, SWP_NOSIZE );
+}
+
+
 #ifdef UNICODE
 //****************************************************************************
 //lint -esym(714, str_unicode_to_ascii)

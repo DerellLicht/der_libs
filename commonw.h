@@ -66,6 +66,7 @@ void copy_buffer_to_clipboard(TCHAR *cbbfr, unsigned blen);
 int  GetScreenDPI(void);
 BOOL CenterWindow (HWND hwnd);
 void resize_window(HWND hwnd, int dx, int dy);
+BOOL MoveWindowPos(HWND hwnd, int X, int Y);
 
 //  font-management functions
 //****************************************************************************
