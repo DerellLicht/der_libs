@@ -36,13 +36,51 @@ const COMDLG_FILTERSPEC ExecFilter[] = {
 */
 
 //************************************************************************
+// Derives a stable, reproducible GUID from a caller-supplied string label.
+// NOT cryptographically random and NOT guaranteed globally unique -- it's
+// only meant to give distinct call sites within one program distinct
+// GUIDs for IFileDialog::SetClientGuid() persistence, so Windows can
+// remember a separate "last folder used" per call site. The same label
+// string always produces the same GUID (required, since the persisted
+// registry entry is keyed on the GUID value and must stay stable across
+// runs). Pick any short, readable label per call site, e.g. "OpenSource",
+// "OpenConfig", "SaveConfig" -- uniqueness within your own program is all
+// that matters.
+//************************************************************************
+static uint64_t Fnv1aHash64(const char* data, size_t len, uint64_t seed)
+{
+    uint64_t hash = seed;
+    for (size_t i = 0; i < len; ++i) {
+        hash ^= (unsigned char)data[i];
+        hash *= 1099511628211ULL;
+    }
+    return hash;
+}
+
+GUID MakeStableGuidFromLabel(const char* label)
+{
+    size_t len = strlen(label);
+    uint64_t h1 = Fnv1aHash64(label, len, 14695981039346656037ULL);
+    uint64_t h2 = Fnv1aHash64(label, len, 0xC6A4A7935BD1E995ULL);
+
+    GUID g;
+    g.Data1 = (unsigned long)(h1 >> 32);
+    g.Data2 = (unsigned short)(h1 >> 16);
+    g.Data3 = (unsigned short)(h1);
+    for (int i = 0; i < 8; ++i) {
+        g.Data4[i] = (unsigned char)(h2 >> (8 * i));
+    }
+    return g;
+}
+
+//************************************************************************
 // Opens the modern folder-picker dialog (IFileDialog + FOS_PICKFOLDERS).
 // hwndOwner may be nullptr. On success, writes the chosen folder path into
 // outPath and returns true. On cancel or failure, outPath is left untouched
 // and the function returns false. Handles COM init/uninit internally, so
 // it's safe to call even if the caller hasn't already called CoInitialize.
 //************************************************************************
-bool BrowseForFolder(HWND hwndOwner, std::wstring& outPath)
+bool BrowseForFolder(HWND hwndOwner, std::wstring& outPath,const GUID* clientId)
 {
     bool weInitializedCom = false;
     HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
@@ -59,6 +97,10 @@ bool BrowseForFolder(HWND hwndOwner, std::wstring& outPath)
 
     hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
     if (SUCCEEDED(hr)) {
+        if (clientId != nullptr) {
+            pfd->SetClientGuid(*clientId);
+        }
+        
         DWORD options = 0;
         hr = pfd->GetOptions(&options);
         if (SUCCEEDED(hr)) {
@@ -104,7 +146,8 @@ bool BrowseForFolder(HWND hwndOwner, std::wstring& outPath)
 //************************************************************************
 bool BrowseForFile(HWND hwndOwner, std::wstring& outPath,
                     const COMDLG_FILTERSPEC* filters,
-                    UINT filterCount)
+                    UINT filterCount,
+                    const GUID* clientId)
 {
     bool weInitializedCom = false;
     HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
@@ -121,6 +164,9 @@ bool BrowseForFile(HWND hwndOwner, std::wstring& outPath,
     hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER,
                            IID_PPV_ARGS(&pfd));
     if (SUCCEEDED(hr)) {
+        if (clientId != nullptr) {
+            pfd->SetClientGuid(*clientId);
+        }
         if (filters != nullptr && filterCount > 0) {
             pfd->SetFileTypes(filterCount, filters);
             pfd->SetFileTypeIndex(1); // 1-based; first filter selected by default
@@ -166,7 +212,8 @@ bool BrowseForFile(HWND hwndOwner, std::wstring& outPath,
 bool BrowseForFileSave(HWND hwndOwner, std::wstring& outPath,
                         const COMDLG_FILTERSPEC* filters,
                         UINT filterCount,
-                        const wchar_t* defaultName)
+                        const wchar_t* defaultName,
+                        const GUID* clientId)
 {
     bool weInitializedCom = false;
     HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
@@ -182,6 +229,10 @@ bool BrowseForFileSave(HWND hwndOwner, std::wstring& outPath,
 
     hr = CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pfd));
     if (SUCCEEDED(hr)) {
+        if (clientId != nullptr) {
+            pfd->SetClientGuid(*clientId);
+        }
+        
         if (filters != nullptr && filterCount > 0) {
             pfd->SetFileTypes(filterCount, filters);
             pfd->SetFileTypeIndex(1); // 1-based; first filter selected by default
@@ -238,11 +289,17 @@ std::string WideToNarrow(const std::wstring& w)
 #define  HIDE_EXAMPLE_CODE
 
 #ifndef  HIDE_EXAMPLE_CODE
+
+//  setting up the BrowseForXXX() functions to remember previous folder...
+static GUID guidComprocPath  = MakeStableGuidFromLabel("console_attr.ComprocPath");
+static GUID guidPalettePath  = MakeStableGuidFromLabel("console_attr.PalettePath");
+static GUID guidStartingPath = MakeStableGuidFromLabel("console_attr.StartingPath");
+
 void file_search_usage_examples(HWND hwndMain)
 {
    // return select_starting_directory(hwndMain);
    std::wstring folder;
-   if (BrowseForFolder(hwndMain, folder)) {
+   if (BrowseForFolder(hwndMain, folder, &guidStartingPath)) {
       std::string folderA = WideToNarrow(folder);
       //  do something with the selected string
       // strncpy(starting_path, folderA.c_str(), sizeof(starting_path)) ;
@@ -261,7 +318,7 @@ void file_search_usage_examples(HWND hwndMain)
    };
 
    std::wstring file2;
-   if (BrowseForFile(hwndMain, file2, cfilters, ARRAYSIZE(cfilters))) {
+   if (BrowseForFile(hwndMain, file2, cfilters, ARRAYSIZE(cfilters), &guidComprocPath)) {
       // use file
    }
    
@@ -272,8 +329,8 @@ void file_search_usage_examples(HWND hwndMain)
    };
 
    std::wstring file3;
-   if (BrowseForFileSave(hwndMain, file3, sfilters, ARRAYSIZE(sfilters), L"untitled.cfg")) {
-      // use file — may not exist on disk yet
+   if (BrowseForFileSave(hwndMain, file3, sfilters, ARRAYSIZE(sfilters), L"untitled.cfg", &guidPalettePath)) {
+      // use file -- may not exist on disk yet
    }   
 }
 #endif

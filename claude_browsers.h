@@ -29,13 +29,27 @@
 //  DL: this module also requires -luuid 
 #include <shlobj.h>
 
-bool BrowseForFolder(HWND hwndOwner, std::wstring& outPath);
+// bool BrowseForFolder(HWND hwndOwner, std::wstring& outPath);
+// bool BrowseForFile(HWND hwndOwner, std::wstring& outPath,
+//                     const COMDLG_FILTERSPEC* filters = nullptr,
+//                     UINT filterCount = 0);
+// bool BrowseForFileSave(HWND hwndOwner, std::wstring& outPath,
+//                         const COMDLG_FILTERSPEC* filters = nullptr,
+//                         UINT filterCount = 0,
+//                         const wchar_t* defaultName = nullptr);
+// std::string WideToNarrow(const std::wstring& w);
+
+bool BrowseForFolder(HWND hwndOwner, std::wstring& outPath,
+                      const GUID* clientId = nullptr);
 bool BrowseForFile(HWND hwndOwner, std::wstring& outPath,
                     const COMDLG_FILTERSPEC* filters = nullptr,
-                    UINT filterCount = 0);
+                    UINT filterCount = 0,
+                    const GUID* clientId = nullptr);
 bool BrowseForFileSave(HWND hwndOwner, std::wstring& outPath,
                         const COMDLG_FILTERSPEC* filters = nullptr,
                         UINT filterCount = 0,
-                        const wchar_t* defaultName = nullptr);
+                        const wchar_t* defaultName = nullptr,
+                        const GUID* clientId = nullptr);
 std::string WideToNarrow(const std::wstring& w);
-                        
+GUID MakeStableGuidFromLabel(const char* label);
+
