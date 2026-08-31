@@ -19,10 +19,12 @@ private:
    unsigned y0;
    unsigned dx;
    unsigned dy;
+   // NOLINTBEGIN(clang-diagnostic-unused-private-field)
    unsigned iMin;     // minimum value in trackbar range 
    unsigned iMax;     // maximum value in trackbar range 
    unsigned iSelMin;  // minimum value in trackbar selection 
    unsigned iSelMax;  // maximum value in trackbar selection 
+   // NOLINTEND(clang-diagnostic-unused-private-field)
    HMENU idTrackBar;
    unsigned tcount ;
 
