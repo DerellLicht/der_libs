@@ -22,11 +22,11 @@
 //lint -esym(1051, qualify)  Symbol 'qualify' is both a function and a variable
 
 #include <windows.h>
-#include <stdio.h>
+#include <cstdio>
 #ifndef  UNICODE      
 #include <direct.h>     //  only needed for non-Unicode
 #endif
-#include <ctype.h>      //  tolower()
+#include <cctype>      //  tolower()
 #include <shlwapi.h>
 #include <tchar.h>
 #include <string>
@@ -37,12 +37,8 @@
 
 #ifdef  STANDALONE
 #ifdef  UNICODE      
-#ifndef _lint
 #include "conio_min.h"
-#endif
-#endif
 
-#ifdef  UNICODE      
 //lint -e129  declaration expected, identifier ignored
 static std::unique_ptr<conio_min> console ;
 #endif
