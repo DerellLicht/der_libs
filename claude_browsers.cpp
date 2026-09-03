@@ -4,6 +4,14 @@
 //  
 //  This module requires linking with uuid.lib (-uuid)
 //************************************************************************
+// Claude:
+// Yes — IFileDialog is the modern (Vista+) replacement for both GetOpenFileName() 
+// and SHBrowseForFolder(), and FOS_PICKFOLDERS is exactly the flag for 
+// folder-picking mode. It's COM-based, so there's a bit more ceremony than 
+// GetOpenFileName(), but it's much less awkward than SHBrowseForFolder()'s 
+// callback-based API, and it gives you the modern Explorer-style 
+// dialog (nav pane, address bar, etc.) instead of the old tree view.
+//************************************************************************
 
 #include <windows.h>
 #include <cstdio>   //  sprintf, needed for double
