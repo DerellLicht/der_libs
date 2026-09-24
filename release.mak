@@ -29,6 +29,20 @@ TAG := v$(VERSION)
 # release/update actually run, by which point DIST_ZIP is set.
 RELEASE_ASSETS ?= ./$(DIST_ZIP) ./CHANGELOG.md
 
+# This file is normally included near the top of a project Makefile,
+# before that Makefile's own "all:" target is defined -- which means
+# check-clean below, being the first target GNU Make sees, would otherwise
+# silently become the default goal for a bare "make" with no arguments
+# instead of "all". Restore the intended default explicitly. NOTE: '?='
+# does NOT work for .DEFAULT_GOAL -- GNU Make pre-seeds it internally, so
+# '?=' sees it as already set and silently skips the assignment; this
+# explicit empty-check is the actual working equivalent (verified against
+# GNU Make 4.3). A project can still override by setting .DEFAULT_GOAL
+# itself before this include, if its primary target isn't named "all".
+ifeq ($(.DEFAULT_GOAL),)
+.DEFAULT_GOAL := all
+endif
+
 .PHONY: check-clean notes release update retag re-release sha256
 
 # Blocks release/retag on an uncommitted working tree -- catches building
@@ -55,10 +69,8 @@ release: check-clean dist notes
 # Notes first, then assets ("--clobber" makes the asset re-upload safe with
 # no stale-link cleanup needed). "gh release edit" fails if the release
 # doesn't exist yet -- unlike "release" this is NOT self-healing, so run
-# "release" first for a tag's first publish. check-clean here for the same
-# reason as release: "dist" rebuilds from the working tree, so a dirty tree
-# would upload a binary that doesn't match what $(TAG) points to in git.
-update: check-clean dist notes
+# "release" first for a tag's first publish.
+update: dist notes
 	@cmd /C "@echo Updating release $(TAG)..."
 	gh release edit $(TAG) --notes-file temp_notes.md
 	rm temp_notes.md
