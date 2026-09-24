@@ -95,5 +95,8 @@ retag: check-clean
 re-release: retag update
 	@cmd /C "@echo Release $(TAG) retagged and re-released."
 
+# Not called by anything above -- run by hand when a distribution channel
+# asks for a published checksum to verify the release matches what you claim it is 
+# (came up for PrettyReMark's "awesome-markdown-editors" list submission).
 sha256:
 	certutil -hashfile $(DIST_ZIP) SHA256
