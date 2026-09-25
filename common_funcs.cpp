@@ -175,51 +175,6 @@ bool dir_exists(TCHAR *fefile)
    return false;
 }
 
-//*******************************************************************************
-// This routine does a CRC-16 check on a block of addressable space.
-// code_ptr arg is a pointer to byte, and points to the start of the block.
-// code_size arg is the size of the block in bytes.
-// start arg is the initial value we want to use for CRC, this allows us to 
-// generate a CRC for discontinuous blocks of data through multiple function
-// calls.  In normal usage it should be set to 0.
-//*******************************************************************************
-static const uint crc_16_table[16] =
-{
-  0x0000, 0xCC01, 0xD801, 0x1400, 0xF001, 0x3C00, 0x2800, 0xE401,
-  0xA001, 0x6C00, 0x7800, 0xB401, 0x5000, 0x9C01, 0x8801, 0x4400 
-};
-
-//lint -esym(714, crc_16)
-//lint -esym(759, crc_16)
-//lint -esym(765, crc_16)
-uint crc_16(uint start, u8 *code_ptr, uint code_size)
-{ 
-  uint  crc = start;
-  uint k = 0;
-  uint segment_size = 0x10000;
-  
-  // Generate a checksum for that code space...
-  while (k<code_size)
-  {
-      for (uint j=0; j<segment_size && k<code_size; j++, k++)
-      {       
-          // compute checksum of lower four bits of data byte
-          uint r = crc_16_table[crc & 0xF];
-          crc = (crc >> 4) & 0x0FFF;
-          crc = crc ^ r ^ crc_16_table[ code_ptr[j] & 0xF];
-
-          // now compute checksum of upper four bits of data byte
-          r = crc_16_table[crc & 0xF];
-          crc = (crc >> 4) & 0x0FFF;
-          crc = crc ^ r ^ crc_16_table[(code_ptr[j] >> 4) & 0xF];
-      }
-   
-      code_ptr = code_ptr + segment_size;
-  }
-  
-  return crc;
-} // End crc_16()
-
 //*****************************************************************************
 //lint -esym(714, proc_time)
 //lint -esym(759, proc_time)

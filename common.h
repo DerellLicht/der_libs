@@ -157,7 +157,6 @@ TCHAR *strip_leading_spaces(TCHAR *str);
 void strip_leading_zeros(TCHAR *str);
 void strip_trailing_spaces(TCHAR *rstr);
 TCHAR *skip_spaces_and_commas(TCHAR *hd);
-uint crc_16(uint start, u8 *code_ptr, uint code_size);
 u8 get_hex8(char const *ptr);
 u16 get_hex16(char const *ptr);
 u32 get_hex32(char const *ptr);

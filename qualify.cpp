@@ -55,9 +55,7 @@ static std::unique_ptr<conio_min> console ;
 #endif
 
 /******************************************************************/
-//lint -esym(31, qualify)   Redefinition of symbol compared with ...
-//lint -esym(714, qualify)  Symbol not referenced
-//lint -esym(765, qualify)  external could be made static
+// NOLINTBEGIN(cppcoreguidelines-pro-bounds-avoid-unchecked-container-access)
 unsigned qualify (std::wstring& input_path)
 {
    static wchar_t path[MAX_PATH_LEN+1];
@@ -153,6 +151,7 @@ unsigned qualify (std::wstring& input_path)
 
    return (qresult); //lint !e438  drive
 }
+// NOLINTEND(cppcoreguidelines-pro-bounds-avoid-unchecked-container-access)
 
 #ifdef  STANDALONE
 //********************************************************************************
