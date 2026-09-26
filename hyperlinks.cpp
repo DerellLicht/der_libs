@@ -58,7 +58,11 @@ static LRESULT CALLBACK lHyperlinkParentProc(HWND hwnd, UINT message, WPARAM wPa
          RemoveProp(hwnd, PROP_ORIGINAL_PROC);
          break;
       }
+      
+   default:
+      break ;
    }  //lint !e744
+   
    return CallWindowProc(pfnOrigProc, hwnd, message, wParam, lParam);
 }
 
@@ -132,8 +136,11 @@ static INT_PTR CALLBACK lHyperlinkProc(HWND hwnd, UINT message, WPARAM wParam, L
          SetCursor(hCursor);
          return true;
       }
+      
+   default:   
+      break ;
    }  //lint !e744
-
+   
    return CallWindowProc(pfnOrigProc, hwnd, message, wParam, lParam);
 }
 
