@@ -70,7 +70,9 @@ private:
 //    unsigned cyChar ; //  height of char
 
 public:
-   CStatusBar(HWND hwndParent) ;
+   //  explicit: single-arg ctor -- blocks implicit HWND -> CStatusBar conversions
+   //  (clang-tidy cppcoreguidelines-explicit-constructor)
+   explicit CStatusBar(HWND hwndParent) ;
    ~CStatusBar();
    //  disable copy constructor and assignment operator
    CStatusBar &operator=(const CStatusBar &src) = delete;

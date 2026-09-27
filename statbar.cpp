@@ -190,6 +190,9 @@ bool CStatusBar::RebuildStatusBar (WORD wFlag)
    case IDM_STAT_NORESIZE:
       FlipStyleFlag (&dwStatusBarStyles, CCS_NORESIZE);
       break;
+      
+   default:
+      break;
    }  //lint !e744
 
    // InitStatusBar (hwndParent);
@@ -251,6 +254,9 @@ void CStatusBar::StatusBarMessage(WORD wMsg)
       bSimple = (!bSimple);
       break;
       }
+      
+   default:
+      break ;
    }  //lint !e744 
 }
 
