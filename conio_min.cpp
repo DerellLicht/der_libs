@@ -51,30 +51,23 @@ HANDLE conio_min::hStdOutPublic = nullptr ;
 //**********************************************************
 void conio_min::dscroll(WORD tBG)
 {
-   SMALL_RECT src ;
-   // SMALL_RECT dest ;
    COORD co = { 0, 0 } ;
-   // CHAR_INFO ci = { ' ', tBG } ;
-   CHAR_INFO ci ;
-   ci.Char.AsciiChar = ' ' ;
+   CHAR_INFO ci = { } ;    //  zero-init so no field is left as garbage
+#ifdef UNICODE
+   ci.Char.UnicodeChar = L' ' ;   //  ScrollConsoleScreenBufferW reads this member
+#else
+   ci.Char.AsciiChar = ' ' ;      //  ScrollConsoleScreenBufferA reads this member
+#endif
    ci.Attributes = tBG ;
 
    // GetConsoleScreenBufferInfo(hStdOut, &sinfo) ;
-   // src.Left   = sinfo.srWindow.Left ;
-   // src.Right  = sinfo.srWindow.Right ;
-   // src.Top    = sinfo.srWindow.Top + 1 ;
-   // src.Bottom = sinfo.srWindow.Bottom ;
 
    // Jason Hood's "buffer > screen" fix
+   SMALL_RECT src ;
    src.Left   = 0 ;
    src.Right  = sinfo.dwSize.X - 1;
    src.Top    = 1 ;
    src.Bottom = sinfo.dwSize.Y - 1;
-
-   // dest.Left   = sinfo.srWindow.Left ;
-   // dest.Right  = sinfo.srWindow.Right ;
-   // dest.Top    = sinfo.srWindow.Top ;
-   // dest.Bottom = sinfo.srWindow.Bottom ;
 
    ScrollConsoleScreenBuffer(hStdOut, &src, 0, co, &ci) ;
 }
