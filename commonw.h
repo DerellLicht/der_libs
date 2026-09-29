@@ -42,6 +42,14 @@ typedef struct DLGTEMPLATEEX_s {
 // 
 // #define  LVN_HOTTRACK                (-121)
 
+// Converts a child-control ID to the HMENU form that CreateWindowEx expects
+// for child windows (the parameter is overloaded to carry an integer ID).
+// Works for both 32-bit and 64-bit builds via the intermediate UINT_PTR.
+inline HMENU ControlIdToHmenu(UINT id)
+{
+   return reinterpret_cast<HMENU>(static_cast<UINT_PTR>(id));   // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast)
+}
+
 //****************************************************************************
 //  lookup table for Windows message-handler procedures
 //****************************************************************************
@@ -52,7 +60,7 @@ typedef struct winproc_table_s {
 
 //****************************************************************************
 HWND MyCreateUpDownControl(
-      HWND hwndParent, uint ControlID, HINSTANCE ghinst, HWND hwndBuddy, 
+      HWND hwndParent, HMENU ControlID, HINSTANCE ghinst, HWND hwndBuddy, 
       uint MaxValue, uint MinValue, uint InitValue) ;
 HWND CBGetItemHandle(HWND hwndCBox);
 BOOL ShellGetPath (HANDLE hDlg, TCHAR lpszPath[]);

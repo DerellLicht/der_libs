@@ -28,28 +28,6 @@
 #include <cstdint>
 #include <commctrl.h>
 
-//lint -esym(1714, CVListView::lview_subclass, CVListView::lview_assign_column_headers, CVListView::is_lview_hwnd)
-//lint -esym(1714, CVListView::get_next_listview_index, CVListView::get_selected_count, CVListView::set_header_text)
-//lint -esym(1714, CVListView::update_lview_text, CVListView::scroll_listview, CVListView::update_column)
-//lint -esym(1714, CVListView::insert_column, CVListView::find_selected_row, CVListView::resize_listview)
-//lint -esym(1714, CVListView::get_lview_dx, CVListView::get_lview_dy, CVListView::SetHeaderSortImage)
-
-//lint -esym(1714, CVListView::recalc_dx, CVListView::hide_horiz_scrollbar)
-//lint -esym(1714, CVListView::HitTest, CVListView::GetItemState)
-//lint -esym(1714, CVListView::insert_column_header, CVListView::delete_column)
-
-// vlistview.h  Info 1712: default constructor not defined for class 'CVListView'
-//lint -esym(1712, CVListView)
-
-//lint -esym(1719, CVListView, CTerminal)
-//lint -esym(1720, CVListView, CTerminal)
-//lint -esym(1722, CVListView, CTerminal)
-//lint -esym(1704, CVListView::CVListView, CTerminal::CTerminal)
-
-// Info 1711: class 'CVListView' has a virtual function but is not inherited, 
-//            so none of its functions need to be virtual
-//lint -esym(1711, CVListView)
-
 #define  LVL_STY_VIRTUAL         0x01
 #define  LVL_STY_NO_HEADER       0x02
 #define  LVL_STY_PAGE_TO_END     0x04
@@ -116,11 +94,11 @@ public:
    CVListView &operator=(const CVListView &src) = delete;
    CVListView(const CVListView&) = delete;
    //  disable move constructor and assignment operator
-   CVListView &operator=(const CVListView &&src) = delete;
-   CVListView(const CVListView&&) = delete;
+   // CVListView &operator=(const CVListView &&src) = delete;
+   // CVListView(const CVListView&&) = delete;
 
-   WNDPROC lview_subclass(LONG TermSubclassProc) ;
-   WNDPROC header_subclass(LONG TermSubclassProc);
+   WNDPROC lview_subclass(WNDPROC TermSubclassProc) ;
+   WNDPROC header_subclass(WNDPROC TermSubclassProc);
    void lview_assign_column_headers(void);
    void lview_assign_column_headers(lv_cols_p lv_cols, LPARAM image_list);
    void lview_assign_column_headers(lv_cols_p lv_cols[], LPARAM image_list);

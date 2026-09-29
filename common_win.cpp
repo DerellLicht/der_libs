@@ -61,11 +61,8 @@ HWND CBGetItemHandle(HWND hwndCBox)
 }
 
 //****************************************************************************
-//lint -esym(714, MyCreateUpDownControl)
-//lint -esym(759, MyCreateUpDownControl)
-//lint -esym(765, MyCreateUpDownControl)
 HWND MyCreateUpDownControl(
-      HWND hwndParent, uint ControlID, HINSTANCE ghinst, HWND hwndBuddy, 
+      HWND hwndParent, HMENU ControlID, HINSTANCE ghinst, HWND hwndBuddy, 
       uint MaxValue, uint MinValue, uint InitValue) 
 {
    // icex.dwICC = ICC_UPDOWN_CLASS;    // Set the Initialization Flag value.
@@ -80,7 +77,7 @@ HWND MyCreateUpDownControl(
                               // Set to zero to automatically size to fit the buddy window.
                               0, 0, 0, 0,         
                               hwndParent,
-                              (HMENU) ControlID,
+                              ControlID,
                               ghinst,
                               NULL);
 

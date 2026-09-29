@@ -95,12 +95,12 @@ CVListView::CVListView(HWND hwndParent, uint ControlID, HINSTANCE g_hinst,
       WC_LISTVIEW,              // class name - defined in commctrl.h
       _T(""),                   // dummy text
       dwStyle,                  // style
-      x0,                        // x position
-      y0,                        // y position
-      dx,                        // width
-      dy,                        // height
+      x0,                       // x position
+      y0,                       // y position
+      dx,                       // width
+      dy,                       // height
       hwndParent,               // parent                  GLOBAL !!
-      (HMENU) ControlID,        // ID                      GLOBAL !!
+      ControlIdToHmenu(ControlID),                // ID                      GLOBAL !!
       g_hinst,                  // instance                GLOBAL !!
       NULL);                    // no extra data
 
@@ -530,15 +530,25 @@ void CVListView::recalc_dx(lv_cols_p lvptr, uint min_dx)
 }
 
 //*****************************************************************************
-WNDPROC CVListView::lview_subclass(LONG TermSubclassProc)
+// Subclasses the ListView control by installing a new window procedure.
+// Returns the previous window procedure, which the caller must save so the
+// new procedure can forward unhandled messages to it via CallWindowProc().
+WNDPROC CVListView::lview_subclass(WNDPROC TermSubclassProc)
 {
-   return (WNDPROC) SetWindowLongPtr(hwndVListView, GWL_WNDPROC, TermSubclassProc); 
+   return reinterpret_cast<WNDPROC>(
+      SetWindowLongPtr(hwndVListView, GWLP_WNDPROC,
+         reinterpret_cast<LONG_PTR>(TermSubclassProc)));
 }
 
 //*****************************************************************************
-WNDPROC CVListView::header_subclass(LONG TermSubclassProc)
+// Subclasses the ListView's header control by installing a new window
+// procedure.  Returns the previous window procedure, which the caller must
+// save so the new procedure can forward unhandled messages to it.
+WNDPROC CVListView::header_subclass(WNDPROC TermSubclassProc)
 {
-   return (WNDPROC) SetWindowLongPtr(hwndLVHeader, GWL_WNDPROC, TermSubclassProc); 
+   return reinterpret_cast<WNDPROC>(
+      SetWindowLongPtr(hwndLVHeader, GWLP_WNDPROC,
+         reinterpret_cast<LONG_PTR>(TermSubclassProc)));
 }
 
 //*************************************************************************
