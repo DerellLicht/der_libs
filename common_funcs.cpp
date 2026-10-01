@@ -209,39 +209,31 @@ u64 get_clocks_per_msec(void)
 }
 
 //****************************************************************************
-//lint -esym(714, calc_elapsed_time)
-//lint -esym(759, calc_elapsed_time)
-//lint -esym(765, calc_elapsed_time)
-uint calc_elapsed_time(bool done)
+u64 calc_elapsed_time(bool done)
 {
    static u64 ti = 0 ;
-   uint secs = 0 ;
+   u64 secs = 0 ;
    if (!done) {
       ti = proc_time() ;
    } else {
       u64 tf = proc_time() ;
-      secs = (uint) ((tf - ti) / get_clocks_per_second()) ;
-      // syslog("send_serial_msg: %u seconds", secs) ;
+      secs = (tf - ti) / get_clocks_per_second() ;
    }
    return secs;
 }
 
 //****************************************************************************
-//lint -esym(714, calc_elapsed_msec)
-//lint -esym(759, calc_elapsed_msec)
-//lint -esym(765, calc_elapsed_msec)
-uint calc_elapsed_msec(bool done)
+u64 calc_elapsed_msec(bool done)
 {
    static u64 ti = 0 ;
-   uint secs = 0 ;
+   u64 msecs = 0 ;
    if (!done) {
       ti = proc_time() ;
    } else {
       u64 tf = proc_time() ;
-      secs = (uint) ((tf - ti) / (get_clocks_per_second()/1000)) ;
-      // syslog("send_serial_msg: %u seconds", secs) ;
+      msecs = (tf - ti) / get_clocks_per_msec() ;
    }
-   return secs;
+   return msecs;
 }
 
 //****************************************************************************
