@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2017  Derell Licht
+//  Copyright (c) 2008-2026  Derell Licht
 //  common_funcs.cpp - common functions for Windows and other programs.
 //  commonw.h - Contains Windows-specific and System-specific definitions
 //  This module, which has been entirely compiled from public-domain sources, 
@@ -8,32 +8,20 @@
 //  Collected and Organized by:  Derell Licht
 //****************************************************************************
 
-//  windows defs which are not present in MinGW headers
-//  Used for PSCB_PRECREATE message
-//lint -esym(751, LPDLGTEMPLATEEX)
-//lint -esym(754, DLGTEMPLATEEX_s::dlgVer, DLGTEMPLATEEX_s::helpID, DLGTEMPLATEEX_s::exStyle)
-//lint -esym(754, DLGTEMPLATEEX_s::cDlgItems, DLGTEMPLATEEX_s::x, DLGTEMPLATEEX_s::y)
-//lint -esym(754, DLGTEMPLATEEX_s::cx, DLGTEMPLATEEX_s::cy)
-//lint -esym(756, LPDLGTEMPLATEEX, DLGTEMPLATEEX)
-//lint -esym(768, DLGTEMPLATEEX_s::dlgVer, DLGTEMPLATEEX_s::helpID, DLGTEMPLATEEX_s::exStyle)
-//lint -esym(768, DLGTEMPLATEEX_s::cDlgItems, DLGTEMPLATEEX_s::x, DLGTEMPLATEEX_s::y)
-//lint -esym(768, DLGTEMPLATEEX_s::cx, DLGTEMPLATEEX_s::cy)
-//lint -esym(768, DLGTEMPLATEEX_s::signature, DLGTEMPLATEEX_s::style)
-//lint -esym(757, ShellGetPath)
-
-typedef struct DLGTEMPLATEEX_s {
-   WORD dlgVer;
-   WORD signature;
-   DWORD helpID;
-   DWORD exStyle;
-   DWORD style;
-   WORD cDlgItems;
-   short x;
-   short y;
-   short cx;
-   short cy;
-   // etc..
-} DLGTEMPLATEEX, *LPDLGTEMPLATEEX; 
+//  why did I once need this here??
+// typedef struct DLGTEMPLATEEX_s {
+//    WORD dlgVer;
+//    WORD signature;
+//    DWORD helpID;
+//    DWORD exStyle;
+//    DWORD style;
+//    WORD cDlgItems;
+//    short x;
+//    short y;
+//    short cx;
+//    short cy;
+//    // etc..
+// } DLGTEMPLATEEX, *LPDLGTEMPLATEEX; 
 
 // #define PSN_FIRST                (0U-200U)
 // #define  PSN_GETOBJECT               (-210)

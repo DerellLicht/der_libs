@@ -1,5 +1,5 @@
 //****************************************************************************
-//  Copyright (c) 2008-2025  Derell Licht
+//  Copyright (c) 2008-2026  Derell Licht
 //  common_win.cpp - common functions for Windows and other programs.
 //  These functions will comprise all the functions which require linking
 //  comctl32, comdlg32, gdi32, and other non-standard gcc/g++ libraries.
@@ -23,12 +23,6 @@
 #include "common.h"
 #include "commonw.h"
 
-//lint -e840  Use of nul character in a string literal is perfectly normal
-//lint -e732  Loss of sign (arg. no. 6) (int to unsigned long)
-//lint -e592  Non-literal format specifier used without arguments
-
-//lint -e1065 Symbol declared as "C" conflicts with itself
-
 //********************************************************************************
 //  this function returns the appropriate child-window handle for a ComboBox,
 //  so that the edit control can be sub-classed.
@@ -48,9 +42,6 @@
 //   HWND  hwndList;
 // } COMBOBOXINFO, *PCOMBOBOXINFO, *LPCOMBOBOXINFO;
 //********************************************************************************
-//lint -esym(714, CBGetItemHandle)
-//lint -esym(759, CBGetItemHandle)
-//lint -esym(765, CBGetItemHandle)
 HWND CBGetItemHandle(HWND hwndCBox)
 {
    COMBOBOXINFO cBoxInfo ;
@@ -111,9 +102,6 @@ HWND MyCreateUpDownControl(
 //***********************************************************************
 
 //***********************************************************************
-//lint -esym(714, ShellGetPath)
-//lint -esym(759, ShellGetPath)
-//lint -esym(765, ShellGetPath)
 BOOL ShellGetPath(HANDLE hDlg, char lpszPath[])
 {
    BOOL bRet {};
@@ -144,9 +132,6 @@ BOOL ShellGetPath(HANDLE hDlg, char lpszPath[])
    return bRet;
 }
 //****************************************************************************
-//lint -esym(714, copy_buffer_to_clipboard)
-//lint -esym(759, copy_buffer_to_clipboard)
-//lint -esym(765, copy_buffer_to_clipboard)
 void copy_buffer_to_clipboard(TCHAR *cbbfr, unsigned blen)
 {
    // test to see if we can open the clipboard first before
@@ -196,9 +181,6 @@ void copy_buffer_to_clipboard(TCHAR *cbbfr, unsigned blen)
 //  find screen coords of upper-left corner of CommPort dialog.
 //  From this, hopefully, I can accurately find ctrl_top value.
 //****************************************************************************
-//lint -esym(714, get_bottom_line)
-//lint -esym(759, get_bottom_line)
-//lint -esym(765, get_bottom_line)
 uint get_bottom_line(HWND hwnd, uint ctrl_id)
 {
    POINT pt = { 0, 0 } ;
@@ -216,9 +198,6 @@ uint get_bottom_line(HWND hwnd, uint ctrl_id)
 }
 
 //****************************************************************************
-//lint -esym(714, WriteFileF)
-//lint -esym(759, WriteFileF)
-//lint -esym(765, WriteFileF)
 int WriteFileF(HANDLE hdl, const TCHAR *fmt, ...)
 {
    DWORD bytesWritten {};
@@ -235,9 +214,6 @@ int WriteFileF(HANDLE hdl, const TCHAR *fmt, ...)
 }
 
 //******************************************************************
-//lint -esym(714, Line)
-//lint -esym(759, Line)
-//lint -esym(765, Line)
 void Line(HDC hdc, uint x1, uint yy1, uint x2, uint y2)
 {
    MoveToEx(hdc, x1, yy1, NULL) ;
@@ -250,9 +226,6 @@ void Line(HDC hdc, uint x1, uint yy1, uint x2, uint y2)
 //  in the data.  This corrects for my habit of putting leadings spaces
 //  in front of edit-control data to improve readability.
 //*****************************************************************************
-//lint -esym(714, read_edit_control)
-//lint -esym(759, read_edit_control)
-//lint -esym(765, read_edit_control)
 TCHAR *read_edit_control(HWND hwnd, TCHAR *msgstr)
 {
    uint tempEditLength = GetWindowTextLength(hwnd);
@@ -270,9 +243,6 @@ static TCHAR const szPalFilter[] =
    _T("All Files (*.*)\0*.*\0\0") ;
 
 //******************************************************************
-//lint -esym(714, select_text_file)
-//lint -esym(759, select_text_file)
-//lint -esym(765, select_text_file)
 bool select_text_file(HWND hDlgWnd, TCHAR *command_filename)
 {
    // syslog("A handles=%d\n", get_handle_count());
@@ -332,9 +302,6 @@ bool select_text_file(HWND hDlgWnd, TCHAR *command_filename)
 //    "Text Files (*.TXT)\0*.txt\0"  
 //    "All Files (*.*)\0*.*\0\0" ;
 
-//lint -esym(714, select_file)
-//lint -esym(759, select_file)
-//lint -esym(765, select_file)
 bool select_file(HWND hDlgWnd, TCHAR *command_filename, TCHAR *ext)
 {
    TCHAR szGenFilter[80] ;
@@ -400,9 +367,6 @@ bool select_file(HWND hDlgWnd, TCHAR *command_filename, TCHAR *ext)
 }
 
 //*************************************************************************
-//lint -esym(714, build_font)
-//lint -esym(759, build_font)
-//lint -esym(765, build_font)
 HFONT build_font(TCHAR *fname, unsigned fheight, unsigned flags)
 {
    int fbold      = (flags & EZ_ATTR_BOLD     ) ? TRUE : FALSE ;
@@ -422,9 +386,6 @@ HFONT build_font(TCHAR *fname, unsigned fheight, unsigned flags)
 }  //lint !e818
 
 //*************************************************************************
-//lint -esym(714, EzCreateFont)
-//lint -esym(759, EzCreateFont)
-//lint -esym(765, EzCreateFont)
 HFONT EzCreateFont(HDC hdc, TCHAR * szFaceName, int iDeciPtHeight,
        int iDeciPtWidth, unsigned iAttributes, int textangle, BOOL fLogRes)
 {
@@ -504,9 +465,6 @@ HFONT EzCreateFont(HDC hdc, TCHAR * szFaceName, int iDeciPtHeight,
 //  returns 96 for normal fonts, 120 for Large Fonts, 
 //  and other values for custom settings.
 //****************************************************************************
-//lint -esym(714, GetScreenDPI)
-//lint -esym(759, GetScreenDPI)
-//lint -esym(765, GetScreenDPI)
 int GetScreenDPI(void)
 {
   HDC hdcScreen = GetDC(NULL);
@@ -519,9 +477,6 @@ int GetScreenDPI(void)
 }
 
 //********************************************************************************************
-//lint -esym(714, CenterWindow)
-//lint -esym(759, CenterWindow)
-//lint -esym(765, CenterWindow)
 BOOL CenterWindow (HWND hwnd)
 {
    HWND hwndParent;
@@ -566,9 +521,6 @@ BOOL CenterWindow (HWND hwnd)
 //  unfortunately, this resize operation sets the *outside* window area,
 //  not the internal client area...
 //****************************************************************************
-//lint -esym(714, resize_window)
-//lint -esym(759, resize_window)
-//lint -esym(765, resize_window)
 void resize_window(HWND hwnd, int dx, int dy)
 {
    // ShowWindow(hwnd, SW_HIDE) ;
@@ -586,27 +538,18 @@ BOOL MoveWindowPos(HWND hwnd, int X, int Y)
 
 #ifdef UNICODE
 //****************************************************************************
-//lint -esym(714, str_unicode_to_ascii)
-//lint -esym(759, str_unicode_to_ascii)
-//lint -esym(765, str_unicode_to_ascii)
 int str_unicode_to_ascii(WCHAR *UnicodeStr, char *AsciiStr, uint AsciiLen)
 {
    return WideCharToMultiByte(CP_ACP, 0, UnicodeStr, -1, AsciiStr, AsciiLen, NULL, NULL);
 }
 
 //****************************************************************************
-//lint -esym(714, str_ascii_to_unicode)
-//lint -esym(759, str_ascii_to_unicode)
-//lint -esym(765, str_ascii_to_unicode)
 int str_ascii_to_unicode(char *AsciiStr, WCHAR *UnicodeStr, uint AsciiLen)
 {
    return MultiByteToWideChar(CP_ACP, 0, AsciiStr, -1, UnicodeStr, AsciiLen+1);
 }
 
 //****************************************************************************
-//lint -esym(714, ascii2unicode)
-//lint -esym(759, ascii2unicode)
-//lint -esym(765, ascii2unicode)
 WCHAR *ascii2unicode(char *AsciiStr, uint AsciiLen)
 {
    static WCHAR UnicodeStr[MAX_UNICODE_LEN+1] ;
@@ -617,9 +560,6 @@ WCHAR *ascii2unicode(char *AsciiStr, uint AsciiLen)
 }
 
 //****************************************************************************
-//lint -esym(714, ascii2unicode)
-//lint -esym(759, ascii2unicode)
-//lint -esym(765, ascii2unicode)
 WCHAR *ascii2unicode(char *AsciiStr)
 {
    uint AsciiLen = strlen(AsciiStr) ;
@@ -631,9 +571,6 @@ WCHAR *ascii2unicode(char *AsciiStr)
 }
 
 //****************************************************************************
-//lint -esym(714, unicode2ascii)
-//lint -esym(759, unicode2ascii)
-//lint -esym(765, unicode2ascii)
 char *unicode2ascii(WCHAR *UnicodeStr)
 {
    static char AsciiStr[MAX_UNICODE_LEN+1] ;
@@ -642,8 +579,6 @@ char *unicode2ascii(WCHAR *UnicodeStr)
 }
 #endif
 
-//****************************************************************************
-//  12/16/16 - import commonly-used functions from system.cpp
 //****************************************************************************
 static const uint STD_DPI = 96 ;
 
@@ -689,10 +624,6 @@ void get_monitor_dimens()
    // curr_dpi = GetScreenDPI() ;
 }
 
-//lint -esym(714, get_screen_width)
-//lint -esym(752, get_screen_width)
-//lint -esym(759, get_screen_width)
-//lint -esym(765, get_screen_width)
 uint get_screen_width(void)
 {
    if (screen_width == 0) {
@@ -701,10 +632,6 @@ uint get_screen_width(void)
    return screen_width ;
 }
 
-//lint -esym(714, get_screen_height)
-//lint -esym(752, get_screen_height)
-//lint -esym(759, get_screen_height)
-//lint -esym(765, get_screen_height)
 uint get_screen_height(void)
 {
    if (screen_height == 0) {
@@ -716,10 +643,6 @@ uint get_screen_height(void)
 //********************************************************************************
 //  This requires get_monitor_dimens() to be called first
 //********************************************************************************
-//lint -esym(714, center_dialog_on_screen)
-//lint -esym(752, center_dialog_on_screen)
-//lint -esym(759, center_dialog_on_screen)
-//lint -esym(765, center_dialog_on_screen)
 void center_dialog_on_screen(HWND hDlg)
 {
    if (screen_width == 0  ||  screen_height == 0) {
@@ -735,13 +658,9 @@ void center_dialog_on_screen(HWND hDlg)
 }
 
 //****************************************************************************
-//lint -esym(714, are_normal_fonts_active)
-//lint -esym(752, are_normal_fonts_active)
-//lint -esym(759, are_normal_fonts_active)
-//lint -esym(765, are_normal_fonts_active)
 bool are_normal_fonts_active(void)
 {
-   uint curr_dpi = GetScreenDPI() ; //lint !e732 Loss of sign
+   uint curr_dpi = GetScreenDPI() ;
    return (curr_dpi == 96) ;
    // if (curr_dpi == 96)
    //    return true;
@@ -751,13 +670,9 @@ bool are_normal_fonts_active(void)
 //****************************************************************************
 //  return true if recalculation was required, false otherwise
 //****************************************************************************
-//lint -esym(714, cp_recalc_dlu_width)
-//lint -esym(752, cp_recalc_dlu_width)
-//lint -esym(759, cp_recalc_dlu_width)
-//lint -esym(765, cp_recalc_dlu_width)
 bool cp_recalc_dlu_width(uint *psheet_dx)
 {
-   uint curr_dpi = GetScreenDPI() ; //lint !e732 Loss of sign
+   uint curr_dpi = GetScreenDPI() ;
    if (curr_dpi == STD_DPI) 
       return false ;
    *psheet_dx = (*psheet_dx * curr_dpi) / STD_DPI ;
@@ -767,13 +682,9 @@ bool cp_recalc_dlu_width(uint *psheet_dx)
 //****************************************************************************
 //  return true if recalculation was required, false otherwise
 //****************************************************************************
-//lint -esym(714, cp_recalc_dlu_height)
-//lint -esym(752, cp_recalc_dlu_height)
-//lint -esym(759, cp_recalc_dlu_height)
-//lint -esym(765, cp_recalc_dlu_height)
 bool cp_recalc_dlu_height(uint *psheet_dy)
 {
-   uint curr_dpi = GetScreenDPI() ; //lint !e732 Loss of sign
+   uint curr_dpi = GetScreenDPI() ;
    if (curr_dpi == STD_DPI) 
       return false ;
    *psheet_dy = (*psheet_dy * curr_dpi) / STD_DPI ;

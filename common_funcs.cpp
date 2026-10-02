@@ -7,14 +7,6 @@
 //  Collected and Organized by:  Derell Licht
 //****************************************************************************
 
-//  These are spurious warnings from PcLint, but there is no way to 
-//  selectively disable them, so global disable is required.
-//  This is unfortunate, as I *really* would like to know about valid repeated includes
-// Warning 537: Repeated include file 'c:\tdm32\include\sys\stat.h'
-// Warning 451: Header file 'c:\tdm32\include\sys\stat.h' repeatedly included but does not have a standard include guard
-//lint -e451
-//lint -e537
-
 #include <windows.h>
 #include <cstdio>   //  vsprintf
 #include <memory>
@@ -25,25 +17,6 @@
 #endif
 
 #include "common.h"
-//lint -esym(18, strtoul)
-//lint -esym(1055, strtoul, _wstat, fgetws, fputws, _wfopen)
-
-//lint -esym(526, __builtin_va_start, _wstat, fgetws, fputws, strtoul, _wfopen)
-//lint -esym(628, __builtin_va_start, _wstat, fgetws, fputws, strtoul, _wfopen)
-//lint -e818  Pointer parameter could be declared as pointing to const
-//lint -e592  Non-literal format specifier used without arguments
-//lint -e845  The right argument to operator '||' is certain to be 0
-
-// Info 740: Unusual pointer cast (incompatible indirect types)
-// Info 740: Unusual pointer cast (incompatible indirect types)
-// Error 64: Type mismatch (initialization) (struct _iobuf * = int)
-// Error 64: Type mismatch (initialization) (struct _iobuf * = int)
-//lint -esym(746, _wstat, strtoul, _wfopen, fgetws, fputws)
-
-//lint -esym(714, TCR, TLF, TTAB)
-//lint -esym(759, TCR, TLF, TTAB)
-//lint -esym(752, TCR, TLF, TTAB)
-//lint -esym(765, TCR, TLF, TTAB)
 const TCHAR  TCR   =  13 ; //lint !e752
 const TCHAR  TLF   =  10 ;
 const TCHAR  TTAB  =   9 ;
@@ -53,18 +26,12 @@ static TCHAR exec_fname[MAX_FILE_LEN+1] = _T("") ;
 //**********************************************************************
 //  this reports whether executable is 32-bit or 64-bit build
 //**********************************************************************
-//lint -esym(714, get_build_size)
-//lint -esym(759, get_build_size)
-//lint -esym(765, get_build_size)
 unsigned get_build_size(void)
 {
    return (sizeof(int*) == 8) ? 64 : 32 ; //lint !e506
 }
 
 //******************************************************************
-//lint -esym(714, show_bool_str)
-//lint -esym(759, show_bool_str)
-//lint -esym(765, show_bool_str)
 TCHAR const * const show_bool_str(bool bool_flag)
 {
    return (bool_flag) ? _T("true") : _T("false") ;
@@ -77,17 +44,11 @@ TCHAR const * const show_bool_str(bool bool_flag)
 #define  RAND_MAX2   (0x7FFF)
 static unsigned long holdrand = 0 ;
 
-//lint -esym(714, rand2)
-//lint -esym(759, rand2)
-//lint -esym(765, rand2)
 u16 rand2(void)
 {
    return((u16) ((holdrand = (holdrand * 214013UL) + 2531011UL) >> 16) & 0x7FFFUL); 
 }
 
-//lint -esym(714, srand2)
-//lint -esym(759, srand2)
-//lint -esym(765, srand2)
 void srand2(unsigned long seed)
 {
    holdrand = seed;
@@ -112,9 +73,6 @@ void srand2(unsigned long seed)
 //                                                                    
 // (which uses lower-order bits)."                                    
 //**************************************************************************
-//lint -esym(714, random_int)
-//lint -esym(759, random_int)
-//lint -esym(765, random_int)
 unsigned random_int(unsigned n)
 {
    //  Note that this *may* overflow if n > 0xFFFF
@@ -122,13 +80,22 @@ unsigned random_int(unsigned n)
 }
 
 //****************************************************************************
-//lint -esym(714, control_key_pressed)
-//lint -esym(759, control_key_pressed)
-//lint -esym(765, control_key_pressed)
 bool control_key_pressed(void)
 {
    return (GetKeyState(VK_CONTROL) & 0x8000) ? true : false ;  //  NOLINT(readability-simplify-boolean-expr)
 }
+
+//*************************************************************
+// bool file_exists(char *target)
+// {
+//    HANDLE hdl = CreateFileA(target, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 
+//       FILE_ATTRIBUTE_NORMAL, NULL) ;
+//    if (hdl == INVALID_HANDLE_VALUE) 
+//       return false;
+// 
+//    CloseHandle(hdl) ;
+//    return true ;
+// }
 
 //****************************************************************************
 //  For some reason, on my Vista machine, I cannot access the file
@@ -137,18 +104,12 @@ bool control_key_pressed(void)
 //  However, the ancient _stat() works even on Vista, so I'll use that...
 //  ... until it also fails, after the third or fourth call.  duh.
 //****************************************************************************
-//lint -esym(714, file_exists)
-//lint -esym(759, file_exists)
-//lint -esym(765, file_exists)
 bool file_exists(TCHAR *fefile)
 {
    struct _stat st {};
    return (_tstat(fefile, &st) == 0) ? true : false ;  //  NOLINT(readability-simplify-boolean-expr)
 }
 
-//lint -esym(714, drive_exists)
-//lint -esym(759, drive_exists)
-//lint -esym(765, drive_exists)
 bool drive_exists(TCHAR const *fefile)
 {
    DWORD gld_return = GetLogicalDrives() ;
@@ -158,9 +119,6 @@ bool drive_exists(TCHAR const *fefile)
    return ((gld_return & drive_mask) != 0) ? true : false ;  //  NOLINT(readability-simplify-boolean-expr)
 }
 
-//lint -esym(714, dir_exists)
-//lint -esym(759, dir_exists)
-//lint -esym(765, dir_exists)
 bool dir_exists(TCHAR *fefile)
 {
    if (_tcslen(fefile) == 2) {
@@ -176,9 +134,6 @@ bool dir_exists(TCHAR *fefile)
 }
 
 //*****************************************************************************
-//lint -esym(714, proc_time)
-//lint -esym(759, proc_time)
-//lint -esym(765, proc_time)
 u64 proc_time(void)
 {
    // return (unsigned) clock() ;
@@ -188,9 +143,6 @@ u64 proc_time(void)
 }
 
 //*************************************************************************
-//lint -esym(714, get_clocks_per_second)
-//lint -esym(759, get_clocks_per_second)
-//lint -esym(765, get_clocks_per_second)
 u64 get_clocks_per_second(void)
 {
    static u64 clocks_per_sec64 = 0 ;
@@ -237,9 +189,6 @@ u64 calc_elapsed_msec(bool done)
 }
 
 //****************************************************************************
-//lint -esym(714, swap_rgb)
-//lint -esym(759, swap_rgb)
-//lint -esym(765, swap_rgb)
 uint swap_rgb(uint invalue)
 {
    ul2uc_t uconv {};
@@ -250,21 +199,6 @@ uint swap_rgb(uint invalue)
    return uconv.ul;
 }
 
-//*************************************************************
-// static bool file_exists(char *target)
-// {
-//    HANDLE hdl = CreateFileA(target, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 
-//       FILE_ATTRIBUTE_NORMAL, NULL) ;
-//    if (hdl == INVALID_HANDLE_VALUE) 
-//       return false;
-// 
-//    CloseHandle(hdl) ;
-//    return true ;
-// }
-
-//*************************************************************************
-//  04/23/13  NOTE
-//  We *could* use GetLocalTime() here, instead of time() and localtime()
 //*************************************************************************
 
 #define  USE_SYSTIME    1
@@ -300,9 +234,6 @@ char *get_dtimes_str(char *dest)
 }
 
 //*************************************************************************
-//lint -esym(714, secs_to_date_time_str)
-//lint -esym(759, secs_to_date_time_str)
-//lint -esym(765, secs_to_date_time_str)
 char *secs_to_date_time_str(uint total_seconds, char *dest)
 {
    static char ctm[GET_TIME_LEN+1] ;
@@ -339,10 +270,6 @@ exit_point:
 }
 
 //****************************************************************************
-//lint -esym(714, get_file_datetime)
-//lint -esym(757, get_file_datetime)
-//lint -esym(759, get_file_datetime)
-//lint -esym(765, get_file_datetime)
 bool get_file_datetime(char *file_name, SYSTEMTIME *sdt, file_time_select_e time_select)
 {
    WIN32_FIND_DATAA fdata ;
@@ -373,9 +300,6 @@ bool get_file_datetime(char *file_name, SYSTEMTIME *sdt, file_time_select_e time
 //****************************************************************************
 //  this should be called first, before other functions which use exec_fname
 //****************************************************************************
-//lint -esym(714, load_exec_filename)
-//lint -esym(759, load_exec_filename)
-//lint -esym(765, load_exec_filename)
 DWORD load_exec_filename(void)
 {
    //  get fully-qualified name of executable program
@@ -394,9 +318,6 @@ DWORD load_exec_filename(void)
 //  This appends filename to the base path previous 
 //  derived by load_exec_filename()
 //*************************************************************
-//lint -esym(714, derive_file_path)
-//lint -esym(759, derive_file_path)
-//lint -esym(765, derive_file_path)
 LRESULT derive_file_path(TCHAR *drvbfr, TCHAR *filename)
 {
    if (exec_fname[0] == 0) {
@@ -420,9 +341,6 @@ LRESULT derive_file_path(TCHAR *drvbfr, TCHAR *filename)
 //*************************************************************
 //  returns <exec_path>\\Svr10.<new_ext>
 //*************************************************************
-//lint -esym(714, derive_filename_from_exec)
-//lint -esym(759, derive_filename_from_exec)
-//lint -esym(765, derive_filename_from_exec)
 LRESULT derive_filename_from_exec(TCHAR *drvbfr, TCHAR *new_ext)
 {
    if (exec_fname[0] == 0) {
@@ -449,9 +367,6 @@ LRESULT derive_filename_from_exec(TCHAR *drvbfr, TCHAR *new_ext)
 //*************************************************************
 //  returns <exec_path>\\Svr10
 //*************************************************************
-//lint -esym(714, get_base_filename)
-//lint -esym(759, get_base_filename)
-//lint -esym(765, get_base_filename)
 LRESULT get_base_filename(TCHAR *drvbfr)
 {
    if (exec_fname[0] == 0) {
@@ -473,9 +388,6 @@ LRESULT get_base_filename(TCHAR *drvbfr)
 //*************************************************************
 //  returns <exec_path>\\               .
 //*************************************************************
-//lint -esym(714, get_base_path)
-//lint -esym(759, get_base_path)
-//lint -esym(765, get_base_path)
 LRESULT get_base_path(TCHAR *drvbfr)
 {
    if (exec_fname[0] == 0) {
@@ -496,9 +408,6 @@ LRESULT get_base_path(TCHAR *drvbfr)
 }
 
 //*************************************************************
-//lint -esym(714, get_base_path_wide)
-//lint -esym(759, get_base_path_wide)
-//lint -esym(765, get_base_path_wide)
 LRESULT get_base_path_wide(TCHAR *drvbfr)
 {
    //  get fully-qualified name of executable program
@@ -594,8 +503,7 @@ _T("SNMP INVALID_BUFFER")
 // NOLINTEND(clang-diagnostic-writable-strings)
 
 //*************************************************************************************
-//  each subsequent call to this function overwrites
-//  the previous report.
+//  each subsequent call to this function overwrites the previous report.
 //*************************************************************************************
 // http://stackoverflow.com/questions/6264449/formatmessage-fails-with-error-code-317
 // Using the error code lookup tool from Visual Studio, 317 is described as
@@ -605,14 +513,12 @@ _T("SNMP INVALID_BUFFER")
 // This means that a message description does not exist in the system for the previous error code. 
 // The MSDN documentation for FormatMessage with flag FORMAT_MESSAGE_FROM_SYSTEM states that:
 // 
-// Not all Windows Embedded CE�based devices will contain the system message-table resources. 
-// This is a selectable part of the Windows Embedded CE operating system and is often removed to conserve space.
+// Not all Windows Embedded CE-based devices will contain the system message-table resources. 
+// This is a selectable part of the Windows Embedded CE operating system 
+// and is often removed to conserve space.
 //*************************************************************************************
 
 //*************************************************************
-//lint -esym(714, get_system_message)
-//lint -esym(759, get_system_message)
-//lint -esym(765, get_system_message)
 TCHAR *get_system_message(DWORD errcode)
 {
 #define  GSM_LEN     1024
@@ -685,9 +591,6 @@ TCHAR *get_system_message(void)
 //  Note: printf() remapping was unreliable,
 //  but syslog worked great.
 //********************************************************************
-//lint -esym(714, syslog)
-//lint -esym(759, syslog)
-//lint -esym(765, syslog)
 int syslog(const TCHAR *fmt, ...)
 {
    TCHAR consoleBuffer[3000] ;
@@ -701,9 +604,6 @@ int syslog(const TCHAR *fmt, ...)
 }
 
 //**********************************************************************
-//lint -esym(714, show_error)
-//lint -esym(759, show_error)
-//lint -esym(765, show_error)
 TCHAR *show_error(int error_code)
 {
    static TCHAR *message0 = _T("no response from ODU") ; // NOLINT
@@ -715,18 +615,12 @@ TCHAR *show_error(int error_code)
 }  //lint !e843 !e715
 
 //**********************************************************************
-//lint -esym(714, IsCharNum)
-//lint -esym(759, IsCharNum)
-//lint -esym(765, IsCharNum)
 bool IsCharNum(char inchr)
 {
    return (inchr >= '0'  &&  inchr <= '9') ? true : false ;  // NOLINT(readability-simplify-boolean-expr)
 }
 
 //**********************************************************************
-//lint -esym(714, next_field)
-//lint -esym(759, next_field)
-//lint -esym(765, next_field)
 TCHAR *next_field(TCHAR *q)
 {
    while (*q != ' '  &&  *q != HTAB  &&  *q != 0)
@@ -750,9 +644,6 @@ char *skip_spaces(char *inpstr)
 //  then return pointer to next non-CR/LF TCHAR.
 //  If NO CR/LF are found, it returns NULL
 //********************************************************************
-//lint -esym(714, find_newlines)
-//lint -esym(759, find_newlines)
-//lint -esym(765, find_newlines)
 TCHAR *find_newlines(TCHAR *hd)
 {
    TCHAR *tl = hd ;
@@ -769,9 +660,6 @@ TCHAR *find_newlines(TCHAR *hd)
 }
 
 //**********************************************************************
-//lint -esym(714, strip_newlines)
-//lint -esym(759, strip_newlines)
-//lint -esym(765, strip_newlines)
 void strip_newlines(TCHAR *rstr)
 {
    int slen = (int) _tcslen(rstr) ;
@@ -788,9 +676,6 @@ void strip_newlines(TCHAR *rstr)
 }
 
 //**********************************************************************
-//lint -esym(714, strip_leading_spaces)
-//lint -esym(759, strip_leading_spaces)
-//lint -esym(765, strip_leading_spaces)
 TCHAR *strip_leading_spaces(TCHAR *str)
 {
    if (str == 0)
@@ -806,9 +691,6 @@ TCHAR *strip_leading_spaces(TCHAR *str)
 }
 
 //**********************************************************************
-//lint -esym(714, strip_leading_zeros)
-//lint -esym(759, strip_leading_zeros)
-//lint -esym(765, strip_leading_zeros)
 //  00081
 //  00000
 void strip_leading_zeros(TCHAR *str)
@@ -828,9 +710,6 @@ void strip_leading_zeros(TCHAR *str)
 }
 
 //**********************************************************************
-//lint -esym(714, strip_trailing_spaces)
-//lint -esym(759, strip_trailing_spaces)
-//lint -esym(765, strip_trailing_spaces)
 void strip_trailing_spaces(TCHAR *rstr)
 {
    unsigned slen = _tcslen(rstr) ;
@@ -845,9 +724,6 @@ void strip_trailing_spaces(TCHAR *rstr)
 }
 
 //**********************************************************************
-//lint -esym(714, skip_spaces_and_commas)
-//lint -esym(759, skip_spaces_and_commas)
-//lint -esym(765, skip_spaces_and_commas)
 TCHAR *skip_spaces_and_commas(TCHAR *hd)
 {
    while (*hd == ' '  ||  *hd == ',') {
@@ -857,9 +733,6 @@ TCHAR *skip_spaces_and_commas(TCHAR *hd)
 }
 
 //**********************************************************************
-//lint -esym(714, get_hex8)
-//lint -esym(759, get_hex8)
-//lint -esym(765, get_hex8)
 u8 get_hex8(char const *ptr)
 {
    char hex[3] ;
@@ -870,9 +743,6 @@ u8 get_hex8(char const *ptr)
 }
 
 //**********************************************************************
-//lint -esym(714, get_hex16)
-//lint -esym(759, get_hex16)
-//lint -esym(765, get_hex16)
 u16 get_hex16(char const *ptr)
 {
    char hex[5] ;
@@ -886,9 +756,6 @@ u16 get_hex16(char const *ptr)
 
 //**********************************************************************
 // :08000003ECC6030024CE00004E
-//lint -esym(714, get_hex32)
-//lint -esym(759, get_hex32)
-//lint -esym(765, get_hex32)
 u32 get_hex32(char const *ptr)
 {
    char hex[9] ;
@@ -905,9 +772,6 @@ u32 get_hex32(char const *ptr)
 }
 
 //**********************************************************
-//lint -esym(714, uabs)
-//lint -esym(759, uabs)
-//lint -esym(765, uabs)
 uint uabs(uint uvalue1, uint uvalue2)
 {
    return (uvalue1 > uvalue2)
@@ -916,9 +780,6 @@ uint uabs(uint uvalue1, uint uvalue2)
 }
 
 //**********************************************************
-//lint -esym(714, dabs)
-//lint -esym(759, dabs)
-//lint -esym(765, dabs)
 double dabs(double dvalue1, double dvalue2)
 {
    return (dvalue1 > dvalue2)
@@ -942,9 +803,6 @@ double dabs(double dvalue1, double dvalue2)
 //**********************************************************************
 static const int high_chars = 0 ; //  print using high-ascii chars, not used for now
 
-//lint -esym(714, hex_dump)
-//lint -esym(759, hex_dump)
-//lint -esym(765, hex_dump)
 int hex_dump(u8 const *bfr, int bytes, unsigned addr)
 {
    int j {};
@@ -1011,9 +869,6 @@ int hex_dump(u8 const *bfr, int bytes)
 //  This function returns number of lines copied,
 //  or (-errno) on error
 //**************************************************************************
-//lint -esym(714, file_copy_by_line)
-//lint -esym(759, file_copy_by_line)
-//lint -esym(765, file_copy_by_line)
 int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
 {
    unique_file infile(_tfopen(source_file, _T("rt"))) ;
@@ -1040,9 +895,6 @@ int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
 //*****************************************************************************
 // ULLONG_MAX = 18,446,744,073,709,551,615
 //*****************************************************************************
-//lint -esym(714, convert_to_commas)
-//lint -esym(759, convert_to_commas)
-//lint -esym(765, convert_to_commas)
 TCHAR *convert_to_commas(ULONGLONG uli, TCHAR *outstr)
 {  //lint !e1066
    unsigned slen {}, j {}, inIdx {} ;
@@ -1052,9 +904,9 @@ TCHAR *convert_to_commas(ULONGLONG uli, TCHAR *outstr)
    if (outstr == NULL)
        outstr = local_ull_str ;
 
-   //sprintf(temp_ull_str, "%llu", uli);
+   _stprintf(temp_ull_str, "%llu", uli);
    //_stprintf(temp_ull_str, _T( "%"PRIu64""), uli);
-   _stprintf(temp_ull_str, _T("%I64u"), uli);
+   // _stprintf(temp_ull_str, _T("%I64u"), uli);
    // _ui64toa(uli, temp_ull_str, 10) ;
    slen = _tcslen(temp_ull_str) ;
    inIdx = --slen ;//  convert byte-count to string index 

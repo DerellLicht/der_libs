@@ -12,28 +12,22 @@
 #include <cstdio>
 #include <memory>
 
-//lint -e755  global macro not referenced
-//lint -esym(756, uchar) global typedef not referenced
-//lint -esym(757, convert_to_commas, file_copy_by_line, get_dtimes_str)
-//lint -esym(757, get_hex8, get_hex16, get_hex32, IsCharNum, secs_to_date_time_str)
-//lint -esym(758, u64toul) global union not referenced
-
-typedef  unsigned char        u8 ;
-typedef  unsigned char        uchar ;
-typedef  unsigned short       u16 ;
-typedef  unsigned int         uint ;
-typedef  unsigned long        ulong ;
-typedef  unsigned long        u32 ;
-typedef  unsigned long long   u64 ;
+// typedef  unsigned char        u8 ;
+// typedef  unsigned char        uchar ;
+// typedef  unsigned short       u16 ;
+// typedef  unsigned int         uint ;
+// typedef  unsigned long        ulong ;
+// typedef  unsigned long        u32 ;
+// typedef  unsigned long long   u64 ;
 
 //  these confound PcLint
-// using u8 = unsigned char ;
-// using uchar = unsigned char ;
-// using u16 = unsigned short ;
-// using uint = unsigned int ;
-// using ulong = unsigned long ;
-// using u32 = unsigned long ;
-// using u64 = unsigned long long ;
+using u8 = unsigned char ;
+using uchar = unsigned char ;
+using u16 = unsigned short ;
+using uint = unsigned int ;
+using ulong = unsigned long ;
+using u32 = unsigned long ;
+using u64 = unsigned long long ;
 
 #define  STX      2
 #define  ETX      3
@@ -98,16 +92,12 @@ extern const TCHAR  TTAB ;
 //  my standard construct for translating between
 //  bytes, words, and dwords
 //*****************************************************************
-//lint -esym(754, ul2uc_u::us)
-//lint -esym(756, ul2uc_t)
-//lint -esym(768, ul2uc_u::ul, ul2uc_u::us, ul2uc_u::uc)
 union ul2uc_t {
    u32 ul ;
    u16 us[2] ;
    u8  uc[4] ;
 } ;
 
-//lint -esym(768, u64toul::i, u64toul::u)
 union u64toul {
    ULONGLONG i ;
    ulong u[2] ;
