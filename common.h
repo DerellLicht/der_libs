@@ -118,10 +118,8 @@ inline void delay_ms(uint msec)
 
 struct FileCloser
 {
-   void operator()(FILE *f) const noexcept
-   {
-      if (f)
-      {
+   void operator()(FILE *f) const noexcept {
+      if (f == nullptr) {  //  this test is actually redundant
          fclose(f);  //  NOLINT(cppcoreguidelines-owning-memory)
       }
    }

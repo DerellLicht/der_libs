@@ -883,7 +883,7 @@ int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
    }
    TCHAR inpstr[260] ;
    int line_count = 0 ;
-   while (_fgetts(inpstr, sizeof(inpstr), infile.get()) != nullptr) {
+   while (_fgetts(inpstr, _countof(inpstr), infile.get()) != nullptr) {
       _fputts(inpstr, outfile.get()) ;
       line_count++ ;
    }
