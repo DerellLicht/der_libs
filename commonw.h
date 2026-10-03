@@ -8,20 +8,19 @@
 //  Collected and Organized by:  Derell Licht
 //****************************************************************************
 
-//  why did I once need this here??
-// typedef struct DLGTEMPLATEEX_s {
-//    WORD dlgVer;
-//    WORD signature;
-//    DWORD helpID;
-//    DWORD exStyle;
-//    DWORD style;
-//    WORD cDlgItems;
-//    short x;
-//    short y;
-//    short cx;
-//    short cy;
-//    // etc..
-// } DLGTEMPLATEEX, *LPDLGTEMPLATEEX; 
+typedef struct DLGTEMPLATEEX_s {
+   WORD dlgVer;
+   WORD signature;
+   DWORD helpID;
+   DWORD exStyle;
+   DWORD style;
+   WORD cDlgItems;
+   short x;
+   short y;
+   short cx;
+   short cy;
+   // etc..
+} DLGTEMPLATEEX, *LPDLGTEMPLATEEX; 
 
 // #define PSN_FIRST                (0U-200U)
 // #define  PSN_GETOBJECT               (-210)
@@ -86,12 +85,6 @@ WCHAR *ascii2unicode(char *AsciiStr);
 char *unicode2ascii(WCHAR *UnicodeStr);
 #endif
 
-//****************************************************************************
-//  12/16/16 - import commonly-used functions from system.cpp
-//****************************************************************************
-
-//****************************************************************************
-//  system.cpp - encapsulate DLU-mapping computations and decisions.
 //****************************************************************************
 
 //  dialog dimension functions
