@@ -904,7 +904,13 @@ TCHAR *convert_to_commas(ULONGLONG uli, TCHAR *outstr)
    if (outstr == NULL)
        outstr = local_ull_str ;
 
-   _stprintf(temp_ull_str, "%llu", uli);
+   //  Then the answer is simple: add -D__USE_MINGW_ANSI_STDIO=1 to the 
+   //  toolchain's flags once, in tool_select.mak, and forget it.
+   //  You should note that this macro is normally implied by g++'s _GNU_SOURCE, 
+   //  and only needed explicitly if %llu ever prints as a literal llu at runtime. 
+   //  That way future-you knows when it's relevant and doesn't add it by reflex.
+   //  That macro will eliminate the requirement for the legacy %llu format statements
+   _stprintf(temp_ull_str, _T("%llu"), uli);
    //_stprintf(temp_ull_str, _T( "%"PRIu64""), uli);
    // _stprintf(temp_ull_str, _T("%I64u"), uli);
    // _ui64toa(uli, temp_ull_str, 10) ;
