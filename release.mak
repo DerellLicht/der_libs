@@ -100,3 +100,102 @@ re-release: retag update
 # (came up for PrettyReMark's "awesome-markdown-editors" list submission).
 sha256:
 	certutil -hashfile $(DIST_ZIP) SHA256
+
+#************************************************************
+# Optional Inno Setup installer support (purely additive).
+#
+# Nothing below touches the targets above, and a project that never
+# mentions these names is completely unaffected. Target names are
+# deliberately NOT "setup"/"install"/"single" (PrettyReMark's names) so
+# they cannot collide with a same-named target in any existing project.
+#
+# The defaults below mirror PrettyReMark's layout:
+#   Output/<BASE>V<VERSION>.setup.exe   built by iscc from <BASE>.iss
+#   Output/<BASE>V<VERSION>.setup.zip   the exe zipped (what gets uploaded)
+#
+# CONTRACT with the .iss file: it must take /DMyAppVersion=x.y from the
+# command line, and set OutputDir=Output and
+#   OutputBaseFilename=<BASE>V{#MyAppVersion}.setup
+# (iscc appends ".exe") so the file lands exactly at $(SETUP_EXE).
+#
+# Variables are only expanded when a recipe runs, so it does not matter
+# that BASE is defined by the project Makefile *after* this include. But
+# PREREQUISITES are expanded at parse time, which is why "installer" has no
+# $(BIN) prerequisite here -- the project adds it with a recipe-less rule:
+#   installer: $(BIN)
+# The generic target names below (installer, installer-zip, install-silent)
+# are chosen NOT to collide with legacy projects. A project that wants
+# PrettyReMark's names simply aliases them in its own Makefile, e.g.
+# (wbigcalc does exactly this when its USE_INNO = YES; with USE_INNO = NO it
+# keeps a loose-files "dist" and empty "setup"/"install" instead):
+#   setup:   installer
+#   dist:    installer-zip
+#   install: install-silent
+# release/update below depend on "dist", so a project whose "dist" is
+# installer-zip publishes the installer. It also sets, after the include:
+#   RELEASE_ASSETS = ./$(SETUP_ZIP)
+#   DIST_ZIP = $(SETUP_ZIP)       (so the plain "sha256" target below
+#                                  checksums the installer zip)
+#
+# PRETTYREMARK (Makefile.prm.gh) -> GENERIC NAMES HERE
+#
+#   PRM command        Generic name here          Notes
+#   -----------------  -------------------------  ---------------------------
+#   make single        (plain "make")             Builds $(BIN). A C/C++ project
+#                                                 has no separate "single"
+#                                                 step; the project's recipe-
+#                                                 less "installer: $(BIN)"
+#                                                 rule runs it automatically.
+#   make setup         installer                  Runs iscc -> $(SETUP_EXE)
+#   make dist          installer-zip              installer + zip of the setup
+#                                                 exe -> $(SETUP_ZIP)
+#   make install       install-silent             Silent-installs $(SETUP_EXE)
+#   make sha256        sha256-setup (or "sha256"  sha256-setup always hits
+#                      if DIST_ZIP = $(SETUP_ZIP)) $(SETUP_ZIP)
+#   make clean         (project Makefile)         Project's clean should also
+#                                                 remove $(SETUP_DIR).
+#   make release       release                    Same name, DIFFERENT rules --
+#   make update        update                     see the notes just below.
+#   make retag         retag                      Identical in effect.
+#   make re-release    re-release                 Identical in effect.
+#
+# release/update differences from PRM:
+#   - "release" here lets gh create the tag (no explicit git tag/push), and
+#     passes no -R or --title. PRM's tags and pushes explicitly first.
+#   - "update" here is NOT self-healing: "gh release edit" fails if the
+#     release does not exist yet. Run "release" first for a version's first
+#     publish; PRM's "update" creates a missing release itself.
+#   - "update" here does not depend on check-clean; PRM's does ("release"
+#     and "retag" here do).
+#   - Assets uploaded are $(RELEASE_ASSETS), set by each project Makefile.
+#     (Default above: $(DIST_ZIP) + CHANGELOG.md. PRM uploads only its setup
+#     zip.)
+ISCC      ?= iscc
+ISS_FILE  ?= $(BASE).iss
+SETUP_DIR ?= Output
+SETUP_EXE ?= $(SETUP_DIR)/$(BASE)V$(VERSION).setup.exe
+SETUP_ZIP ?= $(SETUP_DIR)/$(BASE)V$(VERSION).setup.zip
+
+.PHONY: installer installer-zip install-silent sha256-setup
+
+# PRM equivalent: "make setup" (which also ran "single" first; here the
+# project's "installer: $(BIN)" rule does the build step).
+# Wipes Output/ first so a stale exe/zip from an older VERSION can never be
+# mistaken for the current one.
+installer:
+	rm -rf $(SETUP_DIR)
+	$(ISCC) /DMyAppVersion=$(VERSION) /Q $(ISS_FILE)
+
+# PRM equivalent: "make dist".
+# "-j" junks the Output/ path so the zip contains just the setup exe.
+installer-zip: installer
+	zip -j $(SETUP_ZIP) $(SETUP_EXE)
+
+# PRM equivalent: "make install".
+# Silent install from the freshly built exe, for smoke-testing.
+install-silent:
+	$(SETUP_EXE) /SILENT /SUPPRESSMSGBOXES /NORESTART
+
+# PRM equivalent: "make sha256". (Plain "sha256" above = portable zip.)
+sha256-setup:
+	certutil -hashfile $(SETUP_ZIP) SHA256
