@@ -8,35 +8,17 @@
 #include "common.h"
 #include "gdi_plus.h"
 
-//lint -esym(40, nullptr)
-
-//lint -e1066  Symbol declared as "C" conflicts with itself
-
 //********************************************************************
 gdi_plus::gdi_plus(wchar_t const * const new_img_name) :
-   img_name(NULL),
-   // gbitmap(NULL),
-   pbitmap(nullptr),
+   pbitmap(std::make_unique<Bitmap>(new_img_name)),
    hBitmap(nullptr),
-   nWidth(0),
-   nHeight(0),
-   sprite_dx(0),
-   sprite_dy(0),
+   nWidth(pbitmap->GetWidth()),
+   nHeight(pbitmap->GetHeight()),
+   sprite_dx(pbitmap->GetWidth()),
+   sprite_dy(pbitmap->GetWidth()),
    tiles_x(1),
    tiles_y(1)
 {
-   img_name = new wchar_t[wcslen(new_img_name)+1] ;
-   wcscpy(img_name, new_img_name) ;
-   
-#ifdef _lint   
-   pbitmap   = new Bitmap(new_img_name);
-#else   
-   pbitmap   = std::make_unique<Bitmap>(new_img_name);
-#endif   
-   nWidth    = pbitmap->GetWidth();
-   nHeight   = pbitmap->GetHeight();
-   sprite_dx = pbitmap->GetWidth();
-   sprite_dy = pbitmap->GetHeight();
    Gdiplus::Color backgroundColor(66, 107, 107, 255); // White background
    Status status = pbitmap->GetHBITMAP(backgroundColor, &hBitmap);
    if (status != Ok) {
@@ -46,29 +28,15 @@ gdi_plus::gdi_plus(wchar_t const * const new_img_name) :
 
 //********************************************************************
 gdi_plus::gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, uint icon_rows) :
-   img_name(NULL),
-   // gbitmap(NULL),
-   pbitmap(nullptr),
+   pbitmap(std::make_unique<Bitmap>(new_img_name)),
    hBitmap(nullptr),
-   nWidth(0),
-   nHeight(0),
-   sprite_dx(0),
-   sprite_dy(0),
+   nWidth(pbitmap->GetWidth()),
+   nHeight(pbitmap->GetHeight()),
+   sprite_dx(nWidth / icons_per_column),
+   sprite_dy(nHeight / icon_rows),
    tiles_x(icons_per_column),
    tiles_y(icon_rows)
 {
-   img_name = new wchar_t[wcslen(new_img_name) +1] ;
-   wcscpy(img_name, new_img_name) ;
-   
-#ifdef _lint   
-   pbitmap   = new Bitmap(new_img_name);
-#else   
-   pbitmap   = std::make_unique<Bitmap>(new_img_name);
-#endif   
-   nWidth  = pbitmap->GetWidth();
-   nHeight = pbitmap->GetHeight();
-   sprite_dx = nWidth / tiles_x ;
-   sprite_dy = nHeight / tiles_y ;
    Gdiplus::Color backgroundColor(66, 107, 107, 255); // White background
    Status status = pbitmap->GetHBITMAP(backgroundColor, &hBitmap);
    if (status != Ok) {
@@ -81,27 +49,15 @@ gdi_plus::gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, ui
 
 //********************************************************************
 gdi_plus::gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height) :
-   img_name(NULL),
-   // gbitmap(NULL),
-   pbitmap(nullptr),
+   pbitmap(std::make_unique<Bitmap>(new_img_name)),
    hBitmap(nullptr),
-   nWidth(0),
-   nHeight(0),
+   nWidth(pbitmap->GetWidth()),
+   nHeight(pbitmap->GetHeight()),
    sprite_dx(sprite_width),
    sprite_dy(sprite_height),
    tiles_x(icons_per_column),
    tiles_y(icon_rows)
 {
-   img_name = new wchar_t[wcslen(new_img_name) +1] ;
-   wcscpy(img_name, new_img_name) ;
-   
-#ifdef _lint   
-   pbitmap   = new Bitmap(new_img_name);
-#else   
-   pbitmap   = std::make_unique<Bitmap>(new_img_name);
-#endif   
-   nWidth  = pbitmap->GetWidth();
-   nHeight = pbitmap->GetHeight();
    // Convert Gdiplus::Bitmap to HBITMAP
    Gdiplus::Color backgroundColor(66, 107, 107, 255); // White background
    Status status = pbitmap->GetHBITMAP(backgroundColor, &hBitmap);
@@ -113,15 +69,7 @@ gdi_plus::gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, ui
 //********************************************************************
 gdi_plus::~gdi_plus()
 {
-   if (img_name != NULL) { // NOLINT(readability-delete-null-pointer)
-      delete [] img_name ;
-   }
    DeleteObject(hBitmap);
-   hBitmap = NULL ;
-#ifdef _lint   
-   delete pbitmap ;  //lint !e1551
-   pbitmap = NULL ;
-#endif   
 }
 
 //***********************************************************************************
@@ -147,14 +95,14 @@ void gdi_plus::copy_imagelist_item(HDC hdc, int sprite_col, int sprite_row, int 
       syslog(L"SelectObject error: object is not a region [%u]\n", (uint) GetLastError());
    }
    else if (gresult == HGDI_ERROR) {
-      syslog(L"SelectObject error: GDE [%u]\n", (uint) GetLastError());
+      syslog(L"SelectObject error: GLE [%u]\n", (uint) GetLastError());
    }
    else {
       // syslog(L"BitBlt: dest: %ux%u, size: %ux%u, src: %ux%u\n", 
       //    xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc);
       BitBlt (hdc, xdest, ydest, sprite_dx, sprite_dy, hdcMem, xsrc, ysrc, SRCCOPY);
-      DeleteDC (hdcMem);
    }
+   DeleteDC (hdcMem);
 }  //lint !e818 !e1762
 
 //********************************************************************

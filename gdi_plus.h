@@ -1,5 +1,5 @@
 //********************************************************************
-//  Copyright (c) 2025  Derell Licht
+//  Copyright (c) 2025-2026  Derell Licht
 //  This class encapsulates the interface to the LodePNG library.
 //********************************************************************
 //  WARNING about instantiating this class:
@@ -19,20 +19,9 @@
 //    pngTiles   = new gdi_plus(_T("images.png"), 3, 1) ;
 //********************************************************************
 
-//lint -e1057  Bad type
-//lint -e61  Bad type
-//lint -e78  Symbol typedef'ed at location unknown used in expression
-//lint -esym(628, std::__is_trivially_copyable, std::__is_base_of)
-//lint -esym(761, uint)  Redundant typedef previously declared at ...
-
+// #include <string>
 #include <memory>
 #include <gdiplus.h>
-
-//lint -esym(1714, gdi_plus::gdi_plus, gdi_plus::img_width, gdi_plus::img_height)
-//lint -esym(1714, gdi_plus::horiz_tiles, gdi_plus::vert_tiles, gdi_plus::render_bitmap)
-//lint -esym(1714, gdi_plus::get_sprite_dx, gdi_plus::get_sprite_dy, gdi_plus::DrawBox, gdi_plus::DrawBoxFilled)
-
-//lint -esym(1704, gdi_plus::gdi_plus, gdi_plus::gdi_plus)
 
 using namespace Gdiplus;
 
@@ -40,32 +29,28 @@ typedef unsigned int  uint ;
 
 class gdi_plus {
 private:   
-   TCHAR *img_name ;
-#ifdef _lint   
-   Bitmap *pbitmap ;
-#else   
-   std::unique_ptr<Bitmap> pbitmap;
-#endif   
-   HBITMAP hBitmap ;
-   uint nWidth ;
-   uint nHeight ;
+   // std::wstring img_name {};
+   std::unique_ptr<Bitmap> pbitmap {};
+   HBITMAP hBitmap {};
+   uint nWidth {};
+   uint nHeight {};
    
-   uint sprite_dx ;
-   uint sprite_dy ;
-   uint tiles_x ;
-   uint tiles_y ;
+   uint sprite_dx {};
+   uint sprite_dy {};
+   uint tiles_x {};
+   uint tiles_y {};
 
    //  private functions
    void copy_imagelist_item(HDC hdc, int xsrc, int ysrc, int xdest, int ydest);
    // void alloc_clone_elements(void);
 
-
 public:   
-   gdi_plus(wchar_t const * const new_img_name) ;
+   explicit gdi_plus(wchar_t const * const new_img_name) ;
    gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, uint icon_rows);
    gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, uint icon_rows, uint sprite_width, uint sprite_height);
    //  disable the default constructor
-   gdi_plus() = delete;
+   //  not needed if any other constructors exist
+   // gdi_plus() = delete;
    ~gdi_plus();
    //  disable the assignment operator and copy constructor
    gdi_plus &operator=(const gdi_plus &src) = delete;
