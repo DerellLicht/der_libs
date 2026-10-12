@@ -23,6 +23,25 @@ const TCHAR  TTAB  =   9 ;
 
 static TCHAR exec_fname[MAX_FILE_LEN+1] = _T("") ;
 
+// Claude: _countof() fallback for toolchains whose headers lack it (e.g. older tdm32).
+//    Returns the number of ELEMENTS in an array, not bytes, so it is correct for
+//    TCHAR arrays in both ANSI and Unicode builds.
+//    The template deduces the array length at compile time, so passing a pointer
+//    instead of an array is a compile error rather than a silent wrong answer.
+//    Requires C++11 (constexpr/noexcept).
+#ifndef _countof
+#if defined(__cplusplus) && (__cplusplus >= 201103L)
+template <typename T, size_t N>
+constexpr size_t der_countof_helper(const T (&)[N]) noexcept
+{
+   return N;
+}
+#define _countof(a) der_countof_helper(a)
+#else
+#define _countof(a) (sizeof(a) / sizeof((a)[0]))
+#endif
+#endif
+
 //**********************************************************************
 //  this reports whether executable is 32-bit or 64-bit build
 //**********************************************************************
@@ -881,9 +900,10 @@ int file_copy_by_line(TCHAR *source_file, TCHAR *dest_file)
       syslog(_T("%s: %s\n"), dest_file, strerror(errno)) ;
       return -errno;
    }
-   TCHAR inpstr[260] ;
+   TCHAR inpstr[MAX_PATH_LEN+1] ;
    int line_count = 0 ;
    while (_fgetts(inpstr, _countof(inpstr), infile.get()) != nullptr) {
+   // while (_fgetts(inpstr, MAX_PATH_LEN, infile.get()) != nullptr) {
       _fputts(inpstr, outfile.get()) ;
       line_count++ ;
    }
