@@ -39,9 +39,15 @@ private:
    uint sprite_dy {};
    uint tiles_x {};
    uint tiles_y {};
+   //  premultiplied-ARGB copy of the sheet, built on first DrawImage use
+   std::unique_ptr<Bitmap> ppargb {};
+   //  cached memory DC for the batched BitBlt path (see begin_batch)
+   HDC hdcBatch {};
+   HGDIOBJ hOldBatch {};
 
    //  private functions
    void copy_imagelist_item(HDC hdc, int xsrc, int ysrc, int xdest, int ydest);
+   bool build_pargb(void);
    // void alloc_clone_elements(void);
 
 public:   
@@ -61,6 +67,13 @@ public:
    
    void render_bitmap(HDC hdc, uint xdest, uint ydest);
    void render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
+   //  pure-GDI+ sprite path: call prepare_graphics() once per Graphics object
+   static void prepare_graphics(Gdiplus::Graphics &graphics);
+   void draw_sprite_gp(Gdiplus::Graphics &graphics, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
+   //  batched BitBlt path: begin_batch(), many batch_sprite(), end_batch()
+   bool begin_batch(HDC hdc);
+   void batch_sprite(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
+   void end_batch(void);
    void DrawBox(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor);
    void DrawBoxFilled(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor);
    [[nodiscard]] uint img_width(void) const

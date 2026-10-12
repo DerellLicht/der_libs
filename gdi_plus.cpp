@@ -15,7 +15,7 @@ gdi_plus::gdi_plus(wchar_t const * const new_img_name) :
    nWidth(pbitmap->GetWidth()),
    nHeight(pbitmap->GetHeight()),
    sprite_dx(pbitmap->GetWidth()),
-   sprite_dy(pbitmap->GetWidth()),
+   sprite_dy(pbitmap->GetHeight()),
    tiles_x(1),
    tiles_y(1)
 {
@@ -69,6 +69,7 @@ gdi_plus::gdi_plus(wchar_t const * const new_img_name, uint icons_per_column, ui
 //********************************************************************
 gdi_plus::~gdi_plus()
 {
+   end_batch();   //  bitmap cannot be deleted while selected into a DC
    DeleteObject(hBitmap);
 }
 
@@ -148,4 +149,108 @@ void gdi_plus::DrawBoxFilled(HDC hdc, int xdest, int ydest, int dx, int dy, COLO
    graphics.FillRectangle(&redBrush, xdest, ydest, dx, dy);
    
 }  //lint !e1762
+
+//********************************************************************
+//  Pure-GDI+ sprite path, for timing against the BitBlt path.
+//  Set the Graphics up once per paint pass, then draw all sprites with it.
+//********************************************************************
+//  Apply the settings that keep DrawImage on its fast 1:1 copy path.
+//  No scaling, so interpolation is irrelevant; half-pixel offset avoids
+//  GDI+ resampling the edges.  Default SourceOver compositing is kept
+//  so per-pixel alpha still blends correctly.
+void gdi_plus::prepare_graphics(Gdiplus::Graphics &graphics)
+{
+   graphics.SetInterpolationMode(Gdiplus::InterpolationModeNearestNeighbor);
+   graphics.SetPixelOffsetMode(Gdiplus::PixelOffsetModeHalf);
+   graphics.SetSmoothingMode(Gdiplus::SmoothingModeNone);
+}
+
+//********************************************************************
+//  Lazily build the premultiplied-ARGB copy of the sprite sheet.
+//  DrawImage only takes its fast path from a PARGB source; the loaded
+//  PNG is non-premultiplied, which costs a conversion on every draw.
+//  Returns false (and logs) if the copy could not be made.
+bool gdi_plus::build_pargb(void)
+{
+   if (ppargb != nullptr) {
+      return true;
+   }
+   auto copy = std::make_unique<Gdiplus::Bitmap>(nWidth, nHeight, PixelFormat32bppPARGB);
+   Gdiplus::Graphics g(copy.get());
+   g.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);  //  exact pixel copy
+   // explicit width/height: avoids DPI-based scaling of the source
+   Status status = g.DrawImage(pbitmap.get(), 0, 0, (INT) nWidth, (INT) nHeight);
+   if (status != Ok) {
+      syslog(L"PARGB build error: %u\n", (uint) status);
+      return false;
+   }
+   ppargb = std::move(copy);
+   return true;
+}
+
+//********************************************************************
+//  Draw one sprite via DrawImage with a source rectangle; no Clone().
+//  Dest size == source size (1:1).  Call prepare_graphics() first.
+void gdi_plus::draw_sprite_gp(Gdiplus::Graphics &graphics, uint xdest, uint ydest, uint sprite_col, uint sprite_row)
+{
+   if (!build_pargb()) {
+      return;
+   }
+   graphics.DrawImage(ppargb.get(),
+      Gdiplus::Rect((INT) xdest, (INT) ydest, (INT) sprite_dx, (INT) sprite_dy),
+      (INT) (sprite_col * sprite_dx), (INT) (sprite_row * sprite_dy),
+      (INT) sprite_dx, (INT) sprite_dy,
+      Gdiplus::UnitPixel);
+}
+
+//********************************************************************
+//  Batched BitBlt path: same copy as copy_imagelist_item(), but the
+//  memory DC is created and the bitmap selected once per batch instead
+//  of once per sprite.
+//********************************************************************
+//  Open a batch: create a memory DC compatible with hdc and select the
+//  sprite sheet into it.  Any batch already open is closed first.
+//  Returns false (and logs) on failure.
+bool gdi_plus::begin_batch(HDC hdc)
+{
+   end_batch();
+   hdcBatch = CreateCompatibleDC(hdc);
+   if (hdcBatch == NULL) {
+      syslog(L"CreateCompatibleDC error: %u\n", (uint) GetLastError());
+      return false;
+   }
+   hOldBatch = SelectObject(hdcBatch, hBitmap);
+   if (hOldBatch == NULL || hOldBatch == HGDI_ERROR) {
+      syslog(L"SelectObject error: GLE [%u]\n", (uint) GetLastError());
+      DeleteDC(hdcBatch);
+      hdcBatch = NULL;
+      hOldBatch = NULL;
+      return false;
+   }
+   return true;
+}
+
+//********************************************************************
+//  Copy one sprite using the batch DC; does nothing if no batch is open.
+void gdi_plus::batch_sprite(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row)
+{
+   if (hdcBatch == NULL) {
+      return;
+   }
+   BitBlt(hdc, (int) xdest, (int) ydest, (int) sprite_dx, (int) sprite_dy,
+      hdcBatch, (int) (sprite_col * sprite_dx), (int) (sprite_row * sprite_dy), SRCCOPY);
+}
+
+//********************************************************************
+//  Close the batch: deselect the sprite sheet and free the memory DC.
+//  Safe to call when no batch is open.
+void gdi_plus::end_batch(void)
+{
+   if (hdcBatch != NULL) {
+      SelectObject(hdcBatch, hOldBatch);
+      DeleteDC(hdcBatch);
+      hdcBatch = NULL;
+      hOldBatch = NULL;
+   }
+}
 
