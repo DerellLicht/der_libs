@@ -1,4 +1,4 @@
-//********************************************************************
+//*******************************************************************
 //  Copyright (c) 2025-2026  Derell Licht
 //  This class encapsulates the interface to the LodePNG library.
 //********************************************************************
@@ -27,6 +27,21 @@ using namespace Gdiplus;
 
 typedef unsigned int  uint ;
 
+//  our own name for the premultiplied-ARGB pixel format
+//  (PixelFormat32bppPARGB is a macro from the GDI+ headers and cannot be renamed)
+static constexpr PixelFormat PIXFMT_PRE_ARGB = PixelFormat32bppPARGB ;
+
+//*****************************************************************
+//  Drawing techniques being compared; 'G' cycles through them
+enum class DrawMode : uint8_t {
+   BitBlt,            //  GDI BitBlt, memory DC created per sprite
+   BatchBlt,          //  GDI BitBlt, one memory DC per paint
+   GdiPlus,           //  GDI+ DrawImage straight to the window
+   GdiPlusOffscreen,  //  GDI+ DrawImage into a bitmap, then one blit
+   Count              //  number of modes; keep last
+};
+
+//*****************************************************************
 class gdi_plus {
 private:   
    // std::wstring img_name {};
@@ -40,14 +55,14 @@ private:
    uint tiles_x {};
    uint tiles_y {};
    //  premultiplied-ARGB copy of the sheet, built on first DrawImage use
-   std::unique_ptr<Bitmap> ppargb {};
+   std::unique_ptr<Bitmap> ppre_argb {};
    //  cached memory DC for the batched BitBlt path (see begin_batch)
    HDC hdcBatch {};
    HGDIOBJ hOldBatch {};
 
    //  private functions
    void copy_imagelist_item(HDC hdc, int xsrc, int ysrc, int xdest, int ydest);
-   bool build_pargb(void);
+   bool build_pre_argb(void);
    // void alloc_clone_elements(void);
 
 public:   
@@ -68,12 +83,17 @@ public:
    void render_bitmap(HDC hdc, uint xdest, uint ydest);
    void render_bitmap(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
    //  pure-GDI+ sprite path: call prepare_graphics() once per Graphics object
+   // case DrawMode::GdiPlus:          paint_gdiplus(hdc);   break;
+   // case DrawMode::GdiPlusOffscreen: paint_offscreen(hdc); break;
    static void prepare_graphics(Gdiplus::Graphics &graphics);
    void draw_sprite_gp(Gdiplus::Graphics &graphics, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
+
+   // case DrawMode::BatchBlt:
    //  batched BitBlt path: begin_batch(), many batch_sprite(), end_batch()
    bool begin_batch(HDC hdc);
    void batch_sprite(HDC hdc, uint xdest, uint ydest, uint sprite_col, uint sprite_row);
    void end_batch(void);
+   
    void DrawBox(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor);
    void DrawBoxFilled(HDC hdc, int x0, int y0, int dx, int dy, COLORREF rColor);
    [[nodiscard]] uint img_width(void) const

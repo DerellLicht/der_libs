@@ -167,24 +167,24 @@ void gdi_plus::prepare_graphics(Gdiplus::Graphics &graphics)
 
 //********************************************************************
 //  Lazily build the premultiplied-ARGB copy of the sprite sheet.
-//  DrawImage only takes its fast path from a PARGB source; the loaded
+//  DrawImage only takes its fast path from a PRE_ARGB source; the loaded
 //  PNG is non-premultiplied, which costs a conversion on every draw.
 //  Returns false (and logs) if the copy could not be made.
-bool gdi_plus::build_pargb(void)
+bool gdi_plus::build_pre_argb(void)
 {
-   if (ppargb != nullptr) {
+   if (ppre_argb != nullptr) {
       return true;
    }
-   auto copy = std::make_unique<Gdiplus::Bitmap>(nWidth, nHeight, PixelFormat32bppPARGB);
+   auto copy = std::make_unique<Gdiplus::Bitmap>(nWidth, nHeight, PIXFMT_PRE_ARGB);
    Gdiplus::Graphics g(copy.get());
    g.SetCompositingMode(Gdiplus::CompositingModeSourceCopy);  //  exact pixel copy
    // explicit width/height: avoids DPI-based scaling of the source
    Status status = g.DrawImage(pbitmap.get(), 0, 0, (INT) nWidth, (INT) nHeight);
    if (status != Ok) {
-      syslog(L"PARGB build error: %u\n", (uint) status);
+      syslog(L"PRE_ARGB build error: %u\n", (uint) status);
       return false;
    }
-   ppargb = std::move(copy);
+   ppre_argb = std::move(copy);
    return true;
 }
 
@@ -193,10 +193,10 @@ bool gdi_plus::build_pargb(void)
 //  Dest size == source size (1:1).  Call prepare_graphics() first.
 void gdi_plus::draw_sprite_gp(Gdiplus::Graphics &graphics, uint xdest, uint ydest, uint sprite_col, uint sprite_row)
 {
-   if (!build_pargb()) {
+   if (!build_pre_argb()) {
       return;
    }
-   graphics.DrawImage(ppargb.get(),
+   graphics.DrawImage(ppre_argb.get(),
       Gdiplus::Rect((INT) xdest, (INT) ydest, (INT) sprite_dx, (INT) sprite_dy),
       (INT) (sprite_col * sprite_dx), (INT) (sprite_row * sprite_dy),
       (INT) sprite_dx, (INT) sprite_dy,
