@@ -49,6 +49,11 @@ void load_tray_menu(WORD menuID)
 //***************************************************************
 // put the icon into a system tray
 //  Call from WM_INITDIALOG
+//
+//  REQUIRED, along with this call: the window procedure must also call
+//  respond_to_taskbar_created(message) for every message, before its main switch.
+//  Without that, the icon is lost permanently whenever Explorer restarts,
+//  while the program keeps running. See respond_to_taskbar_created() below.
 //***************************************************************
 //lint -esym(18, _NOTIFYICONDATAA::szTip) // c:\mingw\include\shellapi.h  166  Error 18: Symbol '_NOTIFYICONDATAA::szTip' redeclared (size) 
 //lint -esym(18, _NOTIFYICONDATAW::szTip) // c:\mingw\include\shellapi.h  166  Error 18: Symbol '_NOTIFYICONDATAA::szTip' redeclared (size) 
