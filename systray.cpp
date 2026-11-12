@@ -13,6 +13,9 @@
 
 static NOTIFYICONDATA NotifyIconData;
 
+//  registered message which Explorer broadcasts when it (re)creates the taskbar
+static UINT wm_taskbar_created = 0 ;
+
 static HMENU hMenu = NULL ;
 //***************************************************************
 void load_tray_menu(WORD menuID)
@@ -59,6 +62,9 @@ void attach_tray_icon(HWND hwnd, TCHAR const * const szClassName, WORD iconID)
    // NotifyIconData.hIcon = (HICON) LoadIcon (g_hinst, MAKEINTRESOURCE (iconID));
    NotifyIconData.hIcon = LoadIcon ((HINSTANCE) GetWindowLong(hwnd, GWL_HINSTANCE), MAKEINTRESOURCE (iconID));
    lstrcpy (NotifyIconData.szTip, szClassName); // max 64 characters
+   //  If Explorer restarts, it broadcasts "TaskbarCreated" and all tray icons are lost;
+   //  register the message here, so respond_to_taskbar_created() can recognize it.
+   wm_taskbar_created = RegisterWindowMessage(_T("TaskbarCreated"));
    //  getting string from STRINGTABLE in .rc file
    // LoadString(hInstance, IDS_APPTOOLTIP,nidApp.szTip,MAX_LOADSTRING);
    Shell_NotifyIcon (NIM_ADD, &NotifyIconData);
@@ -94,6 +100,29 @@ BOOL respond_to_tray_clicks(HWND hwnd, LPARAM lParam)
       break;
    }
    return FALSE;
+}
+
+//**************************************************************************************
+//  Restore the tray icon after Explorer restarts (crash, or manual restart).
+//  When Explorer builds a new taskbar, the old tray icons are gone, and Explorer
+//  broadcasts the registered message "TaskbarCreated" to every top-level window.
+//  A program which does not respond to it keeps running with no icon.
+//
+//  Call this from the window procedure, for every message, before the main switch.
+//  Returns TRUE if the message was TaskbarCreated (icon was added again),
+//  FALSE for any other message.
+//  Note: if the program ever runs elevated, the message must also be allowed through
+//  UIPI, with ChangeWindowMessageFilterEx(hwnd, msg, MSGFLT_ALLOW, NULL).
+//**************************************************************************************
+BOOL respond_to_taskbar_created(UINT message)
+{
+   if (wm_taskbar_created == 0  ||  message != wm_taskbar_created) {
+      return FALSE;
+   }
+   if (!Shell_NotifyIcon (NIM_ADD, &NotifyIconData)) {
+      syslog(_T("tray icon restore failed: %s\n"), get_system_message()) ;
+   }
+   return TRUE;
 }
 
 // remove the icon from a system tray and free the .dll handle

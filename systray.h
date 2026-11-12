@@ -2,5 +2,6 @@
 void load_tray_menu(WORD menuID);
 void attach_tray_icon(HWND hwnd, TCHAR const * const szClassName, WORD iconID);
 BOOL respond_to_tray_clicks(HWND hwnd, LPARAM lParam);
+BOOL respond_to_taskbar_created(UINT message);
 void release_systray_resource(void);
 
